@@ -852,13 +852,16 @@ bool CScriptArray::operator==(const CScriptArray &other) const
 	bool isEqual = true;
 	SArrayCache *cache = reinterpret_cast<SArrayCache*>(objType->GetUserData(ARRAY_CACHE));
 	for( asUINT n = 0; n < GetSize(); n++ )
+    {
 		if( !Equals(At(n), other.At(n), cmpContext, cache) )
 		{
 			isEqual = false;
 			break;
 		}
+    }
 
 	if( cmpContext )
+    {
 		if( isNested )
 		{
 			asEContextState state = cmpContext->GetState();
@@ -866,9 +869,9 @@ bool CScriptArray::operator==(const CScriptArray &other) const
 			if( state == asEXECUTION_ABORTED )
 				cmpContext->Abort();
 		}
-		else{
-			cmpContext->Release();
-		}
+        else
+            cmpContext->Release();
+    }
 
 	return isEqual;
 }
@@ -1042,6 +1045,7 @@ int CScriptArray::Find(asUINT index, void *value) const
 	}
 
 	if( cmpContext )
+    {
 		if( isNested )
 		{
 			asEContextState state = cmpContext->GetState();
@@ -1049,9 +1053,11 @@ int CScriptArray::Find(asUINT index, void *value) const
 			if( state == asEXECUTION_ABORTED )
 				cmpContext->Abort();
 		}
-		else{
+        else
+        {
 			cmpContext->Release();
 		}
+    }
 
 	return ret;
 }
@@ -1216,6 +1222,7 @@ void CScriptArray::Sort(asUINT index, asUINT count, bool asc)
 	}
 
 	if( cmpContext )
+    {
 		if( isNested )
 		{
 			asEContextState state = cmpContext->GetState();
@@ -1223,9 +1230,11 @@ void CScriptArray::Sort(asUINT index, asUINT count, bool asc)
 			if( state == asEXECUTION_ABORTED )
 				cmpContext->Abort();
 		}
-		else{
+        else
+        {
 			cmpContext->Release();
 		}
+    }
 }
 
 // internal

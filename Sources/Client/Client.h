@@ -33,10 +33,13 @@
 #include <memory>
 #include <Core/Stopwatch.h>
 
-namespace spades {
+namespace spades
+{
 	class IStream;
 	class Stopwatch;
-	namespace client {
+
+    namespace client
+    {
 		class IRenderer;
 		struct SceneDefinition;
 		class GameMap;
@@ -62,7 +65,8 @@ namespace spades {
 		
 		class ClientUI;
 		
-		class Client: public IWorldListener, public gui::View {
+        class Client: public IWorldListener, public gui::View
+        {
 			friend class ScoreboardView;
 			friend class LimboView;
 			friend class MapView;
@@ -75,15 +79,20 @@ namespace spades {
 			/** used to keep the input state of keypad so that
 			 * after user pressed left and right, and then
 			 * released right, left is internally pressed. */
-			struct KeypadInput {
+            struct KeypadInput
+            {
 				bool left, right, forward, backward;
-				KeypadInput():
-				left(false),right(false),
-				forward(false),backward(false){
-				}
+                KeypadInput()
+                    : left(false)
+                    , right(false)
+                    , forward(false)
+                    , backward(false)
+                {}
 			};
 			
-			class FPSCounter {
+            class FPSCounter
+            {
+            private:
 				Stopwatch sw;
 				int numFrames;
 				double lastFps;
@@ -146,7 +155,8 @@ namespace spades {
 			int lastKills;
 			float worldSetTime;
             bool hasDelayedReload;
-			struct HurtSprite {
+            struct HurtSprite
+            {
 				float angle;
 				float horzShift;
 				float scale;

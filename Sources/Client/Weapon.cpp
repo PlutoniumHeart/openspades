@@ -30,16 +30,16 @@ SPADES_SETTING(cg_protocolVersion, "3");
 
 namespace spades {
 	namespace client {
-		Weapon::Weapon(World *w, Player *p):
-		world(w),
-		owner(p),
-		time(0),
-		shooting(false),
-		reloading(false),
-		nextShotTime(0.f),
-		reloadEndTime(-100.f),
-		reloadStartTime(-101.f),
-		lastDryFire(false)
+        Weapon::Weapon(World *w, Player *p)
+            : world(w)
+            , owner(p)
+            , time(0)
+            , shooting(false)
+            , reloading(false)
+            , nextShotTime(0.f)
+            , reloadStartTime(-101.f)
+            , reloadEndTime(-100.f)
+            , lastDryFire(false)
 		{
 			SPADES_MARK_FUNCTION();
 		}

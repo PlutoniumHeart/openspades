@@ -48,22 +48,37 @@ namespace spades {
 		
 		static spades::DynamicLibrary *library = nullptr;
 		
-		class YsrContext {
+        class YsrContext
+        {
+        private:
 			struct ContextPrivate;
 			ContextPrivate *priv;
 		public:
 			struct Buffer;
 			struct SpatializeResult;
-			struct YVec3 {
+            struct YVec3
+            {
 				float x, y, z;
-				YVec3() : x(0), y(0), z(0) {;}
-				YVec3(const Vector3& v):
-				x(v.x), y(v.y), z(v.z) {}
-				operator Vector3() const {
+                YVec3()
+                    : x(0)
+                    , y(0)
+                    , z(0)
+                {}
+
+                YVec3(const Vector3& v)
+                    : x(v.x)
+                    , y(v.y)
+                    , z(v.z)
+                {}
+
+                operator Vector3() const
+                {
 					return MakeVector3(x, y, z);
 				}
 			};
-			struct InitParam {
+
+            struct InitParam
+            {
 				double samplingRate;
 				void (*spatializerCallback)(const YVec3 *origin,
 											SpatializeResult *,
@@ -74,28 +89,37 @@ namespace spades {
 				void (*debugCallback)(const char *, void *);
 				void *debugUserData;
 			};
-			struct ReverbParam {
+
+            struct ReverbParam
+            {
 				float reflections;
 				float roomVolume;
 				float roomArea;
 				float roomSize;
 				float feedbackness;
 			};
-			struct SpatializeResult {
+
+            struct SpatializeResult
+            {
 				float directGain;
 			};
-			struct BufferParam {
+
+            struct BufferParam
+            {
 				const void *data;
 				int sampleBits;
 				int numChannels;
 				int numSamples;
 				double samplingRate;
 			};
-			struct PlayParam {
+
+            struct PlayParam
+            {
 				float volume;
 				float pitch;
 				float referenceDistance;
 			};
+
 		private:
 			void (*init)(ContextPrivate *, const InitParam *);
 			void (*destroy)(ContextPrivate *);
@@ -115,65 +139,74 @@ namespace spades {
 			void (*render)(ContextPrivate *, float *, int);
 			
 		public:
-			void Init(const InitParam& param) {
+            void Init(const InitParam& param)
+            {
 				init(priv, &param);
 			}
 			
-			void Destroy() {
+            void Destroy()
+            {
 				destroy(priv);
 			}
 			
-			Buffer *CreateBuffer(const BufferParam& param) {
+            Buffer *CreateBuffer(const BufferParam& param)
+            {
 				return createBuffer(priv, &param);
 			}
 			
-			void FreeBuffer(Buffer *b) {
+            void FreeBuffer(Buffer *b)
+            {
 				freeBuffer(priv, b);
 			}
 			
 			void Respatialize(const Vector3& eye,
 							  const Vector3& front,
 							  const Vector3& up,
-							  const ReverbParam& param) {
+                              const ReverbParam& param)
+            {
 				YVec3 _eye(eye), _front(front), _up(up);
 				respatialize(priv, &_eye, &_front, &_up, &param);
 			}
 		
-			void CheckError() {
+            void CheckError()
+            {
 				const char *err = checkError(priv);
-				if(err) {
-					SPRaise("YSR Error: %s", err);
-				}
+                if(err)
+                    SPRaise("YSR Error: %s", err);
 			}
 			
-			void PlayLocal(Buffer *buffer, const PlayParam& param) {
+            void PlayLocal(Buffer *buffer, const PlayParam& param)
+            {
 				playLocal(priv, buffer, &param);
 			}
 			
-			void PlayRelative(Buffer *buffer, const Vector3& v, const PlayParam& param) {
+            void PlayRelative(Buffer *buffer, const Vector3& v, const PlayParam& param)
+            {
 				YVec3 origin(v);
 				playRelative(priv, buffer, &origin, &param);
 			}
 			
-			void PlayAbsolute(Buffer *buffer, const Vector3& v, const PlayParam& param) {
+            void PlayAbsolute(Buffer *buffer, const Vector3& v, const PlayParam& param)
+            {
 				YVec3 origin(v);
 				playAbsolute(priv, buffer, &origin, &param);
 			}
 			
-			void Render(float *buffer, int numSamples) {
+            void Render(float *buffer, int numSamples)
+            {
 				render(priv, buffer, numSamples);
 			}
 		};
 		
 		class YsrBuffer;
 		
-		class YsrDriver {
-		public:
+        class YsrDriver
+        {
 		private:
 			YsrContext ctx;
 		public:
 			YsrDriver();
-			~YsrDriver() ;
+            ~YsrDriver();
 			
 			void Init(const YsrContext::InitParam& param);
 			std::shared_ptr<YsrBuffer> CreateBuffer(const YsrContext::BufferParam& param);
@@ -192,20 +225,27 @@ namespace spades {
 			void Render(float *buffer, int numSamples);
 		};
 		
-		class YsrBuffer {
+        class YsrBuffer
+        {
+        private:
 			YsrContext& context;
 			YsrContext::Buffer *buffer;
+
 		public:
 			YsrBuffer(YsrContext& context,
 					  YsrContext::Buffer *buffer);
 			~YsrBuffer();
-			YsrContext::Buffer *GetBuffer() {
+
+            YsrContext::Buffer *GetBuffer()
+            {
 				return buffer;
 			}
 		};
 		
-		YsrDriver::YsrDriver() {
-			if(!library){
+        YsrDriver::YsrDriver()
+        {
+            if(!library)
+            {
 				library = new spades::DynamicLibrary(s_ysrDriver.CString());
 				SPLog("'%s' loaded", s_ysrDriver.CString());
 			}
@@ -213,45 +253,55 @@ namespace spades {
 			typedef const char *(*InitializeFunc)(const char *magic, uint32_t version, YsrContext *);
 			auto initFunc = reinterpret_cast<InitializeFunc>(library->GetSymbol("YsrInitialize"));
 			const char *a = (*initFunc)("OpenYsrSpades", 1, &ctx);
-			if(a) {
-				SPRaise("Failed to initialize YSR interface: %s", a);
-			}
+            if(a)
+                SPRaise("Failed to initialize YSR interface: %s", a);
 		}
 		
-		bool YsrDevice::TryLoadYsr() {
-			try {
-				if(!library){
+        bool YsrDevice::TryLoadYsr()
+        {
+            try
+            {
+                if(!library)
+                {
 					library = new spades::DynamicLibrary(s_ysrDriver.CString());
 					SPLog("'%s' loaded", s_ysrDriver.CString());
 				}
 				return true;
-			}catch(...){
-				return false;
-			}
+            }
+            catch(...)
+            {
+                return false;
+            }
 		}
 		
-		YsrDriver::~YsrDriver() {
+        YsrDriver::~YsrDriver()
+        {
 			ctx.Destroy();
 		}
 		
-		void YsrDriver::Init(const YsrContext::InitParam &param) {
+        void YsrDriver::Init(const YsrContext::InitParam &param)
+        {
 			ctx.Init(param);
 			ctx.CheckError();
 		}
 		
-		void YsrDriver::Render(float *buffer, int numSamples) {
+        void YsrDriver::Render(float *buffer, int numSamples)
+        {
 			ctx.Render(buffer, numSamples);
 			ctx.CheckError();
 		}
 		
-		std::shared_ptr<YsrBuffer> YsrDriver::CreateBuffer(const YsrContext::BufferParam &param) {
+        std::shared_ptr<YsrBuffer> YsrDriver::CreateBuffer(const YsrContext::BufferParam &param)
+        {
 			auto* buf = ctx.CreateBuffer(param);
-			try{
+            try
+            {
 				ctx.CheckError();
-			}catch(...){
-				if(buf != nullptr) {
-					ctx.FreeBuffer(buf);
-				}
+            }
+            catch(...)
+            {
+                if(buf != nullptr)
+                    ctx.FreeBuffer(buf);
 				throw;
 			}
 			return std::make_shared<YsrBuffer>(ctx, buf);
@@ -260,57 +310,63 @@ namespace spades {
 		void YsrDriver::Respatialize(const spades::Vector3 &eye,
 									 const spades::Vector3 &front,
 									 const spades::Vector3 &up,
-									 const YsrContext::ReverbParam& param) {
+                                     const YsrContext::ReverbParam& param)
+        {
 			ctx.Respatialize(eye, front, up, param);
 			ctx.CheckError();
 		}
 		
 		void YsrDriver::PlayLocal(const std::shared_ptr<YsrBuffer>& buffer,
-					   const YsrContext::PlayParam& param) {
+                       const YsrContext::PlayParam& param)
+        {
 			ctx.PlayLocal(buffer->GetBuffer(), param);
 			ctx.CheckError();
 		}
 		
 		void YsrDriver::PlayAbsolute(const std::shared_ptr<YsrBuffer>& buffer,
 									 const Vector3& origin,
-								  const YsrContext::PlayParam& param) {
+                                  const YsrContext::PlayParam& param)
+        {
 			ctx.PlayAbsolute(buffer->GetBuffer(), origin, param);
 			ctx.CheckError();
 		}
 		
 		void YsrDriver::PlayRelative(const std::shared_ptr<YsrBuffer>& buffer,
 									 const Vector3& origin,
-									 const YsrContext::PlayParam& param) {
+                                     const YsrContext::PlayParam& param)
+        {
 			ctx.PlayRelative(buffer->GetBuffer(), origin, param);
 			ctx.CheckError();
 		}
 		
-		YsrBuffer::YsrBuffer(YsrContext& context,
-							 YsrContext::Buffer *buffer):
+        YsrBuffer::YsrBuffer(YsrContext& context, YsrContext::Buffer *buffer):
 		context(context),
-		buffer(buffer){
+        buffer(buffer){}
+		
+        YsrBuffer::~YsrBuffer()
+        {
+            context.FreeBuffer(buffer);
 		}
 		
-		YsrBuffer::~YsrBuffer() {
-			context.FreeBuffer(buffer);
-		}
-		
-		class YsrAudioChunk: public client::IAudioChunk {
+        class YsrAudioChunk: public client::IAudioChunk
+        {
+        private:
 			std::shared_ptr<YsrBuffer> buffer;
 			
 		protected:
-			virtual ~YsrAudioChunk() {
-				
-			}
+            virtual ~YsrAudioChunk() {}
+
 		public:
-			YsrAudioChunk(std::shared_ptr<YsrDriver> driver,
-						  IAudioStream *stream) {
+            YsrAudioChunk(std::shared_ptr<YsrDriver> driver, IAudioStream *stream)
+            {
 				std::vector<char> buffer;
 				size_t bytesPerSample = stream->GetNumChannels();
-				if(bytesPerSample < 1 || bytesPerSample > 2) {
+
+                if(bytesPerSample < 1 || bytesPerSample > 2)
 					SPRaise("Unsupported channel count");
-				}
-				switch(stream->GetSampleFormat()) {
+
+                switch(stream->GetSampleFormat())
+                {
 					case IAudioStream::SignedShort:
 						bytesPerSample *= 2;
 						break;
@@ -323,9 +379,10 @@ namespace spades {
 					default:
 						SPRaise("Unsupported audio format");
 				}
-				if(stream->GetNumSamples() > 128 * 1024 * 1024) {
-					SPRaise("Audio data too long");
-				}
+
+                if(stream->GetNumSamples() > 128 * 1024 * 1024)
+                    SPRaise("Audio data too long");
+
 				buffer.resize(static_cast<size_t>(stream->GetNumSamples()) * bytesPerSample);
 				stream->Read(reinterpret_cast<void*>(buffer.data()), buffer.size());
 				
@@ -334,7 +391,9 @@ namespace spades {
 				param.numChannels = stream->GetNumChannels();
 				param.numSamples = static_cast<int>(stream->GetNumSamples());
 				param.samplingRate = stream->GetSamplingFrequency();
-				switch(stream->GetSampleFormat()) {
+
+                switch(stream->GetSampleFormat())
+                {
 					case IAudioStream::SignedShort:
 						param.sampleBits = 16;
 						break;
@@ -348,13 +407,15 @@ namespace spades {
 				
 				this->buffer = driver->CreateBuffer(param);
 			}
-			std::shared_ptr<YsrBuffer> GetBuffer() {
+            std::shared_ptr<YsrBuffer> GetBuffer()
+            {
 				return buffer;
 			}
 			
 		};
 		
-		struct SdlAudioDevice {
+        struct SdlAudioDevice
+        {
 			SDL_AudioDeviceID id;
 			SDL_AudioSpec spec;
 			
@@ -362,28 +423,30 @@ namespace spades {
 						   int isCapture,
 						   const SDL_AudioSpec& spec,
 						   int allowedChanges):
-			id(0){
+            id(0)
+            {
 				SDL_InitSubSystem(SDL_INIT_AUDIO);
 				id = SDL_OpenAudioDevice(deviceId, isCapture,
 										 &spec, &this->spec,
 										 allowedChanges);
-				if(id == 0){
+                if(id == 0)
 					SPRaise("Failed to initialize the audio device: %s", SDL_GetError());
-				}
 			}
 			
-			~SdlAudioDevice() {
+            ~SdlAudioDevice()
+            {
 				if(id != 0)
-					SDL_CloseAudioDevice(id);
+                    SDL_CloseAudioDevice(id);
 			}
 			
-			SDL_AudioDeviceID operator()() const {
-				return id;
+            SDL_AudioDeviceID operator()() const
+            {
+                return id;
 			}
 		};
 		
-		static void DebugLog(const char *msg,
-							 void *) {
+        static void DebugLog(const char *msg, void *)
+        {
 			SPLog("YSR Debug: %s", msg);
 		}
 		
@@ -410,104 +473,116 @@ namespace spades {
 			param.samplingRate = static_cast<double>(sdlAudioDevice->spec.freq);
 			param.spatializerCallback = reinterpret_cast<void(*)(const YsrContext::YVec3 *, YsrContext::SpatializeResult *, void *)>(SpatializeCallback);
 			param.spatializerUserData = this;
-			if(s_ysrDebug) {
-				param.debugCallback = DebugLog;
-			}else{
-				param.debugCallback = nullptr;
-			}
+
+            if(s_ysrDebug)
+                param.debugCallback = DebugLog;
+            else
+                param.debugCallback = nullptr;
+
 			param.debugUserData = nullptr;
 			
 			driver->Init(param);
 			
-			std::fill(roomHistory.begin(), roomHistory.end(),
-					  20000.f);
-			std::fill(roomFeedbackHistory.begin(), roomFeedbackHistory.end(),
-					  0.f);
+            std::fill(roomHistory.begin(), roomHistory.end(), 20000.f);
+            std::fill(roomFeedbackHistory.begin(), roomFeedbackHistory.end(), 0.f);
 			
 			SDL_PauseAudioDevice((*sdlAudioDevice)(), 0);
 		}
 		
-		YsrDevice::~YsrDevice() {
-			for(auto chunk = chunks.begin(); chunk != chunks.end(); ++chunk){
-				chunk->second->Release();
+        YsrDevice::~YsrDevice()
+        {
+            for(auto chunk = chunks.begin(); chunk != chunks.end(); ++chunk)
+            {
+                chunk->second->Release();
 			}
 			if(this->gameMap)
-				this->gameMap->Release();
+                this->gameMap->Release();
 		}
 		
-		void YsrDevice::RenderCallback(YsrDevice *self,
-									   float *stream,
-									   int numBytes) {
+        void YsrDevice::RenderCallback(YsrDevice *self, float *stream, int numBytes)
+        {
 			self->Render(stream, numBytes);
 		}
 		
-		void YsrDevice::SpatializeCallback(const void *yorigin,
-										   void *_result,
-										   YsrDevice *self) {
+        void YsrDevice::SpatializeCallback(const void *yorigin, void *_result, YsrDevice *self)
+        {
 			self->Spatialize(yorigin, _result);
 		}
 		
-		void YsrDevice::Render(float *stream, int numBytes) {
+        void YsrDevice::Render(float *stream, int numBytes)
+        {
 			driver->Render(stream, numBytes / 8);
 		}
 		
-		void YsrDevice::Spatialize(const void *yorigin, void *_result) {
+        void YsrDevice::Spatialize(const void *yorigin, void *_result)
+        {
 			Vector3 origin(*reinterpret_cast<const YsrContext::YVec3 *>(yorigin));
 			auto& result = *reinterpret_cast<YsrContext::SpatializeResult *>(_result);
 			
 			// check obstruction
-			if(gameMap) {
+            if(gameMap)
+            {
 				Vector3 eye = listenerPosition;
 				Vector3 pos = origin;
 				Vector3 checkPos;
 				result.directGain = 0.4f;
 				for(int x = -1; x <= 1; x++)
 					for(int y = -1; y <= 1; y++)
-						for(int z = -1; z <= 1; z++){
+                        for(int z = -1; z <= 1; z++)
+                        {
 							IntVector3 hitPos;
 							checkPos.x = pos.x + (float)x * .2f;
 							checkPos.y = pos.y + (float)y * .2f;
 							checkPos.z = pos.z + (float)z * .2f;
-							if(!gameMap->CastRay(eye, (checkPos-eye).Normalize(),
-												 (checkPos-eye).GetLength(), hitPos)){
-								result.directGain = 1.f;
+                            if(!gameMap->CastRay(eye, (checkPos-eye).Normalize(),
+                                                 (checkPos-eye).GetLength(), hitPos))
+                            {
+                                result.directGain = 1.f;
 							}
 						}
-			} else {
+            }
+            else
 				result.directGain = 1.f;
-			}
-			
 		}
 		
-		auto YsrDevice::CreateChunk(const char *name) -> YsrAudioChunk * {
+        auto YsrDevice::CreateChunk(const char *name) -> YsrAudioChunk *
+        {
 			SPADES_MARK_FUNCTION();
 			
 			IStream *stream = NULL;
 			IAudioStream *as = NULL;
-			try{
+            try
+            {
 				stream = FileManager::OpenForReading(name);
 				as = new WavAudioStream(stream, true);
-			}catch(...){
+            }
+            catch(...)
+            {
 				if(stream)
 					delete stream;
 				throw;
 			}
 			
-			try{
+            try
+            {
 				YsrAudioChunk *ch =new YsrAudioChunk(driver, as);
 				delete as;
 				return ch;
-			}catch(...){
+            }
+            catch(...)
+            {
 				delete as;
 				throw;
 			}
 		}
 		
-		client::IAudioChunk *YsrDevice::RegisterSound(const char *name) {
+        client::IAudioChunk *YsrDevice::RegisterSound(const char *name)
+        {
 			SPADES_MARK_FUNCTION();
 			
 			auto it = chunks.find(name);
-			if(it == chunks.end()){
+            if(it == chunks.end())
+            {
 				auto *c = CreateChunk(name);
 				chunks[name] = c;
 				c->AddRef();
@@ -517,21 +592,26 @@ namespace spades {
 			return it->second;
 		}
 		
-		void YsrDevice::SetGameMap(client::GameMap *gameMap) {
+        void YsrDevice::SetGameMap(client::GameMap *gameMap)
+        {
 			SPADES_MARK_FUNCTION();
 			auto *old = this->gameMap;
 			this->gameMap = gameMap;
-			if(this->gameMap) this->gameMap->AddRef();
-			if(old) old->Release();
+            if(this->gameMap)
+                this->gameMap->AddRef();
+            if(old)
+                old->Release();
 		}
 		
-		static float NextRandom() {
+        static float NextRandom()
+        {
 			return (float)std::rand() /(float)RAND_MAX;
 		}
 		
 		void YsrDevice::Respatialize(const spades::Vector3 &eye,
 									 const spades::Vector3 &front,
-									 const spades::Vector3 &up) {
+                                     const spades::Vector3 &up)
+        {
 			SPADES_MARK_FUNCTION();
 			
 			listenerPosition = eye;
@@ -544,17 +624,21 @@ namespace spades {
 			float roomSize;
 			float feedbackness = 0.f;
 			auto *map = gameMap;
-			if(map == NULL){
+            if(map == NULL)
+            {
 				reflections = 0.f;
 				roomVolume = 1.f;
 				roomArea = 1.f;
 				roomSize = 10.f;
-			}else{
+            }
+            else
+            {
 				// do raycast
 				Vector3 rayFrom = eye;
 				Vector3 rayTo;
 				
-				for(int rays = 0; rays < 4; rays++){
+                for(int rays = 0; rays < 4; rays++)
+                {
 					rayTo.x = NextRandom() - NextRandom();
 					rayTo.y = NextRandom() - NextRandom();
 					rayTo.z = NextRandom() - NextRandom();
@@ -562,24 +646,26 @@ namespace spades {
 					
 					IntVector3 hitPos;
 					bool hit = map->CastRay(rayFrom, rayTo, maxDistance, hitPos);
-					if(hit){
-						Vector3 hitPosf = {(float)hitPos.x, (float)hitPos.y, (float)hitPos.z};
-						roomHistory[roomHistoryPos] = (hitPosf - rayFrom).GetLength();
-					}else{
-						roomHistory[roomHistoryPos] = maxDistance * 2.f;
-					}
+                    if(hit)
+                    {
+                        Vector3 hitPosf = {(float)hitPos.x, (float)hitPos.y, (float)hitPos.z};
+                        roomHistory[roomHistoryPos] = (hitPosf - rayFrom).GetLength();
+                    }
+                    else
+                        roomHistory[roomHistoryPos] = maxDistance * 2.f;
 					
-					if(hit){
-						bool hit2 = map->CastRay(rayFrom, -rayTo, maxDistance, hitPos);
-						if(hit2)
-							roomFeedbackHistory[roomHistoryPos] = 1.f;
+                    if(hit)
+                    {
+                        bool hit2 = map->CastRay(rayFrom, -rayTo, maxDistance, hitPos);
+                        if(hit2)
+                            roomFeedbackHistory[roomHistoryPos] = 1.f;
 						else
-							roomFeedbackHistory[roomHistoryPos] = 0.f;
+                            roomFeedbackHistory[roomHistoryPos] = 0.f;
 					}
 					
 					roomHistoryPos++;
 					if(roomHistoryPos == (int)roomHistory.size())
-						roomHistoryPos = 0;
+                        roomHistoryPos = 0;
 				}
 				
 				// monte-carlo integration
@@ -588,9 +674,11 @@ namespace spades {
 				roomArea = 0.f;
 				roomSize = 0.f;
 				feedbackness = 0.f;
-				for(size_t i = 0; i < roomHistory.size(); i++){
+                for(size_t i = 0; i < roomHistory.size(); i++)
+                {
 					float dist = roomHistory[i];
-					if(dist < maxDistance){
+                    if(dist < maxDistance)
+                    {
 						rayHitCount++;
 						roomVolume += dist * dist;
 						roomArea += dist;
@@ -600,14 +688,17 @@ namespace spades {
 					feedbackness += roomFeedbackHistory[i];
 				}
 				
-				if(rayHitCount > roomHistory.size() / 4){
+                if(rayHitCount > roomHistory.size() / 4)
+                {
 					roomVolume /= (float)rayHitCount;
 					roomVolume *= 4.f / 3.f * static_cast<float>(M_PI);
 					roomArea /= (float)rayHitCount;
 					roomArea *= 4.f * static_cast<float>(M_PI);
 					roomSize /= (float)rayHitCount;
 					reflections = (float)rayHitCount / (float)roomHistory.size();
-				}else{
+                }
+                else
+                {
 					roomVolume = 8.f;
 					reflections = 0.1f;
 					roomArea = 100.f;
@@ -627,7 +718,8 @@ namespace spades {
 			driver->Respatialize(eye, front, up, reverbParam);
 		}
 		
-		static YsrContext::PlayParam TranslateParam(const client::AudioParam& base) {
+        static YsrContext::PlayParam TranslateParam(const client::AudioParam& base)
+        {
 			YsrContext::PlayParam param;
 			param.pitch = base.pitch;
 			param.referenceDistance = base.referenceDistance;
@@ -635,30 +727,38 @@ namespace spades {
 			return param;
 		}
 		
-		void YsrDevice::Play(client::IAudioChunk *c, const Vector3& origin, const client::AudioParam& param) {
+        void YsrDevice::Play(client::IAudioChunk *c, const Vector3& origin, const client::AudioParam& param)
+        {
 			SPADES_MARK_FUNCTION();
 			
 			auto *chunk = dynamic_cast<YsrAudioChunk *>(c);
-			if(chunk == nullptr) SPRaise("Invalid chunk: null or invalid type.");
+            if(chunk == nullptr)
+                SPRaise("Invalid chunk: null or invalid type.");
 			
-			driver->PlayAbsolute(chunk->GetBuffer(), origin,
-								 TranslateParam(param));
+            driver->PlayAbsolute(chunk->GetBuffer(), origin, TranslateParam(param));
 		}
-		void YsrDevice::PlayLocal(client::IAudioChunk *c, const Vector3& origin, const client::AudioParam& param) {
+
+        void YsrDevice::PlayLocal(client::IAudioChunk *c, const Vector3& origin, const client::AudioParam& param)
+        {
 			SPADES_MARK_FUNCTION();
 			
 			auto *chunk = dynamic_cast<YsrAudioChunk *>(c);
-			if(chunk == nullptr) SPRaise("Invalid chunk: null or invalid type.");
+
+            if(chunk == nullptr)
+                SPRaise("Invalid chunk: null or invalid type.");
 			
 			driver->PlayRelative(chunk->GetBuffer(), origin,
 								 TranslateParam(param));
 			
 		}
-		void YsrDevice::PlayLocal(client::IAudioChunk *c, const client::AudioParam& param) {
+
+        void YsrDevice::PlayLocal(client::IAudioChunk *c, const client::AudioParam& param)
+        {
 			SPADES_MARK_FUNCTION();
 			
 			auto *chunk = dynamic_cast<YsrAudioChunk *>(c);
-			if(chunk == nullptr) SPRaise("Invalid chunk: null or invalid type.");
+            if(chunk == nullptr)
+                SPRaise("Invalid chunk: null or invalid type.");
 			
 			driver->PlayLocal(chunk->GetBuffer(), TranslateParam(param));
 			

@@ -25,14 +25,16 @@
 #include <memory>
 #include <array>
 
-namespace spades {
-	namespace audio {
-		
+namespace spades
+{
+    namespace audio
+    {
 		class YsrDriver;
 		class YsrAudioChunk;
 		struct SdlAudioDevice;
 		
-		class YsrDevice: public client::IAudioDevice {
+        class YsrDevice: public client::IAudioDevice
+        {
 			std::shared_ptr<YsrDriver> driver;
 			client::GameMap *gameMap;
 			std::unique_ptr<SdlAudioDevice> sdlAudioDevice;

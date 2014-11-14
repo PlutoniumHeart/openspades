@@ -24,16 +24,17 @@
 #include "Player.h"
 #include "PhysicsConstants.h"
 
-namespace spades {
-	namespace client {
+namespace spades
+{
+    namespace client
+    {
 		class World;
 		class Player;
-		
-		
-		
-		
-		
-		class Weapon {
+
+
+        class Weapon
+        {
+        private:
 			World *world;
 			Player *owner;
 			float time;
@@ -49,6 +50,7 @@ namespace spades {
 			
 			int ammo;
 			int stock;
+
 		public:
 			Weapon(World *, Player *);
 			virtual ~Weapon();
