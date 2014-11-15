@@ -24,15 +24,20 @@
 #include <vector>
 #include <mutex>
 
-namespace spades {
-	namespace client {
+namespace spades
+{
+    namespace client
+    {
 		class GameMap;
 	}
-	namespace draw {
+
+    namespace draw
+    {
 		class SWRenderer;
 		class SWImage;
 		
-		class SWFlatMapRenderer {
+        class SWFlatMapRenderer
+        {
 			SWRenderer *r;
 			Handle<SWImage> img;
 			Handle<client::GameMap> map;

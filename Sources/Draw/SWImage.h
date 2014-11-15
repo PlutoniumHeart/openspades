@@ -24,11 +24,14 @@
 #include <Core/Bitmap.h>
 #include <map>
 
-namespace spades {
-	namespace draw {
-		class SWImage: public client::IImage {
-			//Handle<Bitmap> rawBmp;
-			
+namespace spades
+{
+    namespace draw
+    {
+        class SWImage: public client::IImage
+        {
+        private:
+            //Handle<Bitmap> rawBmp;
 			std::vector<uint32_t> bmp;
 			int ew, eh; // exact size
 			

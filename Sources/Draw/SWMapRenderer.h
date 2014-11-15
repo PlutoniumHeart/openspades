@@ -29,16 +29,21 @@
 #include <vector>
 #include <Core/MiniHeap.h>
 
-namespace spades {
-	namespace client {
+namespace spades
+{
+    namespace client
+    {
 		class GameMap;
 	}
 	
 	class Bitmap;
 	
-	namespace draw {
+    namespace draw
+    {
 		class SWRenderer;
-		class SWMapRenderer {
+
+        class SWMapRenderer
+        {
 			struct Line;
 			struct LinePixel;
 			

@@ -146,482 +146,479 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include<math.h>
 #include<sstream>
 
-namespace BinPack2D {
+namespace BinPack2D
+{
 
-class Size {
-  
-public:
-  
-  /*const*/ int w;
-  /*const*/ int h;
-  
-  Size(int w, int h)
-    : w(w),
-      h(h)
-  {}
-  
-  bool operator < ( const Size &that ) const {
-    
-    if(this->w != that.w) return this->w < that.w;
-    if(this->h != that.h) return this->h < that.h;
-	  return false; // yvt
-  }
-};
+    class Size
+    {
+    public:
+        /*const*/ int w;
+        /*const*/ int h;
 
-class Coord {
- 
-public:
-  
-  typedef std::vector<Coord> Vector;
-  typedef std::list<Coord>   List;
-  
-  /*const*/ int x;
-  /*const*/ int y;
-  /*const*/ int z;
-  
-  Coord()
-    : x(0),
-      y(0),
-      z(0)
-  {}
-  
-  Coord(int x, int y)
-    : x(x),
-      y(y),
-      z(0)
-  {}
-  
-  Coord(int x, int y, int z)
-    : x(x),
-      y(y),
-      z(z)
-  {}
-  
-  bool operator < ( const Coord &that ) const {
-    
-    if(this->x != that.x) return this->x < that.x;
-    if(this->y != that.y) return this->y < that.y;
-    if(this->z != that.z) return this->z < that.z;
-	  return false; // yvt
-  }
-};
+        Size(int w, int h)
+            : w(w)
+            , h(h)
+        {}
 
-template<typename _T> class Content {
-  
-public:
-  
-  typedef std::vector<Content<_T> > Vector;
-  
-  /*const*/ bool rotated;
-  /*const*/ Coord coord;
-  /*const*/ Size  size;
-  /*const*/ _T content;
-  
-  Content( const Content<_T> &src )
-    : rotated(src.rotated),
-      coord(src.coord),
-      size(src.size),
-      content(src.content)
-  {}
-  
-  Content( const _T &content, const Coord &coord, const Size &size, bool rotated )
-    : 
-      content(content),
-      coord(coord),
-      size(size),
-      rotated(rotated)
-  {}
-  
-  void Rotate() {
-   
-    rotated = !rotated;
-    size = Size( size.h, size.w );
-  }
-  
-  bool intersects(const Content<_T> &that) const {
-    
-    if(this->coord.x >= (that.coord.x + that.size.w))
-      return false;
-    
-    if(this->coord.y >= (that.coord.y + that.size.h))
-      return false;
-    
-    if(that.coord.x >= (this->coord.x + this->size.w))
-      return false;
-    
-    if(that.coord.y >= (this->coord.y + this->size.h))
-      return false;
-    
-    return true;
-  }
-};
+        bool operator < ( const Size &that ) const
+        {
 
-template<typename _T> class Canvas {
-  
-  Coord::List topLefts;
-  typename Content<_T>::Vector contentVector;
-  
-  bool needToSort;
-  
-public:
-  
-  typedef Canvas<_T> CanvasT;
-  typedef typename std::vector<CanvasT> Vector;
-  
-  static bool Place( Vector &canvasVector, const typename Content<_T>::Vector &contentVector, typename Content<_T>::Vector &remainder ) {
-    
-    typename Content<_T>::Vector todo = contentVector;
-        
-    for( typename Vector::iterator itor = canvasVector.begin(); itor != canvasVector.end(); itor++ ) {
-     
-      Canvas <_T> &canvas = *itor;
-      
-      remainder.clear();
-      canvas.Place(todo, remainder);
-      todo = remainder;
-    }
-    
-    if(remainder.size()==0)
-      return true;
-    
-    return false;
-  }
-  
-  static bool Place( Vector &canvasVector, const typename Content<_T>::Vector &contentVector ) {
-    
-    typename Content<_T>::Vector remainder;
-    
-    return Place( canvasVector, contentVector, remainder );
-  }
-  
-  static bool Place( Vector &canvasVector, const Content<_T> &content ) {
-    
-    typename Content<_T>::Vector contentVector(1, content);
-    
-    return Place( canvasVector, contentVector );
-  }
-  
-  const int w;
-  const int h;
-   
-  Canvas(int w, int h)
-    : needToSort(false),
-      w(w),
-      h(h)
-  {  
-    topLefts.push_back( Coord(0,0) );
-  }
-  
-  bool HasContent() const {
-   
-    return ( contentVector.size() > 0) ;
-  }
-  
-  const typename Content<_T>::Vector &GetContents( ) const {
-   
-    return contentVector;
-  }
-  
-  bool operator < ( const Canvas &that ) const {
-    
-    if(this->w != that.w) return this->w < that.w;
-    if(this->h != that.h) return this->h < that.h;
-  }
+            if(this->w != that.w)
+                return this->w < that.w;
+            if(this->h != that.h)
+                return this->h < that.h;
 
-  bool Place(const typename Content<_T>::Vector &contentVector, typename Content<_T>::Vector &remainder) {
-    
-    bool placedAll = true;
-    
-    for( typename Content<_T>::Vector::const_iterator itor = contentVector.begin(); itor != contentVector.end(); itor++ ) {
-      
-      const Content<_T> & content = *itor;
-      
-      if( Place( content ) == false ) {
-	
-	placedAll = false;
-	remainder.push_back( content );
-      }
-    }
-    
-    return placedAll;
-  }
-  
-  bool Place(Content<_T> content) {
-     
-    Sort();
-    
-    for( Coord::List::iterator itor = topLefts.begin(); itor != topLefts.end(); itor++ ) {
-      
-      content.coord = *itor;
-      
-      if( Fits( content ) ) {
-	
-	Use( content );
-	topLefts.erase( itor );
-	return true;
-      }
-    }
-    
-	  return false; // yvt: BitmapAtlasGenerator doesn't support rotated contents.
-	  
-    // EXPERIMENTAL - TRY ROTATED?
-    content.Rotate();
-    for( Coord::List::iterator itor = topLefts.begin(); itor != topLefts.end(); itor++ ) {
-      
-      content.coord = *itor;
-      
-      if( Fits( content ) ) {
-	
-	Use( content );
-	topLefts.erase( itor );
-	return true;
-      }
-    }
-    ////////////////////////////////
-    
-    
-    return false;
-  }
-  
-private:
-  
-  bool Fits( const Content<_T> &content ) const {
-   
-    if( (content.coord.x + content.size.w) > w )
-      return false;
-    
-    if( (content.coord.y + content.size.h) > h )
-      return false;
-    
-    for( typename Content<_T>::Vector::const_iterator itor = contentVector.begin(); itor != contentVector.end(); itor++ )  
-      if( content.intersects( *itor ) )
-	return false;
-    
-    return true;
-  }
-  
-  bool Use(const Content<_T> &content) {
-   
-    const Size  &size = content.size;
-    const Coord &coord = content.coord;
-    
-    topLefts.push_front	( Coord( coord.x + size.w, coord.y          ) );
-    topLefts.push_back	( Coord( coord.x         , coord.y + size.h ) );
-    
-    contentVector.push_back( content );
-    
-    needToSort = true;
-    
-    return true;
-  }
-  
-private:
-  
-  struct TopToBottomLeftToRightSort {
-    
-    bool operator()(const Coord &a, const Coord &b) const {
-     
-      return sqrtf( a.x * a.x + a.y * a.y ) < sqrtf( b.x * b.x + b.y * b.y );
-      
-     
-      if(a.y != b.y)
-	return a.y < b.y;
-      
-      return a.x < b.x;
-    }
-  };
-  
-public:
-  
-  void Sort() {
-    
-    if(!needToSort)
-      return;
-  
-    topLefts.sort(TopToBottomLeftToRightSort());
-    
-    needToSort = false;
-  }
-};
+            return false; // yvt
+        }
+    };
 
-template <typename _T> class ContentAccumulator {
-  
-  typename Content<_T>::Vector contentVector;
- 
-  
-public:
-  
-  ContentAccumulator()
-  {}
-  
-  const typename Content<_T>::Vector &Get() const {
-   
-    return contentVector;
-  }
-  
-  typename Content<_T>::Vector &Get() {
-   
-    return contentVector;
-  }
-  
-  ContentAccumulator<_T>& operator += ( const Content<_T> & content ) {
-   
-    contentVector.push_back( content );
-   
-    
-    return *this;
-  }
-  
-  ContentAccumulator<_T>& operator += ( const typename Content<_T>::Vector & content ) {
-   
-    contentVector.insert( contentVector.end(), content.begin(), content.end() );
-   
-    
-    return *this;
-  }
-  
-  ContentAccumulator<_T> operator + ( const Content<_T> & content ) {
-   
-    ContentAccumulator<_T> temp = *this;
-    
-    temp += content;
-    
-    return temp;
-  }
-  
-  ContentAccumulator<_T> operator + ( const typename Content<_T>::Vector & content ) {
-   
-    ContentAccumulator<_T> temp = *this;
-    
-    temp += content;
-    
-    return temp;
-  }
- 
- 
- 
-private:
-  
-  struct GreatestWidthThenGreatestHeightSort {
-    
-    bool operator()(const Content<_T> &a, const Content<_T> &b) const {
-      
-      const Size &sa = a.size; 
-      const Size &sb = b.size;
-      
-//      return( sa.w * sa.h > sb.w * sb.h );
-      
-      if(sa.w != sb.w)
-	  return sa.w > sb.w;    
-      return sa.h > sb.h;
-    }
-  };
-  
-  struct MakeHorizontal {
-   
-    Content<_T> operator()( const Content<_T> &elem) {
-      
-      if(elem.size.h > elem.size.w) 
-      {
-	Content<_T> r = elem;
-	
-	r.size.w = elem.size.h;
-	r.size.h = elem.size.w;
-	r.rotated = !elem.rotated;
-	
-	return r;
-      }
-      
-      return elem;
-    }
-  };
-  
-public:
-  
-  void Sort() {
-   
-//  if(allow_rotation)
-//    std::transform(contentVector.begin(), contentVector.end(), contentVector.begin(), MakeHorizontal());
-    
-    std::sort( contentVector.begin(), contentVector.end(), GreatestWidthThenGreatestHeightSort() );
-  }
-};
 
-template <typename _T> class UniformCanvasArrayBuilder {
-  
-  int w;
-  int h;
-  int d;
-  
-public:
-  
-  UniformCanvasArrayBuilder( int w, int h, int d )
-    : w(w),
-      h(h),
-      d(d)
-  {}
-  
-  typename Canvas<_T>::Vector Build() {
-   
-    return typename Canvas<_T>::Vector(d, Canvas<_T>(w, h) );
-  }  
-};
+    class Coord
+    {
+    public:
+        typedef std::vector<Coord> Vector;
+        typedef std::list<Coord>   List;
 
-template<typename _T> class CanvasArray {
-  
-  typename Canvas<_T>::Vector canvasArray;
-  
-public:  
-  
-  CanvasArray( const typename Canvas<_T>::Vector &canvasArray )
-    : canvasArray( canvasArray )
-  {}
+        /*const*/ int x;
+        /*const*/ int y;
+        /*const*/ int z;
 
-  bool Place(const typename Content<_T>::Vector &contentVector, typename Content<_T>::Vector &remainder) {
-   
-    return Canvas<_T>::Place( canvasArray, contentVector, remainder );
-  }
+        Coord()
+            : x(0)
+            , y(0)
+            , z(0)
+        {}
+
+        Coord(int x, int y)
+            : x(x)
+            , y(y)
+            , z(0)
+        {}
+
+        Coord(int x, int y, int z)
+            : x(x)
+            , y(y)
+            , z(z)
+        {}
+
+        bool operator < ( const Coord &that ) const
+        {
+            if(this->x != that.x)
+                return this->x < that.x;
+            if(this->y != that.y)
+                return this->y < that.y;
+            if(this->z != that.z)
+                return this->z < that.z;
+
+            return false; // yvt
+        }
+    };
+
+
+    template<typename _T> class Content
+    {
+    public:
+        typedef std::vector<Content<_T> > Vector;
+
+        /*const*/ bool rotated;
+        /*const*/ Coord coord;
+        /*const*/ Size  size;
+        /*const*/ _T content;
+
+        Content( const Content<_T> &src )
+            : rotated(src.rotated)
+            , coord(src.coord)
+            , size(src.size)
+            , content(src.content)
+        {}
+
+        Content( const _T &content, const Coord &coord, const Size &size, bool rotated )
+            : rotated(rotated)
+            , coord(coord)
+            , size(size)
+            , content(content)
+        {}
+
+        void Rotate()
+        {
+            rotated = !rotated;
+            size = Size( size.h, size.w );
+        }
+
+        bool intersects(const Content<_T> &that) const
+        {
+            if(this->coord.x >= (that.coord.x + that.size.w))
+                return false;
+
+            if(this->coord.y >= (that.coord.y + that.size.h))
+                return false;
+
+            if(that.coord.x >= (this->coord.x + this->size.w))
+                return false;
+
+            if(that.coord.y >= (this->coord.y + this->size.h))
+                return false;
+
+            return true;
+        }
+    };
+
+
+    template<typename _T> class Canvas
+    {
+    private:
+        Coord::List topLefts;
+        typename Content<_T>::Vector contentVector;
+
+        bool needToSort;
+
+    public:
+        typedef Canvas<_T> CanvasT;
+        typedef typename std::vector<CanvasT> Vector;
+
+        static bool Place( Vector &canvasVector,
+                           const typename Content<_T>::Vector &contentVector,
+                           typename Content<_T>::Vector &remainder )
+        {
+            typename Content<_T>::Vector todo = contentVector;
+
+            for(typename Vector::iterator itor = canvasVector.begin(); itor != canvasVector.end(); itor++)
+            {
+                Canvas <_T> &canvas = *itor;
+                remainder.clear();
+                canvas.Place(todo, remainder);
+                todo = remainder;
+            }
+
+            if(remainder.size()==0)
+                return true;
+
+            return false;
+        }
+
+        static bool Place(Vector &canvasVector, const typename Content<_T>::Vector &contentVector)
+        {
+            typename Content<_T>::Vector remainder;
+
+            return Place( canvasVector, contentVector, remainder );
+        }
+
+        static bool Place( Vector &canvasVector, const Content<_T> &content )
+        {
+            typename Content<_T>::Vector contentVector(1, content);
+
+            return Place( canvasVector, contentVector );
+        }
+
+        const int w;
+        const int h;
+
+        Canvas(int w, int h)
+          : needToSort(false),
+            w(w),
+            h(h)
+        {
+            topLefts.push_back( Coord(0,0) );
+        }
+
+        bool HasContent() const
+        {
+            return ( contentVector.size() > 0);
+        }
+
+        const typename Content<_T>::Vector &GetContents( ) const
+        {
+            return contentVector;
+        }
+
+        bool operator < ( const Canvas &that ) const
+        {
+          if(this->w != that.w) return this->w < that.w;
+          if(this->h != that.h) return this->h < that.h;
+        }
+
+        bool Place(const typename Content<_T>::Vector &contentVector,
+                   typename Content<_T>::Vector &remainder)
+        {
+
+            bool placedAll = true;
+
+            for(typename Content<_T>::Vector::const_iterator itor = contentVector.begin();
+                itor != contentVector.end(); itor++)
+            {
+                const Content<_T> & content = *itor;
+                if( Place( content ) == false )
+                {
+                    placedAll = false;
+                    remainder.push_back( content );
+                }
+            }
+
+            return placedAll;
+        }
+
+        bool Place(Content<_T> content)
+        {
+            Sort();
+
+            for( Coord::List::iterator itor = topLefts.begin(); itor != topLefts.end(); itor++ )
+            {
+                content.coord = *itor;
+
+                if( Fits( content ) )
+                {
+                    Use( content );
+                    topLefts.erase( itor );
+                    return true;
+                }
+            }
+
+            return false; // yvt: BitmapAtlasGenerator doesn't support rotated contents.
+
+            // EXPERIMENTAL - TRY ROTATED?
+        //    content.Rotate();
+        //    for(Coord::List::iterator itor = topLefts.begin(); itor != topLefts.end(); itor++)
+        //    {
+        //        content.coord = *itor;
+
+        //        if( Fits( content ) )
+        //        {
+        //            Use( content );
+        //            topLefts.erase( itor );
+        //            return true;
+        //        }
+        //    }
+        //    ////////////////////////////////
+
+        //    return false;
+        }
+
+    private:
+        bool Fits( const Content<_T> &content ) const
+        {
+            if( (content.coord.x + content.size.w) > w )
+                return false;
+
+            if( (content.coord.y + content.size.h) > h )
+                return false;
+
+            for(typename Content<_T>::Vector::const_iterator itor = contentVector.begin();
+                itor != contentVector.end(); itor++)
+            {
+                if( content.intersects( *itor ) )
+                    return false;
+            }
+
+            return true;
+        }
+
+        bool Use(const Content<_T> &content)
+        {
+            const Size  &size = content.size;
+            const Coord &coord = content.coord;
+
+            topLefts.push_front	( Coord( coord.x + size.w, coord.y          ) );
+            topLefts.push_back	( Coord( coord.x         , coord.y + size.h ) );
+
+            contentVector.push_back( content );
+
+            needToSort = true;
+
+            return true;
+        }
+
+    private:
+        struct TopToBottomLeftToRightSort
+        {
+            bool operator()(const Coord &a, const Coord &b) const
+            {
+                return sqrtf( a.x * a.x + a.y * a.y ) < sqrtf( b.x * b.x + b.y * b.y );
+
+//                if(a.y != b.y)
+//                    return a.y < b.y;
+
+//                return a.x < b.x;
+            }
+        };
   
-  bool Place(const ContentAccumulator<_T> &content, ContentAccumulator<_T> &remainder) {
-    
-    return Place( content.Get(), remainder.Get() );
-  }
-  
-  bool Place(const typename Content<_T>::Vector &contentVector) {
-   
-    return Canvas<_T>::Place( canvasArray, contentVector );
-  }
-  
-  bool Place(const ContentAccumulator<_T> &content) {
-    
-    return Place( content.Get() );
-  }
-  
-  bool CollectContent( typename Content<_T>::Vector &contentVector ) const {
-    
-    int z = 0;
-    
-    for( typename Canvas<_T>::Vector::const_iterator itor = canvasArray.begin(); itor != canvasArray.end(); itor++ ) {
-      
-      const typename Content<_T>::Vector &contents = itor->GetContents();
-      
-      for( typename Content<_T>::Vector::const_iterator itor = contents.begin(); itor != contents.end(); itor++ ) {
-	
-	Content<_T> content = *itor;
-	
-	content.coord.z = z;
-		
-	contentVector.push_back( content );
-      }
-      z++;
-    }
-    return true;
-  }
-  
-  bool CollectContent( ContentAccumulator<_T> &content) const {
-    
-    return CollectContent( content.Get() );
-  }
-};
+    public:
+        void Sort()
+        {
+
+            if(!needToSort)
+                return;
+
+            topLefts.sort(TopToBottomLeftToRightSort());
+
+            needToSort = false;
+        }
+    };
+
+
+    template <typename _T> class ContentAccumulator
+    {
+    private:
+        typename Content<_T>::Vector contentVector;
+
+    public:
+        ContentAccumulator(){}
+
+        const typename Content<_T>::Vector &Get() const
+        {
+            return contentVector;
+        }
+
+        typename Content<_T>::Vector &Get()
+        {
+            return contentVector;
+        }
+
+        ContentAccumulator<_T>& operator += ( const Content<_T> & content )
+        {
+            contentVector.push_back( content );
+            return *this;
+        }
+
+        ContentAccumulator<_T>& operator += ( const typename Content<_T>::Vector & content )
+        {
+            contentVector.insert( contentVector.end(), content.begin(), content.end() );
+            return *this;
+        }
+
+        ContentAccumulator<_T> operator + ( const Content<_T> & content )
+        {
+            ContentAccumulator<_T> temp = *this;
+            temp += content;
+            return temp;
+        }
+
+        ContentAccumulator<_T> operator + ( const typename Content<_T>::Vector & content )
+        {
+            ContentAccumulator<_T> temp = *this;
+            temp += content;
+            return temp;
+        }
+
+    private:
+        struct GreatestWidthThenGreatestHeightSort
+        {
+            bool operator()(const Content<_T> &a, const Content<_T> &b) const
+            {
+                const Size &sa = a.size;
+                const Size &sb = b.size;
+
+                //      return( sa.w * sa.h > sb.w * sb.h );
+
+                if(sa.w != sb.w)
+                    return sa.w > sb.w;
+                return sa.h > sb.h;
+            }
+        };
+
+        struct MakeHorizontal
+        {
+            Content<_T> operator()( const Content<_T> &elem)
+            {
+                if(elem.size.h > elem.size.w)
+                {
+                    Content<_T> r = elem;
+
+                    r.size.w = elem.size.h;
+                    r.size.h = elem.size.w;
+                    r.rotated = !elem.rotated;
+
+                    return r;
+                }
+                return elem;
+            }
+        };
+
+    public:
+        void Sort()
+        {
+
+            //  if(allow_rotation)
+            //    std::transform(contentVector.begin(), contentVector.end(), contentVector.begin(), MakeHorizontal());
+            std::sort( contentVector.begin(), contentVector.end(), GreatestWidthThenGreatestHeightSort() );
+        }
+    };
+
+
+    template <typename _T> class UniformCanvasArrayBuilder
+    {
+    private:
+        int w;
+        int h;
+        int d;
+
+    public:
+        UniformCanvasArrayBuilder( int w, int h, int d )
+            : w(w)
+            , h(h)
+            , d(d)
+        {}
+
+        typename Canvas<_T>::Vector Build()
+        {
+            return typename Canvas<_T>::Vector(d, Canvas<_T>(w, h) );
+        }
+    };
+
+
+    template<typename _T> class CanvasArray
+    {
+    private:
+        typename Canvas<_T>::Vector canvasArray;
+
+    public:
+        CanvasArray( const typename Canvas<_T>::Vector &canvasArray )
+        : canvasArray( canvasArray )
+        {}
+
+        bool Place(const typename Content<_T>::Vector &contentVector, typename Content<_T>::Vector &remainder)
+        {
+            return Canvas<_T>::Place( canvasArray, contentVector, remainder );
+        }
+
+        bool Place(const ContentAccumulator<_T> &content, ContentAccumulator<_T> &remainder)
+        {
+            return Place( content.Get(), remainder.Get() );
+        }
+
+        bool Place(const typename Content<_T>::Vector &contentVector)
+        {
+            return Canvas<_T>::Place( canvasArray, contentVector );
+        }
+
+        bool Place(const ContentAccumulator<_T> &content)
+        {
+            return Place( content.Get() );
+        }
+
+        bool CollectContent( typename Content<_T>::Vector &contentVector ) const
+        {
+            int z = 0;
+
+            for(typename Canvas<_T>::Vector::const_iterator itor = canvasArray.begin();
+                itor != canvasArray.end(); itor++)
+            {
+                const typename Content<_T>::Vector &contents = itor->GetContents();
+                for(typename Content<_T>::Vector::const_iterator itor = contents.begin();
+                    itor != contents.end(); itor++)
+                {
+                    Content<_T> content = *itor;
+                    content.coord.z = z;
+                    contentVector.push_back( content );
+                }
+                z++;
+            }
+            return true;
+        }
+
+        bool CollectContent( ContentAccumulator<_T> &content) const
+        {
+            return CollectContent( content.Get() );
+        }
+    };
 
 } /*** BinPack2D ***/

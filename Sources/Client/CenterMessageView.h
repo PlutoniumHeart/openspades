@@ -24,14 +24,18 @@
 #include <vector>
 #include <list>
 
-namespace spades{
-	namespace client {
+namespace spades
+{
+    namespace client
+    {
 		class Client;
 		class IFont;
 		class IRenderer;
 		
-		class CenterMessageView {
-			struct Entry {
+        class CenterMessageView
+        {
+            struct Entry
+            {
 				std::string msg;
 				float fade;
 				int line;
@@ -46,8 +50,7 @@ namespace spades{
 			int GetFreeLine();
 			
 		public:
-			CenterMessageView(Client *,
-							  IFont *);
+            CenterMessageView(Client *, IFont *);
 			~CenterMessageView();
 			
 			void AddMessage(const std::string&);

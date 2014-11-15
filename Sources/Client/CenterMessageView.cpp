@@ -27,22 +27,27 @@
 namespace spades {
 	namespace client {
 		CenterMessageView::CenterMessageView(Client *client, IFont *font)
-			: client(client), font(font), renderer(client->GetRenderer())
+            : client(client)
+            , renderer(client->GetRenderer())
+            , font(font)
 		{
 			SPADES_MARK_FUNCTION();
 			
 			for(int i = 0; i < 2; i++)
 				lineUsing.push_back(false);
-			
 		}
-		CenterMessageView::~CenterMessageView() {
-			
+
+        CenterMessageView::~CenterMessageView()
+        {
 		}
 		
-		int CenterMessageView::GetFreeLine(){
+        int CenterMessageView::GetFreeLine()
+        {
 			for(size_t i = 0; i < lineUsing.size(); i++)
+            {
 				if(!lineUsing[i])
 					return (int)i;
+            }
 			
 			// remove oldest entry
 			int l = entries.front().line;
@@ -50,7 +55,8 @@ namespace spades {
 			return l;
 		}
 		
-		void CenterMessageView::AddMessage(const std::string &msg) {
+        void CenterMessageView::AddMessage(const std::string &msg)
+        {
 			SPADES_MARK_FUNCTION();
 			
 			Entry entry;
@@ -63,27 +69,32 @@ namespace spades {
 		
 		
 		
-		void CenterMessageView::Update(float dt) {
-			SPADES_MARK_FUNCTION();
-			
-			for(std::list<Entry>::iterator it = entries.begin(); it != entries.end();){
+        void CenterMessageView::Update(float dt)
+        {
+            SPADES_MARK_FUNCTION();
+
+            for(std::list<Entry>::iterator it = entries.begin(); it != entries.end();)
+            {
 				Entry& ent = *it;
 				ent.fade -= dt;
-				if(ent.fade < 0){
-					lineUsing[ent.line] = false;
-					std::list<Entry>::iterator tmp = it++;
-					entries.erase( tmp );
-					continue;
-				}
-				++it;
-			}
+                if(ent.fade < 0)
+                {
+                    lineUsing[ent.line] = false;
+                    std::list<Entry>::iterator tmp = it++;
+                    entries.erase( tmp );
+                    continue;
+                }
+                ++it;
+            }
 		}
 		
-		void CenterMessageView::Draw() {
-			SPADES_MARK_FUNCTION();
-			
-			std::list<Entry>::iterator it;
-			for(it = entries.begin(); it != entries.end(); it++){
+        void CenterMessageView::Draw()
+        {
+            SPADES_MARK_FUNCTION();
+
+            std::list<Entry>::iterator it;
+            for(it = entries.begin(); it != entries.end(); it++)
+            {
 				Entry& ent = *it;
 				
 				Vector2 size = font->Measure(ent.msg);

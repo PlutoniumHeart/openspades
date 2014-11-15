@@ -31,9 +31,10 @@
 #include <Core/Stopwatch.h>
 #include <array>
 
-namespace spades {
-	namespace draw {
-		
+namespace spades
+{
+    namespace draw
+    {
 		class SWPort;
 		class SWImageManager;
 		class SWModelManager;
@@ -44,7 +45,8 @@ namespace spades {
 		class SWImage;
 		class SWModel;
 		
-		class SWRenderer: public client::IRenderer, public client::IGameMapListener  {
+        class SWRenderer: public client::IRenderer, public client::IGameMapListener
+        {
 			friend class SWFlatMapRenderer;
 			friend class SWModelRenderer;
 			friend class SWMapRenderer;
@@ -66,7 +68,8 @@ namespace spades {
 			std::shared_ptr<SWFlatMapRenderer> flatMapRenderer;
 			std::shared_ptr<SWMapRenderer> mapRenderer;
 			
-			struct Sprite {
+            struct Sprite
+            {
 				Handle<SWImage> img;
 				Vector3 center;
 				float radius;
@@ -75,7 +78,8 @@ namespace spades {
 			};
 			std::vector<Sprite> sprites;
 			
-			struct LongSprite {
+            struct LongSprite
+            {
 				Handle<SWImage> img;
 				Vector3 start;
 				Vector3 end;
@@ -84,13 +88,15 @@ namespace spades {
 			};
 			std::vector<LongSprite> longSprites;
 			
-			struct Model {
+            struct Model
+            {
 				Handle<SWModel> model;
 				client::ModelRenderParam param;
 			};
 			std::vector<Model> models;
 			
-			struct DynamicLight {
+            struct DynamicLight
+            {
 				client::DynamicLightParam param;
 				int minX, maxX, minY, maxY;
 			};
@@ -102,7 +108,8 @@ namespace spades {
 			client::SceneDefinition sceneDef;
 			std::array<Plane3, 6> frustrum;
 			
-			struct DebugLine{
+            struct DebugLine
+            {
 				Vector3 v1, v2;
 				Vector4 color;
 			};
@@ -213,7 +220,8 @@ namespace spades {
 			
 			virtual void GameMapChanged(int x, int y, int z, client::GameMap *);
 			
-			const client::SceneDefinition& GetSceneDef() const {
+            const client::SceneDefinition& GetSceneDef() const
+            {
 				return sceneDef;
 			}
 			

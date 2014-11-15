@@ -24,13 +24,14 @@
 
 namespace spades {
 	namespace draw {
-		SWImage::SWImage(Bitmap *m):
-		w(static_cast<float>(m->GetWidth())),
-		h(static_cast<float>(m->GetHeight())),
-		iw(1.f / w), ih(1.f / h),
-		ew(m->GetWidth()),
-		eh(m->GetHeight()),
-		isWhite(false)
+        SWImage::SWImage(Bitmap *m)
+            : ew(m->GetWidth())
+            , eh(m->GetHeight())
+            , isWhite(false)
+            , w(static_cast<float>(m->GetWidth()))
+            , h(static_cast<float>(m->GetHeight()))
+            , iw(1.f / w)
+            , ih(1.f / h)
 		{
 			bmp.resize(ew * eh);
 			
@@ -39,7 +40,8 @@ namespace spades {
 				uint32_t *inpix = m->GetPixels();
 				uint32_t *outpix = bmp.data();
 				bool foundNonWhite = false;
-				for(std::size_t i = ew * eh; i; i--) {
+                for(std::size_t i = ew * eh; i; i--)
+                {
 					uint32_t col = *(inpix++);
 					unsigned int alpha = static_cast<unsigned int>(col >> 24);
 					alpha += (alpha >> 7); // [0,255] to [0,256]
@@ -62,41 +64,50 @@ namespace spades {
 			}
 		}
 		
-		SWImage::SWImage(int w, int h):
-		ew(w), eh(h),
-		w(static_cast<float>(ew)),
-		h(static_cast<float>(eh)),
-		iw(1.f / w),
-		ih(1.f / h),
-		isWhite(false){
+        SWImage::SWImage(int w, int h)
+            : ew(w)
+            , eh(h)
+            , isWhite(false)
+            , w(static_cast<float>(ew))
+            , h(static_cast<float>(eh))
+            , iw(1.f / w)
+            , ih(1.f / h)
+        {
 			bmp.reserve(ew * eh);
 		}
 		
-		SWImage::~SWImage() {
+        SWImage::~SWImage()
+        {
 		}
 		
-		SWImageManager::~SWImageManager() {
+        SWImageManager::~SWImageManager()
+        {
 			for(auto it = images.begin(); it != images.end(); it++)
 				it->second->Release();
 		}
 		
-		SWImage *SWImageManager::RegisterImage(const std::string &name) {
+        SWImage *SWImageManager::RegisterImage(const std::string &name)
+        {
 			auto it = images.find(name);
-			if(it == images.end()) {
+            if(it == images.end())
+            {
 				Handle<Bitmap> vm;
 				vm.Set(Bitmap::Load(name), false);
 				auto *m = CreateImage(vm);
 				images.insert(std::make_pair(name, m));
 				m->AddRef();
 				return m;
-			}else{
+            }
+            else
+            {
 				auto *image = it->second;
 				image->AddRef();
 				return image;
 			}
 		}
 		
-		SWImage *SWImageManager::CreateImage(Bitmap *vm) {
+        SWImage *SWImageManager::CreateImage(Bitmap *vm)
+        {
 			return new SWImage(vm);
 		}
 	}

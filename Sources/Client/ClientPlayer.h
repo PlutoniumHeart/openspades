@@ -25,19 +25,20 @@
 #include <Core/Math.h>
 #include "Player.h"
 
-namespace spades {
-	
+namespace spades
+{
 	class ScriptFunction;
 	
-	namespace client {
-		
+    namespace client
+    {
 		class Client;
 		class IRenderer;
 		class IAudioDevice;
 		
 		/** Representation of player which is used by
 		 * drawing/view layer of game client. */
-		class ClientPlayer: public RefCountedObject {
+        class ClientPlayer: public RefCountedObject
+        {
 			Client *client;
 			Player *player;
 			

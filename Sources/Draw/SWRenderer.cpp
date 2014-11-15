@@ -41,26 +41,24 @@ SPADES_SETTING(r_swNumThreads, "4");
 
 namespace spades {
 	namespace draw {
-		SWRenderer::SWRenderer(SWPort *port,
-							   SWFeatureLevel level):
-		port(port),
-		map(nullptr),
-		fb(nullptr),
-		inited(false),
-		sceneUsedInThisFrame(false),
-		fogDistance(128.f),
-		fogColor(MakeVector3(0.f, 0.f, 0.f)),
-		drawColorAlphaPremultiplied(MakeVector4(1,1,1,1)),
-		legacyColorPremultiply(false),
-		lastTime(0),
-		duringSceneRendering(false),
-		featureLevel(level){
+        SWRenderer::SWRenderer(SWPort *port, SWFeatureLevel level)
+            : featureLevel(level)
+            , port(port)
+            , map(nullptr)
+            , fb(nullptr)
+            , inited(false)
+            , sceneUsedInThisFrame(false)
+            , fogDistance(128.f), fogColor(MakeVector3(0.f, 0.f, 0.f))
+            , drawColorAlphaPremultiplied(MakeVector4(1,1,1,1))
+            , legacyColorPremultiply(false)
+            , lastTime(0)
+            , duringSceneRendering(false)
+        {
 			
 			SPADES_MARK_FUNCTION();
 			
-			if(port == nullptr) {
+            if(port == nullptr)
 				SPRaise("Port is null.");
-			}
 			
 			SPLog("---- SWRenderer early initialization started ---");
 			
@@ -88,28 +86,32 @@ namespace spades {
 			SPLog("---- SWRenderer early initialization done ---");
 		}
 		
-		SWRenderer::~SWRenderer() {
+        SWRenderer::~SWRenderer()
+        {
 			SPADES_MARK_FUNCTION();
 			
 			Shutdown();
 		}
 		
-		void SWRenderer::SetFramebuffer(spades::Bitmap *bmp) {
-			if(bmp == nullptr) {
+        void SWRenderer::SetFramebuffer(spades::Bitmap *bmp)
+        {
+            if(bmp == nullptr)
 				SPRaise("Framebuffer is null.");
-			}
-			if(fb) {
+
+            if(fb)
+            {
 				SPAssert(bmp->GetWidth() == fb->GetWidth());
 				SPAssert(bmp->GetHeight() == fb->GetHeight());
 			}
+
 			fb = bmp;
 			imageRenderer->SetFramebuffer(bmp);
-			if((bmp->GetWidth() & 7) || (bmp->GetHeight() & 7)) {
+            if((bmp->GetWidth() & 7) || (bmp->GetHeight() & 7))
 				SPRaise("Framebuffer size is not multiple of 8.");
-			}
 		}
 		
-		void SWRenderer::Init() {
+        void SWRenderer::Init()
+        {
 			SPADES_MARK_FUNCTION();
 			
 			SPLog("---- SWRenderer late initialization started ---");
@@ -124,7 +126,8 @@ namespace spades {
 			inited = true;
 		}
 		
-		void SWRenderer::Shutdown() {
+        void SWRenderer::Shutdown()
+        {
 			SPADES_MARK_FUNCTION();
 			
 			SetGameMap(nullptr);
@@ -140,31 +143,36 @@ namespace spades {
 			inited = false;
 		}
 		
-		client::IImage *SWRenderer::RegisterImage(const char *filename) {
+        client::IImage *SWRenderer::RegisterImage(const char *filename)
+        {
 			SPADES_MARK_FUNCTION();
 			EnsureValid();
 			return imageManager->RegisterImage(filename);
 		}
 		
-		client::IModel *SWRenderer::RegisterModel(const char *filename) {
+        client::IModel *SWRenderer::RegisterModel(const char *filename)
+        {
 			SPADES_MARK_FUNCTION();
 			EnsureInitialized();
 			return modelManager->RegisterModel(filename);
 		}
 		
-		client::IImage *SWRenderer::CreateImage(spades::Bitmap *bmp) {
+        client::IImage *SWRenderer::CreateImage(spades::Bitmap *bmp)
+        {
 			SPADES_MARK_FUNCTION();
 			EnsureValid();
 			return imageManager->CreateImage(bmp);
 		}
 		
-		client::IModel *SWRenderer::CreateModel(spades::VoxelModel *model) {
+        client::IModel *SWRenderer::CreateModel(spades::VoxelModel *model)
+        {
 			SPADES_MARK_FUNCTION();
 			EnsureInitialized();
 			return modelManager->CreateModel(model);
 		}
 		
-		void SWRenderer::SetGameMap(client::GameMap *map) {
+        void SWRenderer::SetGameMap(client::GameMap *map)
+        {
 			SPADES_MARK_FUNCTION();
 			if(map)
 				EnsureInitialized();
@@ -177,19 +185,22 @@ namespace spades {
 			if(this->map)
 				this->map->RemoveListener(this);
 			this->map = map;
-			if(this->map) {
+            if(this->map)
+            {
 				this->map->AddListener(this);
 				flatMapRenderer = std::make_shared<SWFlatMapRenderer>(this, map);
 				mapRenderer = std::make_shared<SWMapRenderer>(this, map, featureLevel);
 			}
 		}
 		
-		void SWRenderer::SetFogColor(spades::Vector3 v) {
+        void SWRenderer::SetFogColor(spades::Vector3 v)
+        {
 			fogColor = v;
 		}
 		
 		
-		void SWRenderer::BuildProjectionMatrix() {
+        void SWRenderer::BuildProjectionMatrix()
+        {
 			SPADES_MARK_FUNCTION();
 			
 			float near = sceneDef.zNear;
@@ -217,7 +228,8 @@ namespace spades {
 			projectionMatrix = mat;
 		}
 		
-		void SWRenderer::BuildView() {
+        void SWRenderer::BuildView()
+        {
 			SPADES_MARK_FUNCTION();
 			
 			Matrix4 mat = Matrix4::Identity();
@@ -239,7 +251,8 @@ namespace spades {
 			viewMatrix = mat;
 		}
 		
-		void SWRenderer::BuildFrustrum() {
+        void SWRenderer::BuildFrustrum()
+        {
 			// far/near
 			frustrum[0] = Plane3::PlaneWithPointOnPlane(sceneDef.viewOrigin,
 														sceneDef.viewAxis[2]);
@@ -268,7 +281,8 @@ namespace spades {
 		}
 		
 		template<SWFeatureLevel>
-		void SWRenderer::ApplyDynamicLight(const DynamicLight &light) {
+        void SWRenderer::ApplyDynamicLight(const DynamicLight &light)
+        {
 			int fw = this->fb->GetWidth();
 			int fh = this->fb->GetHeight();
 			
@@ -301,7 +315,8 @@ namespace spades {
 			
 			float invRadius2 = 1.f / (light.param.radius * light.param.radius);
 			
-			InvokeParallel2([=](unsigned int threadId, unsigned int numThreads) {
+            InvokeParallel2([=](unsigned int threadId, unsigned int numThreads)
+            {
 				int startY = lightHeight * threadId / numThreads;
 				int endY = lightHeight * (threadId + 1) / numThreads;
 				startY += minY;
@@ -317,12 +332,14 @@ namespace spades {
 				
 				int lightWidth = maxX - minX;
 				
-				for(int y = startY; y < endY; y++) {
+                for(int y = startY; y < endY; y++)
+                {
 					float vx2 = vx;
 					auto *fb2 = fb;
 					auto *db2 = db;
 					
-					for(int x = lightWidth; x > 0; x--) {
+                    for(int x = lightWidth; x > 0; x--)
+                    {
 						Vector3 pos;
 						
 						pos.z = *db2;
@@ -334,7 +351,8 @@ namespace spades {
 						float dist = pos.GetPoweredLength();
 						dist *= invRadius2;
 						
-						if(dist < 1.f) {
+                        if(dist < 1.f)
+                        {
 							float strength = 1.f - dist;
 							strength *= strength;
 							strength *= 256.f;
@@ -379,8 +397,8 @@ namespace spades {
 			});
 		}
 		
-		template<SWFeatureLevel level>
-		void SWRenderer::ApplyFog() {
+        template<SWFeatureLevel level> void SWRenderer::ApplyFog()
+        {
 			int fw = this->fb->GetWidth();
 			int fh = this->fb->GetHeight();
 			
@@ -398,7 +416,8 @@ namespace spades {
 			
 			float scale = 255.f / fogDistance;
 			
-			InvokeParallel2([&](unsigned int threadId, unsigned int numThreads) {
+            InvokeParallel2([&](unsigned int threadId, unsigned int numThreads)
+            {
 				int startY = fh * threadId / numThreads;
 				int endY = fh * (threadId + 1) / numThreads;
 				startY &= ~3;
@@ -412,19 +431,23 @@ namespace spades {
 				fb += fw * startY;
 				db += fw * startY;
 				
-				for(int y = startY; y < endY; y += 4) {
+                for(int y = startY; y < endY; y += 4)
+                {
 					float vx = fovX;
 					
-					for(int x = 0; x < fw; x += 4) {
+                    for(int x = 0; x < fw; x += 4)
+                    {
 						float depthScale = (1.f + vx*vx+vy*vy);
 						depthScale *= fastRSqrt(depthScale) * scale;
 						auto *fb2 = fb + x;
 						auto *db2 = db + x;
-						for(int by = 0; by < 4; by++) {
+                        for(int by = 0; by < 4; by++)
+                        {
 							auto *fb3 = fb2;
 							auto *db3 = db2;
 							
-							for(int bx = 0; bx < 4; bx++) {
+                            for(int bx = 0; bx < 4; bx++)
+                            {
 								
 								float dist = *db3 * depthScale;
 								int factor = std::min(static_cast<int>(dist),
@@ -463,8 +486,8 @@ namespace spades {
 		
 #if ENABLE_SSE2
 		
-		template<>
-		void SWRenderer::ApplyFog<SWFeatureLevel::SSE2>() {
+        template<> void SWRenderer::ApplyFog<SWFeatureLevel::SSE2>()
+        {
 			int fw = this->fb->GetWidth();
 			int fh = this->fb->GetHeight();
 			
@@ -481,7 +504,8 @@ namespace spades {
 			
 			float scale = 255.f / fogDistance;
 			
-			InvokeParallel2([&](unsigned int threadId, unsigned int numThreads) {
+            InvokeParallel2([&](unsigned int threadId, unsigned int numThreads)
+            {
 				int startY = fh * threadId / numThreads;
 				int endY = fh * (threadId + 1) / numThreads;
 				startY &= ~3;
@@ -495,17 +519,20 @@ namespace spades {
 				fb += fw * startY;
 				db += fw * startY;
 				
-				for(int y = startY; y < endY; y += 4) {
+                for(int y = startY; y < endY; y += 4)
+                {
 					float vx = fovX;
 					
-					for(int x = 0; x < fw; x += 4) {
+                    for(int x = 0; x < fw; x += 4)
+                    {
 						float depthScale = (1.f + vx*vx+vy*vy);
 						depthScale *= fastRSqrt(depthScale) * scale;
 						auto depthScale4 = _mm_set1_ps(depthScale);
 						
 						auto *fb2 = fb + x;
 						auto *db2 = db + x;
-						for(int by = 0; by < 4; by++) {
+                        for(int by = 0; by < 4; by++)
+                        {
 							auto *fb3 = fb2;
 							auto *db3 = db2;
 							
@@ -568,36 +595,37 @@ namespace spades {
 		
 		
 		
-		void SWRenderer::EnsureSceneStarted() {
+        void SWRenderer::EnsureSceneStarted()
+        {
 			SPADES_MARK_FUNCTION_DEBUG();
-			if(!duringSceneRendering) {
-				SPRaise("Illegal call outside of StartScene ... EndScene");
-			}
+            if(!duringSceneRendering)
+                SPRaise("Illegal call outside of StartScene ... EndScene");
 		}
 		
-		void SWRenderer::EnsureSceneNotStarted() {
+        void SWRenderer::EnsureSceneNotStarted()
+        {
 			SPADES_MARK_FUNCTION_DEBUG();
-			if(duringSceneRendering) {
-				SPRaise("Illegal call between StartScene ... EndScene");
-			}
+            if(duringSceneRendering)
+                SPRaise("Illegal call between StartScene ... EndScene");
 		}
 		
-		void SWRenderer::EnsureInitialized() {
+        void SWRenderer::EnsureInitialized()
+        {
 			SPADES_MARK_FUNCTION_DEBUG();
-			if(!inited){
+            if(!inited)
 				SPRaise("Renderer is not initialized");
-			}
 			EnsureValid();
 		}
 		
-		void SWRenderer::EnsureValid() {
+        void SWRenderer::EnsureValid()
+        {
 			SPADES_MARK_FUNCTION_DEBUG();
-			if(!port){
+            if(!port)
 				SPRaise("Renderer is not valid");
-			}
 		}
 		
-		void SWRenderer::StartScene(const client::SceneDefinition &def) {
+        void SWRenderer::StartScene(const client::SceneDefinition &def)
+        {
 			SPADES_MARK_FUNCTION();
 			
 			EnsureInitialized();
@@ -613,7 +641,8 @@ namespace spades {
 			projectionViewMatrix = projectionMatrix * viewMatrix;
 		}
 		
-		void SWRenderer::RenderModel(client::IModel *model, const client::ModelRenderParam &param) {
+        void SWRenderer::RenderModel(client::IModel *model, const client::ModelRenderParam &param)
+        {
 			SPADES_MARK_FUNCTION();
 			EnsureInitialized();
 			EnsureSceneStarted();
@@ -629,15 +658,15 @@ namespace spades {
 			models.push_back(m);
 		}
 		
-		void SWRenderer::AddLight(const client::DynamicLightParam &param) {
+        void SWRenderer::AddLight(const client::DynamicLightParam &param)
+        {
 			SPADES_MARK_FUNCTION();
 			EnsureInitialized();
 			EnsureSceneStarted();
 			
-			if(param.type != client::DynamicLightTypePoint) {
+            if(param.type != client::DynamicLightTypePoint)
 				// TODO: support non-point lights
-				return;
-			}
+                return;
 			
 			
 			auto diff = param.origin - sceneDef.viewOrigin;
@@ -645,22 +674,29 @@ namespace spades {
 			float poweredLength = diff.GetPoweredLength();
 			
 			float fogCullRange = param.radius + fogDistance;
-			if(poweredLength > fogCullRange * fogCullRange) {
+            if(poweredLength > fogCullRange * fogCullRange)
+            {
 				// fog cull
 				return;
 			}
 			
 			DynamicLight light;
-			if(poweredLength < rad2) {
+            if(poweredLength < rad2)
+            {
 				light.minX = 0; light.minY = 0;
 				light.maxX = fb->GetWidth();
 				light.maxY = fb->GetHeight();
-			}else if(Vector3::Dot(diff,sceneDef.viewAxis[2]) < 0.f){
+            }
+            else if(Vector3::Dot(diff,sceneDef.viewAxis[2]) < 0.f){
 				// view plane cull
 				return;
-			}else{
-				auto viewRange = [](float cx, float cy, float fov, float screenSize) -> std::array<int, 2> {
-					auto trans = [screenSize,fov](float v) {
+            }
+            else
+            {
+                auto viewRange = [](float cx, float cy, float fov, float screenSize) -> std::array<int, 2>
+                {
+                    auto trans = [screenSize,fov](float v)
+                    {
 						v = (v / fov) * 0.5f + 0.5f;
 						v = std::max(v, 0.f);
 						v = std::min(v, 1.f);
@@ -668,31 +704,36 @@ namespace spades {
 						return static_cast<int>(v);
 					};
 					auto dist = cx * cx + cy * cy - 1.f;
-					if(dist <= 0.f) {
-						return std::array<int,2>{{0, static_cast<int>(screenSize)}};
-					}
+                    if(dist <= 0.f)
+                        return std::array<int,2>{{0, static_cast<int>(screenSize)}};
 					
 					auto denom = cx * cx - 1.f;
-					if(fabsf(denom) < 1.e-10f) {
-						denom = 1.e-8f;
-					}
+                    if(fabsf(denom) < 1.e-10f)
+                        denom = 1.e-8f;
+
 					denom = 1.f / denom;
 					
 					dist = sqrtf(dist);
 					
-					if(cx <= 1.f) {
-						if(cy > 0.f) {
+                    if(cx <= 1.f)
+                    {
+                        if(cy > 0.f)
+                        {
 							return std::array<int,2>{{
 								trans(cx * cy - dist),
 								static_cast<int>(screenSize)
 							}};
-						}else{
+                        }
+                        else
+                        {
 							return std::array<int,2>{{
 								0,
 								trans(cx * cy + dist)
 							}};
 						}
-					}else{
+                    }
+                    else
+                    {
 						return std::array<int,2>{{
 							trans(cx * cy - dist),
 							trans(cx * cy + dist)
@@ -719,7 +760,8 @@ namespace spades {
 			
 		}
 		
-		void SWRenderer::AddDebugLine(spades::Vector3 a, spades::Vector3 b, spades::Vector4 color) {
+        void SWRenderer::AddDebugLine(spades::Vector3 a, spades::Vector3 b, spades::Vector4 color)
+        {
 			EnsureInitialized();
 			EnsureSceneStarted();
 			
@@ -727,8 +769,8 @@ namespace spades {
 			debugLines.push_back(l);
 		}
 		
-		void SWRenderer::AddSprite(client::IImage *image, spades::Vector3 center,
-								   float radius, float rotation) {
+        void SWRenderer::AddSprite(client::IImage *image, spades::Vector3 center, float radius, float rotation)
+        {
 			SPADES_MARK_FUNCTION();
 			EnsureInitialized();
 			EnsureSceneStarted();
@@ -737,9 +779,8 @@ namespace spades {
 				return;
 			
 			SWImage *img = dynamic_cast<SWImage *>(image);
-			if(!img){
+            if(!img)
 				SPInvalidArgument("image");
-			}
 			
 			sprites.push_back(Sprite());
 			auto& spr = sprites.back();
@@ -751,15 +792,18 @@ namespace spades {
 			spr.color = drawColorAlphaPremultiplied;
 		}
 		
-		void SWRenderer::AddLongSprite(client::IImage *, spades::Vector3 p1, spades::Vector3 p2, float radius) {
+        void SWRenderer::AddLongSprite(client::IImage *, spades::Vector3 p1, spades::Vector3 p2, float radius)
+        {
 			SPADES_MARK_FUNCTION();
 			EnsureInitialized();
 			EnsureSceneStarted();
 			// TODO: long sprite
 		}
 		
-		static uint32_t ConvertColor32(Vector4 col) {
-			auto convertColor = [](float f) {
+        static uint32_t ConvertColor32(Vector4 col)
+        {
+            auto convertColor = [](float f)
+            {
 				int i = static_cast<int>(f * 255.f + .5f);
 				return static_cast<uint32_t>(std::max(std::min(i, 255), 0));
 			};
@@ -771,7 +815,8 @@ namespace spades {
 			return c;
 		}
 		
-		void SWRenderer::EndScene() {
+        void SWRenderer::EndScene()
+        {
 			EnsureInitialized();
 			EnsureSceneStarted();
 			
@@ -784,7 +829,8 @@ namespace spades {
 					  0x7f7f7f);
 			
 			// draw map
-			if(mapRenderer){
+            if(mapRenderer)
+            {
 				// flat map renderer sends 'Update RLE' to map renderer.
 				// rendering map before this leads to the corrupted renderer image.
 				flatMapRenderer->Update();
@@ -792,14 +838,16 @@ namespace spades {
 			}
 			
 			// draw models
-			for(auto& m: models) {
+            for(auto& m: models)
+            {
 				modelRenderer->Render(m.model,
 									  m.param);
 			}
 			models.clear();
 			
 			// deferred lighting
-			for(const auto& light: lights) {
+            for(const auto& light: lights)
+            {
 				ApplyDynamicLight<SWFeatureLevel::None>(light);
 			}
 			lights.clear();
@@ -819,11 +867,13 @@ namespace spades {
 				
 				auto right = sceneDef.viewAxis[0];
 				auto up = sceneDef.viewAxis[1];
-				for(std::size_t i = 0; i < sprites.size(); i++) {
+                for(std::size_t i = 0; i < sprites.size(); i++)
+                {
 					auto& spr = sprites[i];
 					float s = sinf(spr.rotation) * spr.radius;
 					float c = cosf(spr.rotation) * spr.radius;
-					auto trans = [s,c,&spr,right,up](float x, float y) {
+                    auto trans = [s,c,&spr,right,up](float x, float y)
+                    {
 						auto v = spr.center;
 						v += right * (c*x-s*y);
 						v += up * (s*x+c*y);
@@ -857,7 +907,8 @@ namespace spades {
 			{
 				float cw = fb->GetWidth() * 0.5f;
 				float ch = fb->GetHeight() * 0.5f;
-				for(size_t i = 0; i < debugLines.size(); i++) {
+                for(size_t i = 0; i < debugLines.size(); i++)
+                {
 					auto& l = debugLines[i];
 					auto v1 = projectionViewMatrix * l.v1;
 					auto v2 = projectionViewMatrix * l.v2;
@@ -886,19 +937,21 @@ namespace spades {
 					(ToFixed8(l.color.y) << 8) |
 					(ToFixed8(l.color.x) << 16);
 					
-					if(x1 == x2 && y1 == y2){
-						if(x1 >= 0 && y1 >= 0 &&
-						   x1 < fw && y1 < fh) {
+                    if(x1 == x2 && y1 == y2)
+                    {
+                        if(x1 >= 0 && y1 >= 0 && x1 < fw && y1 < fh)
+                        {
 							d1 = fastRcp(d1);
-							if(d1 < db[x1 + y1 * fw]) {
-								fb[x1 + y1 * fw] = col;
-							}
+                            if(d1 < db[x1 + y1 * fw])
+                                fb[x1 + y1 * fw] = col;
 						}
 						continue;
 					}
 					
-					if(abs(x2 - x1) > abs(y2 - y1)) {
-						if(x1 >= x2){
+                    if(abs(x2 - x1) > abs(y2 - y1))
+                    {
+                        if(x1 >= x2)
+                        {
 							std::swap(x1, x2);
 							std::swap(y1, y2);
 							std::swap(d1, d2);
@@ -911,7 +964,8 @@ namespace spades {
 						int minX = std::max(x1, 0);
 						int maxX = std::min(x2, fw - 1);
 						float depth = d1, ddepth = (d2 - d1) * fastRcp(x2-x1 + 1);
-						if(x1 < 0){
+                        if(x1 < 0)
+                        {
 							long long v = dy;
 							v *= -x1;
 							cy += sgn * (v / divisor);
@@ -919,23 +973,28 @@ namespace spades {
 							depth -= x1 * ddepth;
 						}
 						fb += minX; db += minX;
-						for(int x = minX; x <= maxX; x++){
-							if(cy >= 0 && cy < fh) {
+                        for(int x = minX; x <= maxX; x++)
+                        {
+                            if(cy >= 0 && cy < fh)
+                            {
 								float d = fastRcp(depth);
-								if(d < db[fw * cy]) {
-									fb[fw * cy] = col;
-								}
+                                if(d < db[fw * cy])
+                                    fb[fw * cy] = col;
 							}
 							fract += dy;
-							if(fract >= divisor) {
+                            if(fract >= divisor)
+                            {
 								cy += sgn;
 								fract -= divisor;
 							}
 							depth += ddepth;
 							fb++; db++;
 						}
-					}else{
-						if(y1 >= y2){
+                    }
+                    else
+                    {
+                        if(y1 >= y2)
+                        {
 							std::swap(x1, x2);
 							std::swap(y1, y2);
 							std::swap(d1, d2);
@@ -948,7 +1007,8 @@ namespace spades {
 						int minY = std::max(y1, 0);
 						int maxY = std::min(y2, fh - 1);
 						float depth = d1, ddepth = (d2 - d1) * fastRcp(y2-y1 + 1);
-						if(y1 < 0){
+                        if(y1 < 0)
+                        {
 							long long v = dx;
 							v *= -y1;
 							cx += sgn * (v / divisor);
@@ -956,15 +1016,17 @@ namespace spades {
 							depth -= x1 * ddepth;
 						}
 						fb += minY * fw; db += minY * fw;
-						for(int y = minY; y <= maxY; y++){
-							if(cx >= 0 && cx < fw) {
+                        for(int y = minY; y <= maxY; y++)
+                        {
+                            if(cx >= 0 && cx < fw)
+                            {
 								float d = fastRcp(depth);
-								if(d < db[cx]) {
+                                if(d < db[cx])
 									fb[cx] = col;
-								}
 							}
 							fract += dx;
-							if(fract >= divisor) {
+                            if(fract >= divisor)
+                            {
 								cx += sgn;
 								fract -= divisor;
 							}
@@ -982,31 +1044,32 @@ namespace spades {
 			duringSceneRendering = false;
 		}
 		
-		void SWRenderer::MultiplyScreenColor(spades::Vector3 v) {
-			EnsureSceneNotStarted();
-			
+        void SWRenderer::MultiplyScreenColor(spades::Vector3 v)
+        {
+            EnsureSceneNotStarted();
 		}
 		
-		void SWRenderer::SetColor(spades::Vector4 col) {
+        void SWRenderer::SetColor(spades::Vector4 col)
+        {
 			EnsureValid();
 			drawColorAlphaPremultiplied = col;
 			legacyColorPremultiply = true;
 		}
 		
-		void SWRenderer::SetColorAlphaPremultiplied(spades::Vector4 col) {
+        void SWRenderer::SetColorAlphaPremultiplied(spades::Vector4 col)
+        {
 			EnsureValid();
 			legacyColorPremultiply = false;
 			drawColorAlphaPremultiplied = col;
 		}
 		
 		
-		void SWRenderer::DrawImage(client::IImage *image,
-								   const spades::Vector2 &outTopLeft) {
+        void SWRenderer::DrawImage(client::IImage *image, const spades::Vector2 &outTopLeft)
+        {
 			SPADES_MARK_FUNCTION();
 			
-			if(image == nullptr) {
+            if(image == nullptr)
 				SPRaise("Size must be specified when null image is provided");
-			}
 			
 			DrawImage(image,
 					  AABB2(outTopLeft.x, outTopLeft.y,
@@ -1017,11 +1080,11 @@ namespace spades {
 							image->GetHeight()));
 		}
 		
-		void SWRenderer::DrawImage(client::IImage *image, const spades::AABB2 &outRect) {
+        void SWRenderer::DrawImage(client::IImage *image, const spades::AABB2 &outRect)
+        {
 			SPADES_MARK_FUNCTION();
 			
-			DrawImage(image,
-					  outRect,
+			DrawImage(image, outRect,
 					  AABB2(0, 0,
 							image ? image->GetWidth() : 0,
 							image ? image->GetHeight() : 0));
@@ -1029,7 +1092,8 @@ namespace spades {
 		
 		void SWRenderer::DrawImage(client::IImage *image,
 								   const spades::Vector2 &outTopLeft,
-								   const spades::AABB2 &inRect) {
+                                   const spades::AABB2 &inRect)
+        {
 			SPADES_MARK_FUNCTION();
 			
 			DrawImage(image,
@@ -1041,7 +1105,8 @@ namespace spades {
 		
 		void SWRenderer::DrawImage(client::IImage *image,
 								   const spades::AABB2 &outRect,
-								   const spades::AABB2 &inRect) {
+                                   const spades::AABB2 &inRect)
+        {
 			SPADES_MARK_FUNCTION();
 			
 			DrawImage(image,
@@ -1055,7 +1120,8 @@ namespace spades {
 								   const spades::Vector2 &outTopLeft,
 								   const spades::Vector2 &outTopRight,
 								   const spades::Vector2 &outBottomLeft,
-								   const spades::AABB2 &inRect) {
+                                   const spades::AABB2 &inRect)
+        {
 			SPADES_MARK_FUNCTION();
 			
 			EnsureValid();
@@ -1066,15 +1132,15 @@ namespace spades {
 			Vector2 outBottomRight = outTopRight + outBottomLeft - outTopLeft;
 			
 			SWImage *img = dynamic_cast<SWImage *>(image);
-			if(img == nullptr && image != nullptr){
+            if(img == nullptr && image != nullptr)
 				// not SWImage
 				SPInvalidArgument("image");
-			}
 			
 			imageRenderer->SetShaderType(SWImageRenderer::ShaderType::Image);
 			
 			Vector4 col = drawColorAlphaPremultiplied;
-			if(legacyColorPremultiply) {
+            if(legacyColorPremultiply)
+            {
 				// in legacy mode, image color is
 				// non alpha-premultiplied.
 				col.x *= col.w;
@@ -1096,7 +1162,8 @@ namespace spades {
 										  1.f, 1.f);
 			vtx[3].position = MakeVector4(outBottomRight.x, outBottomRight.y,
 										  1.f, 1.f);
-			if(img) {
+            if(img)
+            {
 				Vector2 scl = {img->GetInvWidth(), img->GetInvHeight()};
 				vtx[0].uv = MakeVector2(inRect.min.x, inRect.min.y) * scl;
 				vtx[1].uv = MakeVector2(inRect.max.x, inRect.min.y) * scl;
@@ -1109,31 +1176,33 @@ namespace spades {
 			
 		}
 
-		void SWRenderer::DrawFlatGameMap(const spades::AABB2 &outRect, const spades::AABB2 &inRect) {
+        void SWRenderer::DrawFlatGameMap(const spades::AABB2 &outRect, const spades::AABB2 &inRect)
+        {
 			SPADES_MARK_FUNCTION();
 			EnsureValid();
 			EnsureSceneNotStarted();
 			
-			if(!flatMapRenderer) {
+            if(!flatMapRenderer)
 				SPRaise("DrawFlatGameMap was called without an active map.");
-			}
 			
 			DrawImage(flatMapRenderer->GetImage(), outRect, inRect);
 		}
 		
-		void SWRenderer::FrameDone() {
+        void SWRenderer::FrameDone()
+        {
 			SPADES_MARK_FUNCTION();
 			EnsureValid();
-			EnsureSceneNotStarted();
-			
+            EnsureSceneNotStarted();
 		}
 		
-		void SWRenderer::Flip() {
+        void SWRenderer::Flip()
+        {
 			SPADES_MARK_FUNCTION();
 			EnsureValid();
 			EnsureSceneNotStarted();
 			
-			if(r_swStatistics) {
+            if(r_swStatistics)
+            {
 				double dur = renderStopwatch.GetTime();
 				SPLog("==== SWRenderer Statistics ====");
 				SPLog("Elapsed Time: %.3fus", dur * 1000000.0);
@@ -1161,7 +1230,8 @@ namespace spades {
 			SetFramebuffer(port->GetFramebuffer());
 		}
 		
-		Bitmap *SWRenderer::ReadBitmap() {
+        Bitmap *SWRenderer::ReadBitmap()
+        {
 			SPADES_MARK_FUNCTION();
 			EnsureValid();
 			EnsureSceneNotStarted();
@@ -1171,10 +1241,12 @@ namespace spades {
 			uint32_t *inPix = fb->GetPixels();
 			Bitmap *bm = new Bitmap(w, h);
 			uint32_t *outPix = bm->GetPixels();
-			for(int y = 0; y < h; y++) {
+            for(int y = 0; y < h; y++)
+            {
 				uint32_t *src = inPix + y*w;
 				uint32_t *dest = outPix + (h-1-y) * w;
-				for(int x = w; x != 0; x--) {
+                for(int x = w; x != 0; x--)
+                {
 					auto c = *(src++);
 					c = 0xff000000 | (c&0xff00) | ((c&0xff)<<16) | ((c&0xff0000)>>16);
 					*(dest++)=c;
@@ -1183,20 +1255,23 @@ namespace spades {
 			return bm;
 		}
 		
-		float SWRenderer::ScreenWidth() {
+        float SWRenderer::ScreenWidth()
+        {
 			SPADES_MARK_FUNCTION();
 			EnsureValid();
 			return static_cast<float>(fb->GetWidth());
 		}
 		
-		float SWRenderer::ScreenHeight() {
+        float SWRenderer::ScreenHeight()
+        {
 			SPADES_MARK_FUNCTION();
 			EnsureValid();
 			return static_cast<float>(fb->GetHeight());
 		}
 		
 		
-		bool SWRenderer::BoxFrustrumCull(const AABB3& box) {
+        bool SWRenderer::BoxFrustrumCull(const AABB3& box)
+        {
 			/*if(IsRenderingMirror()) {
 				// reflect
 				AABB3 bx = box;
@@ -1217,8 +1292,8 @@ namespace spades {
 			PlaneCullTest(frustrum[4], box) &&
 			PlaneCullTest(frustrum[5], box);
 		}
-		bool SWRenderer::SphereFrustrumCull(const Vector3& center,
-											float radius) {
+        bool SWRenderer::SphereFrustrumCull(const Vector3& center, float radius)
+        {
 			/*if(IsRenderingMirror()) {
 				// reflect
 				Vector3 vx = center;
@@ -1229,17 +1304,18 @@ namespace spades {
 				}
 				return true;
 			}*/
-			for(int i = 0; i < 6; i++){
+            for(int i = 0; i < 6; i++)
+            {
 				if(frustrum[i].GetDistanceTo(center) < -radius)
 					return false;
 			}
 			return true;
 		}
 		
-		void SWRenderer::GameMapChanged(int x, int y, int z, client::GameMap *map) {
-			if(map != this->map) {
+        void SWRenderer::GameMapChanged(int x, int y, int z, client::GameMap *map)
+        {
+            if(map != this->map)
 				return;
-			}
 			
 			flatMapRenderer->SetNeedsUpdate(x, y);
 		}

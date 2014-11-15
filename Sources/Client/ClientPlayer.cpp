@@ -48,9 +48,10 @@ SPADES_SETTING(cg_ejectBrass, "");
 
 namespace spades {
 	namespace client {
-		ClientPlayer::ClientPlayer(Player *p,
-								   Client *c):
-		player(p), client(c){
+        ClientPlayer::ClientPlayer(Player *p, Client *c)
+            : client(c)
+            , player(p)
+        {
 			SPADES_MARK_FUNCTION();
 			
 			sprintState = 0.f;
