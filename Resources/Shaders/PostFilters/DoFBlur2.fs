@@ -20,12 +20,10 @@
 
 
 uniform sampler2D texture;
-uniform sampler2D blurTexture1;
-uniform sampler2D blurTexture2;
 uniform sampler2D cocTexture;
-uniform bool blurredOnly;
 
 varying vec2 texCoord;
+uniform vec2 offset;
 
 vec4 doGamma(vec4 col) {
 #if !LINEAR_FRAMEBUFFER
@@ -34,22 +32,39 @@ vec4 doGamma(vec4 col) {
 	return col;
 }
 
+vec4 sampleDoF(vec2 at) {
+	vec4 color = doGamma(texture2D(texture, at));
+	color.w = texture2D(cocTexture, at).x + 0.001;
+	color.xyz *= color.w;
+	return color;
+}
+
 void main() {
 	
 	float coc = texture2D(cocTexture, texCoord).x;
+	vec4 v = vec4(0.);
 	
-	vec4 a = doGamma(texture2D(texture, texCoord));
-	vec4 b = doGamma(texture2D(blurTexture1, texCoord));
-	b += doGamma(texture2D(blurTexture2, texCoord)) * 2.;
-	b *= (1. / 3.);
-
-	float per = min(1., coc * 5.);
-	vec4 v = blurredOnly ? b : mix(a, b, per);
+	vec4 offsets = vec4(0., 0.25, 0.5, 0.75) * coc;
+	vec4 offsets2 = offsets + coc * 0.125;
 	
+	v += sampleDoF(texCoord);
+	v += sampleDoF(texCoord + offset * offsets.y);
+	v += sampleDoF(texCoord + offset * offsets.z);
+	v += sampleDoF(texCoord + offset * offsets.w);
+#if 1
+	v += sampleDoF(texCoord + offset * offsets2.x);
+	v += sampleDoF(texCoord + offset * offsets2.y);
+	v += sampleDoF(texCoord + offset * offsets2.z);
+	v += sampleDoF(texCoord + offset * offsets2.w);
+	v.xyz *= 1. / v.w;
+#else
+    v *= 0.25;
+#endif
 #if !LINEAR_FRAMEBUFFER
 	v.xyz = sqrt(v.xyz);
 #endif
 	
 	gl_FragColor = v;
+	gl_FragColor.w = 1.;
 }
 

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2013 yvt
+ Copyright (c) 2015 yvt
  
  This file is part of OpenSpades.
  
@@ -20,18 +20,25 @@
 
 #pragma once
 
-#include <Core/RefCountedObject.h>
-#include <Core/Math.h>
+#include "GLFramebufferManager.h"
 
 namespace spades {
-	namespace client {
-		class IModel: public RefCountedObject {
-		protected:
-			virtual ~IModel(){}
-		public:
-			IModel(){}
+	namespace draw {
+		class GLRenderer;
+		class GLProgram;
+		class GLAutoExposureFilter {
+			GLProgram *thru;
+			GLProgram *computeGain;
+			GLProgram *preprocess;
+			GLRenderer *renderer;
 			
-			virtual AABB3 GetBoundingBox() = 0;
+			// 1x1 of framebuffer that holds the scene brightness
+			IGLDevice::UInteger exposureFramebuffer;
+			IGLDevice::UInteger exposureTexture;
+		public:
+			GLAutoExposureFilter(GLRenderer *);
+			~GLAutoExposureFilter();
+			GLColorBuffer Filter(GLColorBuffer);
 		};
 	}
 }

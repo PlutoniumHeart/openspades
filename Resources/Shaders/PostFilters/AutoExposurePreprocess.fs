@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2013 yvt
+ Copyright (c) 2015 yvt
  
  This file is part of OpenSpades.
  
@@ -20,36 +20,31 @@
 
 
 uniform sampler2D texture;
-uniform sampler2D blurTexture1;
-uniform sampler2D blurTexture2;
-uniform sampler2D cocTexture;
-uniform bool blurredOnly;
 
 varying vec2 texCoord;
 
-vec4 doGamma(vec4 col) {
-#if !LINEAR_FRAMEBUFFER
-	col.xyz *= col.xyz;
-#endif
-	return col;
-}
-
 void main() {
-	
-	float coc = texture2D(cocTexture, texCoord).x;
-	
-	vec4 a = doGamma(texture2D(texture, texCoord));
-	vec4 b = doGamma(texture2D(blurTexture1, texCoord));
-	b += doGamma(texture2D(blurTexture2, texCoord)) * 2.;
-	b *= (1. / 3.);
+	// linear RGB
+	vec3 color = texture2D(texture, texCoord).xyz;
 
-	float per = min(1., coc * 5.);
-	vec4 v = blurredOnly ? b : mix(a, b, per);
-	
-#if !LINEAR_FRAMEBUFFER
-	v.xyz = sqrt(v.xyz);
-#endif
-	
-	gl_FragColor = v;
+	// desaturate
+	float brightness = max(max(color.x, color.y), color.z);
+
+	// remove NaN and Infinity
+	if (!(brightness >= 0. && brightness <= 16.)) {
+		brightness = 0.05;
+	}
+
+	// lower bound
+	brightness = max(0.05, brightness);
+
+	// uppr bound
+	brightness = min(1.3, brightness);
+
+	// raise to the n-th power to reduce overbright
+	brightness *= brightness;
+	brightness *= brightness;
+
+	gl_FragColor = vec4(brightness, brightness, brightness, 1.);
 }
 

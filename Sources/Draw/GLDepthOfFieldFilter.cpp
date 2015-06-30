@@ -33,13 +33,22 @@
 #include "../Core/Settings.h"
 
 SPADES_SETTING(r_depthOfField, "");
+SPADES_SETTING(r_depthOfFieldMaxCoc, "0.01");
 
 namespace spades {
 	namespace draw {
+		static bool HighQualityDoFEnabled()
+		{
+			return (int)r_depthOfField >= 2;
+		}
+		
 		GLDepthOfFieldFilter::GLDepthOfFieldFilter(GLRenderer *renderer):
 		renderer(renderer){
 			gaussProgram = renderer->RegisterProgram("Shaders/PostFilters/Gauss1D.program");
-			blurProgram = renderer->RegisterProgram("Shaders/PostFilters/DoFBlur.program");
+			if (HighQualityDoFEnabled())
+				blurProgram = renderer->RegisterProgram("Shaders/PostFilters/DoFBlur2.program");
+			else
+				blurProgram = renderer->RegisterProgram("Shaders/PostFilters/DoFBlur.program");
 			cocGen = renderer->RegisterProgram("Shaders/PostFilters/DoFCoCGen.program");
 			cocMix = renderer->RegisterProgram("Shaders/PostFilters/DoFCoCMix.program");
 			gammaMix = renderer->RegisterProgram("Shaders/PostFilters/GammaMix.program");
@@ -89,15 +98,15 @@ namespace spades {
 			return buf3;
 		}
 		
-		GLColorBuffer GLDepthOfFieldFilter::GenerateCoC(float blurDepthRange, float vignetteBlur, float globalBlur) {
+		GLColorBuffer GLDepthOfFieldFilter::GenerateCoC(float blurDepthRange, float vignetteBlur, float globalBlur, float nearBlur, float farBlur) {
 			SPADES_MARK_FUNCTION();
 			IGLDevice *dev = renderer->GetGLDevice();
 			GLQuadRenderer qr(dev);
 			
 			int w = dev->ScreenWidth();
 			int h = dev->ScreenHeight();
-			int w2 = (w + 3) / 4;
-			int h2 = (h + 3) / 4;
+			int w2 = HighQualityDoFEnabled() ? w : (w + 3) / 4;
+			int h2 = HighQualityDoFEnabled() ? h : (h + 3) / 4;
 			
 			
 			GLColorBuffer coc = renderer->GetFramebufferManager()->CreateBufferHandle(w2, h2, 1);
@@ -111,6 +120,8 @@ namespace spades {
 				static GLProgramUniform maxVignetteBlur("maxVignetteBlur");
 				static GLProgramUniform vignetteScale("vignetteScale");
 				static GLProgramUniform globalBlurUniform("globalBlur");
+				static GLProgramUniform nearBlurUniform("nearBlur");
+				static GLProgramUniform farBlurUniform("farBlur");
 				
 				positionAttribute(cocGen);
 				depthTexture(cocGen);
@@ -120,6 +131,8 @@ namespace spades {
 				maxVignetteBlur(cocGen);
 				vignetteScale(cocGen);
 				globalBlurUniform(cocGen);
+				nearBlurUniform(cocGen);
+				farBlurUniform(cocGen);
 				
 				cocGen->Use();
 				
@@ -142,6 +155,8 @@ namespace spades {
 				}
 				maxVignetteBlur.SetValue(sinf(std::max(def.fovX, def.fovY) * .5f) * vignetteBlur);
 				globalBlurUniform.SetValue(globalBlur);
+				nearBlurUniform.SetValue(nearBlur);
+				farBlurUniform.SetValue(-farBlur);
 				
 				qr.SetCoordAttributeIndex(positionAttribute());
 				dev->BindTexture(IGLDevice::Texture2D, renderer->GetFramebufferManager()->GetDepthTexture());
@@ -150,6 +165,12 @@ namespace spades {
 				qr.Draw();
 				dev->BindTexture(IGLDevice::Texture2D, 0);
 			}
+			
+			if (HighQualityDoFEnabled()) {
+				// no blur done
+				return coc;
+			}
+			
 			// make blurred CoC radius bitmap
 			GLColorBuffer cocBlur = BlurCoC(coc, 1.f);
 			
@@ -302,6 +323,7 @@ namespace spades {
 			static GLProgramUniform blur_textureUniform2("blurTexture1");
 			static GLProgramUniform blur_textureUniform3("blurTexture2");
 			static GLProgramUniform blur_textureUniform4("cocTexture");
+			static GLProgramUniform blur_blurredOnlyUniform("blurredOnly");
 			program->Use();
 			blur_positionAttribute(program);
 			
@@ -325,6 +347,8 @@ namespace spades {
 			dev->ActiveTexture(0);
 			dev->BindTexture(IGLDevice::Texture2D, coc.GetTexture());
 			
+			blur_blurredOnlyUniform(program);
+			blur_blurredOnlyUniform.SetValue(HighQualityDoFEnabled() ? 1 : 0);
 			
 			qr.SetCoordAttributeIndex(blur_positionAttribute());
 			dev->Enable(IGLDevice::Blend, false);
@@ -374,7 +398,7 @@ namespace spades {
 		}
 		
 		
-		GLColorBuffer GLDepthOfFieldFilter::Filter(GLColorBuffer input, float blurDepthRange, float vignetteBlur, float globalBlur) {
+		GLColorBuffer GLDepthOfFieldFilter::Filter(GLColorBuffer input, float blurDepthRange, float vignetteBlur, float globalBlur, float nearBlur, float farBlur) {
 			SPADES_MARK_FUNCTION();
 			
 			IGLDevice *dev = renderer->GetGLDevice();
@@ -390,10 +414,10 @@ namespace spades {
 			globalBlur = std::min(globalBlur * 3.f, 1.f);
             {
                 GLProfiler p(dev, "CoC Computation");
-                coc = GenerateCoC(blurDepthRange, vignetteBlur, globalBlur);
+                coc = GenerateCoC(blurDepthRange, vignetteBlur, globalBlur, nearBlur, farBlur);
             }
 			
-			float maxCoc = (float)std::max(w, h) / 100.f;
+			float maxCoc = (float)std::max(w, h) * std::max(std::min((float)r_depthOfFieldMaxCoc, 0.2f), 0.001f);
 			float cos60 = cosf(static_cast<float>(M_PI) / 3.f);
 			float sin60 = sinf(static_cast<float>(M_PI) / 3.f);
 			
@@ -404,12 +428,14 @@ namespace spades {
 			int divide = 1;
 			int siz = std::max(w, h);
 			GLColorBuffer lowbuf = input;
-			while(siz >= 768) {
-				divide <<= 1;
-				siz >>= 1;
-				lowbuf = UnderSample(lowbuf);
+			if (!HighQualityDoFEnabled()) {
+				while(siz >= 768) {
+					divide <<= 1;
+					siz >>= 1;
+					lowbuf = UnderSample(lowbuf);
+				}
+				maxCoc /= (float)divide;
 			}
-			maxCoc /= (float)divide;
 			
 			dev->Viewport(0, 0, w / divide, h / divide);
 			

@@ -42,6 +42,9 @@
 #include "NetClient.h"
 
 SPADES_SETTING(cg_fov, "68");
+SPADES_SETTING(cg_thirdperson, "0");
+SPADES_SETTING(cg_manualFocus, "0");
+SPADES_SETTING(cg_depthOfFieldAmount, "1");
 
 static float nextRandom() {
 	return (float)rand() / (float)RAND_MAX;
@@ -50,13 +53,15 @@ static float nextRandom() {
 namespace spades {
 	namespace client {
 		
-		
 #pragma mark - Drawing
 		
 		bool Client::ShouldRenderInThirdPersonView() {
 			if(world && world->GetLocalPlayer()){
 				if(!world->GetLocalPlayer()->IsAlive())
 					return true;
+			}
+			if ((int)cg_thirdperson != 0 && world->GetNumPlayers() <= 1) {
+				return true;
 			}
 			return false;
 		}
@@ -196,11 +201,17 @@ namespace spades {
 						Vector3 front = center - eye;
 						front = front.Normalize();
 						
-						def.viewOrigin = eye;
-						def.viewAxis[0] = -Vector3::Cross(up, front).Normalize();
-						def.viewAxis[1] = -Vector3::Cross(front, def.viewAxis[0]).Normalize();
-						def.viewAxis[2] = front;
-						
+						if(FirstPersonSpectate == false){
+							def.viewOrigin = eye;
+							def.viewAxis[0] = -Vector3::Cross(up, front).Normalize();
+							def.viewAxis[1] = -Vector3::Cross(front, def.viewAxis[0]).Normalize();
+							def.viewAxis[2] = front;
+						}else{
+							def.viewOrigin = player->GetEye();
+							def.viewAxis[0] = player->GetRight();
+							def.viewAxis[1] = player->GetUp();
+							def.viewAxis[2] = player->GetFront();
+						}
 						
 						def.fovY = (float)cg_fov * static_cast<float>(M_PI) /180.f;
 						def.fovX = atanf(tanf(def.fovY * .5f) *
@@ -287,7 +298,7 @@ namespace spades {
 						float aimDownState = GetAimDownState();
 						float per = aimDownState;
 						per *= per * per;
-						def.depthOfFieldNearRange = per * 13.f + .054f;
+						def.depthOfFieldFocalLength = per * 13.f + .054f;
 						
 						def.blurVignette = .0f;
 						
@@ -398,6 +409,16 @@ namespace spades {
 			SPAssert(!isnan(def.viewOrigin.z));
 			
 			def.radialBlur = std::min(def.radialBlur, 1.f);
+			
+			if ((int)cg_manualFocus) {
+				// Depth of field is manually controlled
+				def.depthOfFieldNearBlurStrength = def.depthOfFieldFarBlurStrength =
+					0.5f * (float)cg_depthOfFieldAmount;
+				def.depthOfFieldFocalLength = focalLength;
+			} else {
+				def.depthOfFieldNearBlurStrength = cg_depthOfFieldAmount;
+				def.depthOfFieldFarBlurStrength = 0.f;
+			}
 			
 			return def;
 		}

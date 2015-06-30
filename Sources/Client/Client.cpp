@@ -87,17 +87,29 @@ namespace spades {
             , grenadeVibration(0.f)
             , scoreboardVisible(false)
             , flashlightOn(false)
-            , hitFeedbackIconState(0.f)
-            , hitFeedbackFriendly(false)
-            , inGameLimbo(false)
-            , alertDisappearTime(-10000.f)
-            , lastMyCorpse(nullptr)
-            // FIXME: preferences?
-            , corpseSoftTimeLimit(30.f) // FIXME: this is not used
-            , corpseSoftLimit(6)
-            , corpseHardLimit(16)
-            , nextScreenShotIndex(0)
-            , nextMapShotIndex(0)
+            , focalLength(20.f)
+            , targetFocalLength(20.f)
+            , autoFocusEnabled(true)
+		hitFeedbackFriendly(false),
+		localFireVibrationTime(-1.f),
+		lastPosSentTime(0.f),
+		worldSubFrame(0.f),
+		grenadeVibration(0.f),
+		lastMyCorpse(nullptr),
+		hasLastTool(false),
+		
+		nextScreenShotIndex(0),
+		nextMapShotIndex(0),
+		
+		alertDisappearTime(-10000.f),
+		
+		// FIXME: preferences?
+		corpseSoftTimeLimit(30.f), // FIXME: this is not used
+		corpseSoftLimit(6),
+		corpseHardLimit(16),
+		
+		followYaw(0.f),
+		followPitch(0.f)
 		{
 			SPADES_MARK_FUNCTION();
 			SPLog("Initializing...");
@@ -412,6 +424,8 @@ namespace spades {
 			centerMessageView->Update(dt);
 			mapView->Update(dt);
 			largeMapView->Update(dt);
+			
+			UpdateAutoFocus(dt);
 			
 			if(world){
 				UpdateWorld(dt);
