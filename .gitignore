@@ -67,3 +67,6 @@ Sources/Gui/DetailConfigWindow.txt
 Sources/Gui/MainWindow.txt
 
 *.user
+
+# KDE Dolphin created files
+.directory

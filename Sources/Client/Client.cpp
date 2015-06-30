@@ -90,26 +90,21 @@ namespace spades {
             , focalLength(20.f)
             , targetFocalLength(20.f)
             , autoFocusEnabled(true)
-		hitFeedbackFriendly(false),
-		localFireVibrationTime(-1.f),
-		lastPosSentTime(0.f),
-		worldSubFrame(0.f),
-		grenadeVibration(0.f),
-		lastMyCorpse(nullptr),
-		hasLastTool(false),
+            , hitFeedbackFriendly(false)
+            , lastMyCorpse(nullptr)
+
+            , nextScreenShotIndex(0)
+            , nextMapShotIndex(0)
+
+            , alertDisappearTime(-10000.f)
 		
-		nextScreenShotIndex(0),
-		nextMapShotIndex(0),
-		
-		alertDisappearTime(-10000.f),
-		
-		// FIXME: preferences?
-		corpseSoftTimeLimit(30.f), // FIXME: this is not used
-		corpseSoftLimit(6),
-		corpseHardLimit(16),
-		
-		followYaw(0.f),
-		followPitch(0.f)
+        // FIXME: preferences?
+            , corpseSoftTimeLimit(30.f) // FIXME: this is not used
+            , corpseSoftLimit(6)
+            , corpseHardLimit(16)
+
+            , followYaw(0.f)
+            , followPitch(0.f)
 		{
 			SPADES_MARK_FUNCTION();
 			SPLog("Initializing...");

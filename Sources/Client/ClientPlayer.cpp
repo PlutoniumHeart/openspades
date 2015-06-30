@@ -213,6 +213,10 @@ namespace spades {
 			float ScreenHeight() { return base->ScreenHeight(); }
 		};
 		
+        ClientPlayer::ClientPlayer(Player *p, Client *c)
+            :player(p)
+            , client(c)
+        {
 			SPADES_MARK_FUNCTION();
 			
 			sprintState = 0.f;

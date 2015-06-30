@@ -81,7 +81,7 @@ namespace spades
 		protected:
 			virtual ~ClientPlayer();
 		public:
-			ClientPlayer(Player *p, Client *);
+            ClientPlayer(Player *p, Client *c);
 			Player *GetPlayer() const { return player; }
 			
 			void Invalidate();
