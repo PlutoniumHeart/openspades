@@ -1423,7 +1423,7 @@ void CScriptArray::EnumReferences(asIScriptEngine *engine)
 }
 
 // GC behaviour
-void CScriptArray::ReleaseAllHandles(asIScriptEngine *engine)
+void CScriptArray::ReleaseAllHandles()
 {
 	// Resizing to zero will release everything
 	Resize(0);
@@ -1667,9 +1667,8 @@ static void ScriptArrayEnumReferences_Generic(asIScriptGeneric *gen)
 
 static void ScriptArrayReleaseAllHandles_Generic(asIScriptGeneric *gen)
 {
-	CScriptArray *self = (CScriptArray*)gen->GetObject();
-	asIScriptEngine *engine = *(asIScriptEngine**)gen->GetAddressOfArg(0);
-	self->ReleaseAllHandles(engine);
+    CScriptArray *self = (CScriptArray*)gen->GetObject();
+    self->ReleaseAllHandles();
 }
 
 static void RegisterScriptArray_Generic(asIScriptEngine *engine)

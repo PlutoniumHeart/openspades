@@ -71,7 +71,7 @@ public:
 	void SetFlag();
 	bool GetFlag();
 	void EnumReferences(asIScriptEngine *engine);
-	void ReleaseAllHandles(asIScriptEngine *engine);
+    void ReleaseAllHandles();
 
 protected:
 	mutable int       refCount;
