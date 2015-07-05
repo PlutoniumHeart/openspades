@@ -22,21 +22,21 @@
 #include "../Core/Debug.h"
 
 namespace spades {
-	namespace client {
-		CTFGameMode::CTFGameMode() : IGameMode( m_CTF ) {
-			SPADES_MARK_FUNCTION();
-			
-		}
-		CTFGameMode::~CTFGameMode(){
-			SPADES_MARK_FUNCTION();
-			
-		}
-		
-		CTFGameMode::Team& CTFGameMode::GetTeam(int t){
-			SPADES_MARK_FUNCTION();
-			SPAssert(t >= 0);
-			SPAssert(t < 2);
-			return teams[t];
-		}
-	}
+    namespace client {
+        CTFGameMode::CTFGameMode() : IGameMode( m_CTF ) {
+            SPADES_MARK_FUNCTION();
+            
+        }
+        CTFGameMode::~CTFGameMode(){
+            SPADES_MARK_FUNCTION();
+            
+        }
+        
+        CTFGameMode::Team& CTFGameMode::GetTeam(int t){
+            SPADES_MARK_FUNCTION();
+            SPAssert(t >= 0);
+            SPAssert(t < 2);
+            return teams[t];
+        }
+    }
 }

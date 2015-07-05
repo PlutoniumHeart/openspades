@@ -21,7 +21,7 @@
 #include "View.h"
 
 namespace spades {
-	namespace gui {
-		
-	}
+    namespace gui {
+        
+    }
 }

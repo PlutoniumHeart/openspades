@@ -26,28 +26,28 @@
 #include <Core/RefCountedObject.h>
 
 namespace spades {
-	class IStream;
-	class Bitmap: public RefCountedObject {
-		int w, h;
-		uint32_t *pixels;
-		bool autoDelete;
-	protected:
-		~Bitmap();
-	public:
-		Bitmap(int w, int h);
-		Bitmap(uint32_t *pixels, int w, int h);
-		
-		static Bitmap *Load(const std::string&);
-		static Bitmap *Load(IStream *); // must be seekable
-		void Save(const std::string&);
-		
-		uint32_t *GetPixels() { return pixels; }
-		int GetWidth() { return w; }
-		int GetHeight() { return h; }
-		
-		uint32_t GetPixel(int x, int y);
-		void SetPixel(int x, int y, uint32_t);
-		
-		Handle<Bitmap> Clone();
-	};
+    class IStream;
+    class Bitmap: public RefCountedObject {
+        int w, h;
+        uint32_t *pixels;
+        bool autoDelete;
+    protected:
+        ~Bitmap();
+    public:
+        Bitmap(int w, int h);
+        Bitmap(uint32_t *pixels, int w, int h);
+        
+        static Bitmap *Load(const std::string&);
+        static Bitmap *Load(IStream *); // must be seekable
+        void Save(const std::string&);
+        
+        uint32_t *GetPixels() { return pixels; }
+        int GetWidth() { return w; }
+        int GetHeight() { return h; }
+        
+        uint32_t GetPixel(int x, int y);
+        void SetPixel(int x, int y, uint32_t);
+        
+        Handle<Bitmap> Clone();
+    };
 }

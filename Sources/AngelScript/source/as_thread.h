@@ -52,28 +52,28 @@ class asCThreadLocalData;
 class asCThreadManager : public asIThreadManager
 {
 public:
-	static asCThreadLocalData *GetLocalData();
-	static int CleanupLocalData();
+    static asCThreadLocalData *GetLocalData();
+    static int CleanupLocalData();
 
-	static int  Prepare(asIThreadManager *externalThreadMgr);
-	static void Unprepare();
+    static int  Prepare(asIThreadManager *externalThreadMgr);
+    static void Unprepare();
 
-	// This read/write lock can be used by the application to provide simple synchronization
-	DECLAREREADWRITELOCK(appRWLock)
+    // This read/write lock can be used by the application to provide simple synchronization
+    DECLAREREADWRITELOCK(appRWLock)
 
 protected:
-	asCThreadManager();
-	~asCThreadManager();
+    asCThreadManager();
+    ~asCThreadManager();
 
-	// No need to use the atomic int here, as it will only be
-	// updated within the thread manager's critical section
-	int refCount;
+    // No need to use the atomic int here, as it will only be
+    // updated within the thread manager's critical section
+    int refCount;
 
 #ifndef AS_NO_THREADS
-	asDWORD tlsKey;
-	DECLARECRITICALSECTION(criticalSection);
+    asDWORD tlsKey;
+    DECLARECRITICALSECTION(criticalSection);
 #else
-	asCThreadLocalData *tld;
+    asCThreadLocalData *tld;
 #endif
 };
 
@@ -84,14 +84,14 @@ class asIScriptContext;
 class asCThreadLocalData
 {
 public:
-	asCArray<asIScriptContext *> activeContexts;
-	asCString string;
+    asCArray<asIScriptContext *> activeContexts;
+    asCString string;
 
 protected:
-	friend class asCThreadManager;
+    friend class asCThreadManager;
 
-	asCThreadLocalData();
-	~asCThreadLocalData();
+    asCThreadLocalData();
+    ~asCThreadLocalData();
 };
 
 END_AS_NAMESPACE

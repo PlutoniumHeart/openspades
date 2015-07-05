@@ -30,50 +30,50 @@
 #include <map>
 
 namespace spades {
-	class Serveritem;
-	namespace gui {
-		class StartupScreen;
-		class StartupScreenHelper: public RefCountedObject {
-			friend class StartupScreen;
-			StartupScreen *scr;
-			std::vector<IntVector3> modes;
-			struct ReportLine {
-				std::string text;
-				Vector4 color;
-			};
-			std::vector<ReportLine> reportLines;
-			std::string report;
-			void AddReport(const std::string& text = std::string(), Vector4 color = Vector4::Make(1.f, 1.f, 1.f, 1.f));
-			
-			std::multimap<std::string, std::function<std::string(std::string)> > incapableConfigs;
-			
-			bool shaderHighCapable;
-			bool postFilterHighCapable;
-			bool particleHighCapable;
-			bool openGLCapable;
-		protected:
-			virtual ~StartupScreenHelper();
-		public:
-			StartupScreenHelper();
-			void BindStartupScreen(StartupScreen *scr) {
-				this->scr = scr;
-			}
-			void StartupScreenDestroyed();
-			
-			void ExamineSystem();
-			
-			int GetNumVideoModes();
-			int GetVideoModeWidth(int index);
-			int GetVideoModeHeight(int index);
-			
-			int GetNumReportLines();
-			std::string GetReport() { return report; }
-			std::string GetReportLineText(int line);
-			Vector4 GetReportLineColor(int line);
-			
-			std::string CheckConfigCapability(const std::string& cfg, const std::string& value);
-			
-			void Start();
-		};
-	}
+    class Serveritem;
+    namespace gui {
+        class StartupScreen;
+        class StartupScreenHelper: public RefCountedObject {
+            friend class StartupScreen;
+            StartupScreen *scr;
+            std::vector<IntVector3> modes;
+            struct ReportLine {
+                std::string text;
+                Vector4 color;
+            };
+            std::vector<ReportLine> reportLines;
+            std::string report;
+            void AddReport(const std::string& text = std::string(), Vector4 color = Vector4::Make(1.f, 1.f, 1.f, 1.f));
+            
+            std::multimap<std::string, std::function<std::string(std::string)> > incapableConfigs;
+            
+            bool shaderHighCapable;
+            bool postFilterHighCapable;
+            bool particleHighCapable;
+            bool openGLCapable;
+        protected:
+            virtual ~StartupScreenHelper();
+        public:
+            StartupScreenHelper();
+            void BindStartupScreen(StartupScreen *scr) {
+                this->scr = scr;
+            }
+            void StartupScreenDestroyed();
+            
+            void ExamineSystem();
+            
+            int GetNumVideoModes();
+            int GetVideoModeWidth(int index);
+            int GetVideoModeHeight(int index);
+            
+            int GetNumReportLines();
+            std::string GetReport() { return report; }
+            std::string GetReportLineText(int line);
+            Vector4 GetReportLineColor(int line);
+            
+            std::string CheckConfigCapability(const std::string& cfg, const std::string& value);
+            
+            void Start();
+        };
+    }
 }

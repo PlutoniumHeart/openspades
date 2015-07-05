@@ -22,8 +22,8 @@
 #include <string>
 
 namespace spades {
-	class ServerAddress;
-	
-	void StartClient(const ServerAddress&, const std::string& playerName);
-	void StartMainScreen();
+    class ServerAddress;
+    
+    void StartClient(const ServerAddress&, const std::string& playerName);
+    void StartMainScreen();
 }

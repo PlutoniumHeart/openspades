@@ -30,9 +30,9 @@ varying vec2 modulationTexCoord;
 uniform vec3 color;
 
 void main() {
-	float val = texture2D(visibilityTexture, texCoord).x;
-	gl_FragColor = vec4(color * val, 1.);
-	gl_FragColor.xyz *= texture2D(flareTexture, texCoord).xyz;
+    float val = texture2D(visibilityTexture, texCoord).x;
+    gl_FragColor = vec4(color * val, 1.);
+    gl_FragColor.xyz *= texture2D(flareTexture, texCoord).xyz;
     gl_FragColor.xyz *= texture2D(modulationTexture, modulationTexCoord).xyz;
 }
 

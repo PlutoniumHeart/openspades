@@ -22,40 +22,40 @@
 #include "../Core/Math.h"
 
 namespace spades {
-	namespace client {
-		struct SceneDefinition {
-			int viewportLeft,  viewportTop;
-			int viewportWidth, viewportHeight;
-			float fovX, fovY;
-			Vector3 viewOrigin;
-			Vector3 viewAxis[3];
-			float zNear, zFar;
-			bool skipWorld;
-			
-			float depthOfFieldFocalLength;
-			float depthOfFieldNearBlurStrength;
-			float depthOfFieldFarBlurStrength;
-			
-			unsigned int time;
-			
-			bool denyCameraBlur;
-			
-			float blurVignette;
-			float globalBlur;
-			float saturation;
-			float radialBlur;
-			
-			SceneDefinition() {
-				depthOfFieldFocalLength = 0.f;
-				depthOfFieldNearBlurStrength = 1.f;
-				depthOfFieldFarBlurStrength = 0.f;
-				denyCameraBlur = true;
-				time = 0;
-				blurVignette = 0.f;
-				globalBlur = 0.f;
-				saturation = 1.f;
-				radialBlur = 0.f;
-			}
-		};
-	}
+    namespace client {
+        struct SceneDefinition {
+            int viewportLeft,  viewportTop;
+            int viewportWidth, viewportHeight;
+            float fovX, fovY;
+            Vector3 viewOrigin;
+            Vector3 viewAxis[3];
+            float zNear, zFar;
+            bool skipWorld;
+            
+            float depthOfFieldFocalLength;
+            float depthOfFieldNearBlurStrength;
+            float depthOfFieldFarBlurStrength;
+            
+            unsigned int time;
+            
+            bool denyCameraBlur;
+            
+            float blurVignette;
+            float globalBlur;
+            float saturation;
+            float radialBlur;
+            
+            SceneDefinition() {
+                depthOfFieldFocalLength = 0.f;
+                depthOfFieldNearBlurStrength = 1.f;
+                depthOfFieldFarBlurStrength = 0.f;
+                denyCameraBlur = true;
+                time = 0;
+                blurVignette = 0.f;
+                globalBlur = 0.f;
+                saturation = 1.f;
+                radialBlur = 0.f;
+            }
+        };
+    }
 }

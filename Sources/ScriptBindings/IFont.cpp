@@ -22,59 +22,59 @@
 #include <Client/IFont.h>
 
 namespace spades {
-	class FontRegistrar: public ScriptObjectRegistrar {
-		
-		
-	public:
-		FontRegistrar():
-		ScriptObjectRegistrar("Font") {}
-		
-		virtual void Register(ScriptManager *manager, Phase phase) {
-			asIScriptEngine *eng = manager->GetEngine();
-			int r;
-			eng->SetDefaultNamespace("spades");
-			switch(phase){
-				case PhaseObjectType:
-					r = eng->RegisterObjectType("Font",
-												0, asOBJ_REF);
-					manager->CheckError(r);
-					break;
-				case PhaseObjectMember:
-					r = eng->RegisterObjectBehaviour("Font",
-													 asBEHAVE_ADDREF,
-													 "void f()",
-													 asMETHOD(client::IFont, AddRef),
-													 asCALL_THISCALL);
-					manager->CheckError(r);
-					r = eng->RegisterObjectBehaviour("Font",
-													 asBEHAVE_RELEASE,
-													 "void f()",
-													 asMETHOD(client::IFont, Release),
-													 asCALL_THISCALL);
-					manager->CheckError(r);
-					r = eng->RegisterObjectMethod("Font",
-												  "Vector2 Measure(const string& in)",
-												  asMETHOD(client::IFont, Measure),
-												  asCALL_THISCALL);
-					manager->CheckError(r);
-					r = eng->RegisterObjectMethod("Font",
-												  "void Draw(const string& in, Vector2, float, Vector4)",
-												  asMETHOD(client::IFont, Draw),
-												  asCALL_THISCALL);
-					manager->CheckError(r);
-					r = eng->RegisterObjectMethod("Font",
-												  "void DrawShadow(const string& in, const Vector2& in, float, const Vector4& in, const Vector4& in)",
-												  asMETHOD(client::IFont, DrawShadow),
-												  asCALL_THISCALL);
-					manager->CheckError(r);
-					
-					break;
-				default:
-					break;
-			}
-		}
-	};
-	
-	static FontRegistrar registrar;
+    class FontRegistrar: public ScriptObjectRegistrar {
+        
+        
+    public:
+        FontRegistrar():
+        ScriptObjectRegistrar("Font") {}
+        
+        virtual void Register(ScriptManager *manager, Phase phase) {
+            asIScriptEngine *eng = manager->GetEngine();
+            int r;
+            eng->SetDefaultNamespace("spades");
+            switch(phase){
+                case PhaseObjectType:
+                    r = eng->RegisterObjectType("Font",
+                                                0, asOBJ_REF);
+                    manager->CheckError(r);
+                    break;
+                case PhaseObjectMember:
+                    r = eng->RegisterObjectBehaviour("Font",
+                                                     asBEHAVE_ADDREF,
+                                                     "void f()",
+                                                     asMETHOD(client::IFont, AddRef),
+                                                     asCALL_THISCALL);
+                    manager->CheckError(r);
+                    r = eng->RegisterObjectBehaviour("Font",
+                                                     asBEHAVE_RELEASE,
+                                                     "void f()",
+                                                     asMETHOD(client::IFont, Release),
+                                                     asCALL_THISCALL);
+                    manager->CheckError(r);
+                    r = eng->RegisterObjectMethod("Font",
+                                                  "Vector2 Measure(const string& in)",
+                                                  asMETHOD(client::IFont, Measure),
+                                                  asCALL_THISCALL);
+                    manager->CheckError(r);
+                    r = eng->RegisterObjectMethod("Font",
+                                                  "void Draw(const string& in, Vector2, float, Vector4)",
+                                                  asMETHOD(client::IFont, Draw),
+                                                  asCALL_THISCALL);
+                    manager->CheckError(r);
+                    r = eng->RegisterObjectMethod("Font",
+                                                  "void DrawShadow(const string& in, const Vector2& in, float, const Vector4& in, const Vector4& in)",
+                                                  asMETHOD(client::IFont, DrawShadow),
+                                                  asCALL_THISCALL);
+                    manager->CheckError(r);
+                    
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+    
+    static FontRegistrar registrar;
 }
 

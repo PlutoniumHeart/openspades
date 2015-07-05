@@ -56,86 +56,86 @@ class asCScriptFunction;
 class asCDataType
 {
 public:
-	asCDataType();
-	asCDataType(const asCDataType &);
-	~asCDataType();
+    asCDataType();
+    asCDataType(const asCDataType &);
+    ~asCDataType();
 
-	bool IsValid() const;
+    bool IsValid() const;
 
-	asCString Format(bool includeNamespace = false) const;
+    asCString Format(bool includeNamespace = false) const;
 
-	static asCDataType CreatePrimitive(eTokenType tt, bool isConst);
-	static asCDataType CreateObject(asCObjectType *ot, bool isConst);
-	static asCDataType CreateObjectHandle(asCObjectType *ot, bool isConst);
-	static asCDataType CreateFuncDef(asCScriptFunction *ot);
-	static asCDataType CreateNullHandle();
+    static asCDataType CreatePrimitive(eTokenType tt, bool isConst);
+    static asCDataType CreateObject(asCObjectType *ot, bool isConst);
+    static asCDataType CreateObjectHandle(asCObjectType *ot, bool isConst);
+    static asCDataType CreateFuncDef(asCScriptFunction *ot);
+    static asCDataType CreateNullHandle();
 
-	int MakeHandle(bool b, bool acceptHandleForScope = false);
-	int MakeArray(asCScriptEngine *engine);
-	int MakeReference(bool b);
-	int MakeReadOnly(bool b);
-	int MakeHandleToConst(bool b);
+    int MakeHandle(bool b, bool acceptHandleForScope = false);
+    int MakeArray(asCScriptEngine *engine);
+    int MakeReference(bool b);
+    int MakeReadOnly(bool b);
+    int MakeHandleToConst(bool b);
 
-	bool IsTemplate()       const;
-	bool IsScriptObject()   const;
-	bool IsPrimitive()      const;
-	bool IsObject()         const;
-	bool IsReference()      const {return isReference;}
-	bool IsReadOnly()       const; 
-	bool IsIntegerType()    const;
-	bool IsUnsignedType()   const;
-	bool IsFloatType()      const;
-	bool IsDoubleType()     const;
-	bool IsBooleanType()    const;
-	bool IsObjectHandle()   const {return isObjectHandle;}
-	bool IsHandleToConst()  const;
-	bool IsArrayType()      const;
-	bool IsEnumType()       const;
-	bool IsAnyType()        const {return tokenType == ttQuestion;}
+    bool IsTemplate()       const;
+    bool IsScriptObject()   const;
+    bool IsPrimitive()      const;
+    bool IsObject()         const;
+    bool IsReference()      const {return isReference;}
+    bool IsReadOnly()       const; 
+    bool IsIntegerType()    const;
+    bool IsUnsignedType()   const;
+    bool IsFloatType()      const;
+    bool IsDoubleType()     const;
+    bool IsBooleanType()    const;
+    bool IsObjectHandle()   const {return isObjectHandle;}
+    bool IsHandleToConst()  const;
+    bool IsArrayType()      const;
+    bool IsEnumType()       const;
+    bool IsAnyType()        const {return tokenType == ttQuestion;}
 
-	bool IsEqualExceptRef(const asCDataType &)             const;
-	bool IsEqualExceptRefAndConst(const asCDataType &)     const;
-	bool IsEqualExceptConst(const asCDataType &)           const;
-	bool IsNullHandle()                                    const;
+    bool IsEqualExceptRef(const asCDataType &)             const;
+    bool IsEqualExceptRefAndConst(const asCDataType &)     const;
+    bool IsEqualExceptConst(const asCDataType &)           const;
+    bool IsNullHandle()                                    const;
 
-	bool SupportHandles() const;
-	bool CanBeInstanciated() const;
-	bool CanBeCopied() const;
+    bool SupportHandles() const;
+    bool CanBeInstanciated() const;
+    bool CanBeCopied() const;
 
-	bool operator ==(const asCDataType &) const;
-	bool operator !=(const asCDataType &) const;
+    bool operator ==(const asCDataType &) const;
+    bool operator !=(const asCDataType &) const;
 
-	asCDataType        GetSubType(asUINT subtypeIndex = 0)    const;
-	eTokenType         GetTokenType()  const {return tokenType;}
-	asCObjectType     *GetObjectType() const {return objectType;}
-	asCScriptFunction *GetFuncDef()    const {return funcDef;}
+    asCDataType        GetSubType(asUINT subtypeIndex = 0)    const;
+    eTokenType         GetTokenType()  const {return tokenType;}
+    asCObjectType     *GetObjectType() const {return objectType;}
+    asCScriptFunction *GetFuncDef()    const {return funcDef;}
 
-	int  GetSizeOnStackDWords()  const;
-	int  GetSizeInMemoryBytes()  const;
-	int  GetSizeInMemoryDWords() const;
+    int  GetSizeOnStackDWords()  const;
+    int  GetSizeInMemoryBytes()  const;
+    int  GetSizeInMemoryDWords() const;
 
-	void SetTokenType(eTokenType tt)         {tokenType = tt;}
-	void SetObjectType(asCObjectType *obj)   {objectType = obj;}
-	void SetFuncDef(asCScriptFunction *func) {asASSERT(funcDef); funcDef = func; }
+    void SetTokenType(eTokenType tt)         {tokenType = tt;}
+    void SetObjectType(asCObjectType *obj)   {objectType = obj;}
+    void SetFuncDef(asCScriptFunction *func) {asASSERT(funcDef); funcDef = func; }
 
-	asCDataType &operator =(const asCDataType &);
+    asCDataType &operator =(const asCDataType &);
 
-	asSTypeBehaviour *GetBehaviour() const;
+    asSTypeBehaviour *GetBehaviour() const;
 
 protected:
-	// Base object type
-	eTokenType tokenType;
+    // Base object type
+    eTokenType tokenType;
 
-	// Behaviour type
-	asCObjectType *objectType;
-	asCScriptFunction *funcDef;
+    // Behaviour type
+    asCObjectType *objectType;
+    asCScriptFunction *funcDef;
 
-	// Top level
-	bool isReference:1;
-	bool isReadOnly:1;
-	bool isObjectHandle:1;
-	bool isConstHandle:1;
-	char dummy:4;
+    // Top level
+    bool isReference:1;
+    bool isReadOnly:1;
+    bool isObjectHandle:1;
+    bool isConstHandle:1;
+    char dummy:4;
 };
 
 END_AS_NAMESPACE

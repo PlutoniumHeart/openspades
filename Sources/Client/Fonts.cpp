@@ -24,38 +24,38 @@
 #include "FontData.h"
 
 namespace spades {
-	namespace client {
-		IFont *CreateSquareDesignFont(IRenderer *renderer) {
-			auto *designFont = new Quake3Font(renderer,
-										renderer->RegisterImage("Gfx/Fonts/UnsteadyOversteer.tga"),
-										(const int *)UnsteadyOversteerMap,
-										30,
-										18);
-			designFont->SetGlyphYRange(9.f, 24.f);
-			SPLog("Font 'Unsteady Oversteer' Loaded");
-			return designFont;
-		}
-		IFont *CreateLargeFont(IRenderer *renderer) {
-			auto *bigTextFont = new Quake3Font(renderer,
-										 renderer->RegisterImage("Gfx/Fonts/SquareFontBig.png"),
-										 (const int*)SquareFontBigMap,
-										 48,
-										 8, true);
-			bigTextFont->SetGlyphYRange(11.f, 37.f);
-			SPLog("Font 'SquareFont (Large)' Loaded");
-			return bigTextFont;
-		}
-		IFont *CreateGuiFont(IRenderer *renderer) {
-			auto *font = new Quake3Font(renderer,
-										  renderer->RegisterImage("Gfx/Fonts/CMUSansCondensed.png"),
-										  (const int*)CMUSansCondensedMap,
-										  20,
-										  4,
-										  true);
-			font->SetGlyphYRange(2.f, 14.f);
-			SPLog("Font 'CMUSansCondensed' Loaded");
-			return font;
-		}
-	}
+    namespace client {
+        IFont *CreateSquareDesignFont(IRenderer *renderer) {
+            auto *designFont = new Quake3Font(renderer,
+                                        renderer->RegisterImage("Gfx/Fonts/UnsteadyOversteer.tga"),
+                                        (const int *)UnsteadyOversteerMap,
+                                        30,
+                                        18);
+            designFont->SetGlyphYRange(9.f, 24.f);
+            SPLog("Font 'Unsteady Oversteer' Loaded");
+            return designFont;
+        }
+        IFont *CreateLargeFont(IRenderer *renderer) {
+            auto *bigTextFont = new Quake3Font(renderer,
+                                         renderer->RegisterImage("Gfx/Fonts/SquareFontBig.png"),
+                                         (const int*)SquareFontBigMap,
+                                         48,
+                                         8, true);
+            bigTextFont->SetGlyphYRange(11.f, 37.f);
+            SPLog("Font 'SquareFont (Large)' Loaded");
+            return bigTextFont;
+        }
+        IFont *CreateGuiFont(IRenderer *renderer) {
+            auto *font = new Quake3Font(renderer,
+                                          renderer->RegisterImage("Gfx/Fonts/CMUSansCondensed.png"),
+                                          (const int*)CMUSansCondensedMap,
+                                          20,
+                                          4,
+                                          true);
+            font->SetGlyphYRange(2.f, 14.f);
+            SPLog("Font 'CMUSansCondensed' Loaded");
+            return font;
+        }
+    }
 }
 

@@ -24,34 +24,34 @@
 #include "GLFramebufferManager.h"
 
 namespace spades {
-	namespace draw {
-		class GLRenderer;
-		class GLProgram;
-		class GLDepthOfFieldFilter {
-			GLRenderer *renderer;
-			GLProgram *cocGen; // program to generate CoC radius
-			GLProgram *cocMix; // program to mix CoC radius
-			GLProgram *gaussProgram; // program to blur CoC radius
-			GLProgram *gammaMix;
-			GLProgram *passthrough;
-			GLProgram *blurProgram; // program to mix CoC radius
-			GLProgram *finalMix; // program to mix CoC radius
-			
-			GLColorBuffer GenerateCoC(float blurDepthRange, float vignetteBlur, float globalBlur, float nearBlur, float farBlur);
-			GLColorBuffer BlurCoC(GLColorBuffer, float spread);
-			GLColorBuffer Blur(GLColorBuffer,
-							   GLColorBuffer coc,
-							   Vector2 offset,
-							   int divide = 1);
-			GLColorBuffer AddMix(GLColorBuffer, GLColorBuffer);
-			GLColorBuffer FinalMix(GLColorBuffer tex,
-								   GLColorBuffer blur1,
-								   GLColorBuffer blur2,
-								   GLColorBuffer coc);
-			GLColorBuffer UnderSample(GLColorBuffer);
-		public:
-			GLDepthOfFieldFilter(GLRenderer *);
-			GLColorBuffer Filter(GLColorBuffer, float blurDepthRange, float vignetteBlur, float globalBlur, float nearBlur, float farBlur);
-		};
-	}
+    namespace draw {
+        class GLRenderer;
+        class GLProgram;
+        class GLDepthOfFieldFilter {
+            GLRenderer *renderer;
+            GLProgram *cocGen; // program to generate CoC radius
+            GLProgram *cocMix; // program to mix CoC radius
+            GLProgram *gaussProgram; // program to blur CoC radius
+            GLProgram *gammaMix;
+            GLProgram *passthrough;
+            GLProgram *blurProgram; // program to mix CoC radius
+            GLProgram *finalMix; // program to mix CoC radius
+            
+            GLColorBuffer GenerateCoC(float blurDepthRange, float vignetteBlur, float globalBlur, float nearBlur, float farBlur);
+            GLColorBuffer BlurCoC(GLColorBuffer, float spread);
+            GLColorBuffer Blur(GLColorBuffer,
+                               GLColorBuffer coc,
+                               Vector2 offset,
+                               int divide = 1);
+            GLColorBuffer AddMix(GLColorBuffer, GLColorBuffer);
+            GLColorBuffer FinalMix(GLColorBuffer tex,
+                                   GLColorBuffer blur1,
+                                   GLColorBuffer blur2,
+                                   GLColorBuffer coc);
+            GLColorBuffer UnderSample(GLColorBuffer);
+        public:
+            GLDepthOfFieldFilter(GLRenderer *);
+            GLColorBuffer Filter(GLColorBuffer, float blurDepthRange, float vignetteBlur, float globalBlur, float nearBlur, float farBlur);
+        };
+    }
 }

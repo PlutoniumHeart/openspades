@@ -24,22 +24,22 @@
 #include <string>
 
 namespace spades {
-	
-	class Stopwatch;
-	namespace draw {
-		class IGLDevice;
-		class GLProfiler {
-			std::string msg;
-			std::string name;
-			Stopwatch *watch;
-			IGLDevice *device;
-			double time, timeNoFinish;
-		public:
-			static void ResetLevel();
-			GLProfiler(IGLDevice *, const char *format, ...);
-			std::string GetProfileMessage();
-			~GLProfiler();
-		};
-	}
+    
+    class Stopwatch;
+    namespace draw {
+        class IGLDevice;
+        class GLProfiler {
+            std::string msg;
+            std::string name;
+            Stopwatch *watch;
+            IGLDevice *device;
+            double time, timeNoFinish;
+        public:
+            static void ResetLevel();
+            GLProfiler(IGLDevice *, const char *format, ...);
+            std::string GetProfileMessage();
+            ~GLProfiler();
+        };
+    }
 }
 

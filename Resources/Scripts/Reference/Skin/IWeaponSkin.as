@@ -19,37 +19,37 @@
  */
  
 namespace spades {
-	
-	/** A skin of weapons. A class that implements 
-	 * this might also have to implement either IThirdPersonToolSkin 
-	 * or IViewToolSkin. */
-	interface IWeaponSkin {
-		/** Receives a ready state. 0 = soon after firing,
-		 * >=1 = ready to fire the next bullet. */
-		float ReadyState { set; }
-		
-		/** 0 = normal, 1 = aiming down the sight. */
-		float AimDownSightState { set; }
-		
-		/** true if player is reloading a weapon */
-		bool IsReloading { set; }
-		
-		/** 0 = reload has started, 1 = done */
-		float ReloadProgress { set; }
-		
-		int Ammo { set; }
-		int ClipSize { set; }
-		
-		/** Called when a player fired the weapon. */
-		void WeaponFired();
-		
-		/** Called when a player started reloading the weapon.
-		 * For shotgun, this is called for every pellets. */
-		void ReloadingWeapon();
-		
-		/** Called when a played reloaded the weapon. 
-		 * For shotgun, this is called for every pellets. */
-		void ReloadedWeapon();
-	}
-	
+    
+    /** A skin of weapons. A class that implements 
+     * this might also have to implement either IThirdPersonToolSkin 
+     * or IViewToolSkin. */
+    interface IWeaponSkin {
+        /** Receives a ready state. 0 = soon after firing,
+         * >=1 = ready to fire the next bullet. */
+        float ReadyState { set; }
+        
+        /** 0 = normal, 1 = aiming down the sight. */
+        float AimDownSightState { set; }
+        
+        /** true if player is reloading a weapon */
+        bool IsReloading { set; }
+        
+        /** 0 = reload has started, 1 = done */
+        float ReloadProgress { set; }
+        
+        int Ammo { set; }
+        int ClipSize { set; }
+        
+        /** Called when a player fired the weapon. */
+        void WeaponFired();
+        
+        /** Called when a player started reloading the weapon.
+         * For shotgun, this is called for every pellets. */
+        void ReloadingWeapon();
+        
+        /** Called when a played reloaded the weapon. 
+         * For shotgun, this is called for every pellets. */
+        void ReloadedWeapon();
+    }
+    
 }

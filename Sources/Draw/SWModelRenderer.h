@@ -24,23 +24,23 @@
 #include <Client/IRenderer.h>
 
 namespace spades {
-	namespace draw {
-		class SWModel;
-		class SWRenderer;
-		class SWModelRenderer {
-			friend class SWRenderer;
-			SWRenderer *r;
-			SWFeatureLevel level;
-			
-			template<SWFeatureLevel>
-			void RenderInner(SWModel *model,
-						const client::ModelRenderParam& param);
-		public:
-			SWModelRenderer(SWRenderer *, SWFeatureLevel level);
-			~SWModelRenderer();
-			
-			void Render(SWModel *model,
-						  const client::ModelRenderParam& param);
-		};
-	}
+    namespace draw {
+        class SWModel;
+        class SWRenderer;
+        class SWModelRenderer {
+            friend class SWRenderer;
+            SWRenderer *r;
+            SWFeatureLevel level;
+            
+            template<SWFeatureLevel>
+            void RenderInner(SWModel *model,
+                        const client::ModelRenderParam& param);
+        public:
+            SWModelRenderer(SWRenderer *, SWFeatureLevel level);
+            ~SWModelRenderer();
+            
+            void Render(SWModel *model,
+                          const client::ModelRenderParam& param);
+        };
+    }
 }

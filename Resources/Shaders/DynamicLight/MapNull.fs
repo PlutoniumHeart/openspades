@@ -21,5 +21,5 @@
 
 
 float VisibilityOfLight_Map() {
-	return 1.;
+    return 1.;
 }

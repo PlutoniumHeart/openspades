@@ -36,7 +36,7 @@
 ; so this separate file is needed.
 
 
-    AREA	|.rdata|, DATA, READONLY
+    AREA    |.rdata|, DATA, READONLY
     EXPORT |armFunc|
     EXPORT armFuncR0
     EXPORT armFuncR0R1
@@ -44,7 +44,7 @@
     EXPORT armFuncR0ObjLast
     
 
-    AREA	|.text|, CODE, ARM
+    AREA    |.text|, CODE, ARM
 
 |armFunc| PROC
     stmdb   sp!, {r4-r8, lr}

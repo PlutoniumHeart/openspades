@@ -48,27 +48,27 @@ void PrepareForShadow(vec3 worldOrigin, vec3 normal);
 vec4 FogDensity(float poweredLength);
 
 void main() {
-	
-	vec4 vertexPos = vec4(positionAttribute.xyz, 1.);
-	
-	vertexPos.xyz += modelOrigin;
-	
-	gl_Position = projectionViewModelMatrix * vertexPos;
-	
-	textureCoord = textureCoordAttribute.xyxy * vec4(texScale.xy, vec2(1.));
-	
-	// direct sunlight
-	vec3 normal = normalAttribute;
-	normal = (modelNormalMatrix * vec4(normal, 1.)).xyz;
-	normal = normalize(normal);
-	float sunlight = dot(normal, sunLightDirection);
-	sunlight = max(sunlight, 0.);
-	flatShading = sunlight;
-	
-	vec4 viewPos = viewModelMatrix * vertexPos;
-	float distance = dot(viewPos.xyz, viewPos.xyz);
-	fogDensity = FogDensity(distance).xyz;
-	
-	PrepareForShadow((modelMatrix * vertexPos).xyz, normal);
+    
+    vec4 vertexPos = vec4(positionAttribute.xyz, 1.);
+    
+    vertexPos.xyz += modelOrigin;
+    
+    gl_Position = projectionViewModelMatrix * vertexPos;
+    
+    textureCoord = textureCoordAttribute.xyxy * vec4(texScale.xy, vec2(1.));
+    
+    // direct sunlight
+    vec3 normal = normalAttribute;
+    normal = (modelNormalMatrix * vec4(normal, 1.)).xyz;
+    normal = normalize(normal);
+    float sunlight = dot(normal, sunLightDirection);
+    sunlight = max(sunlight, 0.);
+    flatShading = sunlight;
+    
+    vec4 viewPos = viewModelMatrix * vertexPos;
+    float distance = dot(viewPos.xyz, viewPos.xyz);
+    fogDensity = FogDensity(distance).xyz;
+    
+    PrepareForShadow((modelMatrix * vertexPos).xyz, normal);
 }
 

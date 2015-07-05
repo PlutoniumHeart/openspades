@@ -50,29 +50,29 @@ void PrepareForShadowForMap(vec3 vertexCoord, vec3 fixedVertexCoord, vec3 normal
 vec4 FogDensity(float poweredLength);
 
 void main() {
-	
-	vec4 vertexPos = vec4(chunkPosition, 1.);
-	
-	vertexPos.xyz += positionAttribute.xyz;
-	
-	gl_Position = projectionViewMatrix * vertexPos;
-	
-	color = colorAttribute;
-	color.xyz *= color.xyz; // linearize
-	
-	// ambient occlusion
-	ambientOcclusionCoord = (ambientOcclusionCoordAttribute + .5) * (1. / 256.);
+    
+    vec4 vertexPos = vec4(chunkPosition, 1.);
+    
+    vertexPos.xyz += positionAttribute.xyz;
+    
+    gl_Position = projectionViewMatrix * vertexPos;
+    
+    color = colorAttribute;
+    color.xyz *= color.xyz; // linearize
+    
+    // ambient occlusion
+    ambientOcclusionCoord = (ambientOcclusionCoordAttribute + .5) * (1. / 256.);
 
-	vec4 viewPos = viewMatrix * vertexPos;
-	float distance = dot(viewPos.xyz, viewPos.xyz);
-	fogDensity = FogDensity(distance).xyz;
-	
-	vec3 fixedPosition = chunkPosition;
-	fixedPosition += fixedPositionAttribute * 0.5;
-	fixedPosition += normalAttribute * 0.1;
+    vec4 viewPos = viewMatrix * vertexPos;
+    float distance = dot(viewPos.xyz, viewPos.xyz);
+    fogDensity = FogDensity(distance).xyz;
+    
+    vec3 fixedPosition = chunkPosition;
+    fixedPosition += fixedPositionAttribute * 0.5;
+    fixedPosition += normalAttribute * 0.1;
 
-	vec3 normal = normalAttribute;
-	vec3 shadowVertexPos = vertexPos.xyz;
-	PrepareForShadowForMap(shadowVertexPos, fixedPosition, normal);
+    vec3 normal = normalAttribute;
+    vec3 shadowVertexPos = vertexPos.xyz;
+    PrepareForShadowForMap(shadowVertexPos, fixedPosition, normal);
 }
 

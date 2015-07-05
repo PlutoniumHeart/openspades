@@ -25,32 +25,32 @@
 #include <Core/Strings.h>
 
 namespace spades {
-	static char buf[65536];
-	Exception::Exception(const char *format, ...) {
-		va_list va;
-		va_start(va, format);
-		vsprintf(buf, format, va);
-		va_end(va);
-		message = buf;
-		shortMessage = message;
-	}
-	Exception::Exception(const char *file, int line, const char *format, ...) {
-		reflection::Backtrace& trace =
-		*reflection::Backtrace::GetGlobalBacktrace();
-		
-		va_list va;
-		va_start(va, format);
-		vsprintf(buf, format, va);
-		va_end(va);
-		message = buf;
-		shortMessage = message;
-		
-		message = Format("{0}\nat {1}:{2}\n{3}", message,
-						 file, line, trace.ToString());
-	}
-	Exception::~Exception() throw(){}
-	const char *Exception::what() const throw() {
-		return message.c_str();
-	}
-	
+    static char buf[65536];
+    Exception::Exception(const char *format, ...) {
+        va_list va;
+        va_start(va, format);
+        vsprintf(buf, format, va);
+        va_end(va);
+        message = buf;
+        shortMessage = message;
+    }
+    Exception::Exception(const char *file, int line, const char *format, ...) {
+        reflection::Backtrace& trace =
+        *reflection::Backtrace::GetGlobalBacktrace();
+        
+        va_list va;
+        va_start(va, format);
+        vsprintf(buf, format, va);
+        va_end(va);
+        message = buf;
+        shortMessage = message;
+        
+        message = Format("{0}\nat {1}:{2}\n{3}", message,
+                         file, line, trace.ToString());
+    }
+    Exception::~Exception() throw(){}
+    const char *Exception::what() const throw() {
+        return message.c_str();
+    }
+    
 }

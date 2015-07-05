@@ -23,13 +23,13 @@
 #include <stdint.h>
 
 namespace spades {
-	class Stopwatch {
-		double start;
-	public:
-		Stopwatch();
-		void Reset();
-		
-		/** @return elapsed time in seconds */
-		double GetTime();
-	};
+    class Stopwatch {
+        double start;
+    public:
+        Stopwatch();
+        void Reset();
+        
+        /** @return elapsed time in seconds */
+        double GetTime();
+    };
 }

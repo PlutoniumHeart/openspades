@@ -24,6 +24,6 @@
 #include <string>
 
 namespace spades {
-	std::vector<std::pair<std::string, std::string>> ImportFltkPreference();
-	void DeleteFltkPreference();
+    std::vector<std::pair<std::string, std::string>> ImportFltkPreference();
+    void DeleteFltkPreference();
 }

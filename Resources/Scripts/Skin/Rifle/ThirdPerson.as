@@ -19,135 +19,135 @@
  */
  
  namespace spades {
-	class ThirdPersonRifleSkin: 
-	IToolSkin, IThirdPersonToolSkin, IWeaponSkin {
-		private float sprintState;
-		private float raiseState;
-		private Vector3 teamColor;
-		private bool muted = true;
-		private Matrix4 originMatrix;
-		private float aimDownSightState;
-		private float readyState;
-		private bool reloading;
-		private float reloadProgress;
-		private int ammo, clipSize;
-		
-		float SprintState { 
-			set { sprintState = value; }
-		}
-		
-		float RaiseState { 
-			set { raiseState = value; }
-		}
-		
-		bool IsMuted {
-			set { muted = value; }
-		}
-		
-		Vector3 TeamColor { 
-			set { teamColor = value; } 
-		}
-		
-		Matrix4 OriginMatrix {
-			set { originMatrix = value; }
-		}
-		
-		float PitchBias {
-			get { return 0.f; }
-		}
-		
-		float AimDownSightState {
-			set { aimDownSightState = value; }
-		}
-		
-		bool IsReloading {
-			set { reloading = value; }
-		}
-		float ReloadProgress {
-			set { reloadProgress = value; }
-		}
-		int Ammo {
-			set { ammo = value; }
-		}
-		int ClipSize {
-			set { clipSize = value; }
-		}
-		
-		float ReadyState {
-			set { readyState = value; }
-		}
-		
-		private Renderer@ renderer;
-		private AudioDevice@ audioDevice;
-		private Model@ model;
-		private AudioChunk@[] fireSounds(3);
-		private AudioChunk@ fireFarSound;
-		private AudioChunk@ fireStereoSound;
-		private AudioChunk@ reloadSound;
-		
-		ThirdPersonRifleSkin(Renderer@ r, AudioDevice@ dev) {
-			@renderer = r;
-			@audioDevice = dev;
-			@model = renderer.RegisterModel
-				("Models/Weapons/Rifle/Weapon.kv6");
-			
-			@fireSounds[0] = dev.RegisterSound
-				("Sounds/Weapons/Rifle/Fire1.wav");
-			@fireSounds[1] = dev.RegisterSound
-				("Sounds/Weapons/Rifle/Fire2.wav");
-			@fireSounds[2] = dev.RegisterSound
-				("Sounds/Weapons/Rifle/Fire3.wav");
-			@fireFarSound = dev.RegisterSound
-				("Sounds/Weapons/Rifle/FireFar.wav");
-			@fireStereoSound = dev.RegisterSound
-				("Sounds/Weapons/Rifle/FireStereo.wav");
-			@reloadSound = dev.RegisterSound
-				("Sounds/Weapons/Rifle/Reload.wav");
-		}
-		
-		void Update(float dt) {
-		}
-		
-		void WeaponFired(){
-			if(!muted){
-				Vector3 origin = originMatrix * Vector3(0.f, 0.f, 0.f);
-				AudioParam param;
-				param.volume = 20.f;
-				audioDevice.Play(fireSounds[GetRandom(fireSounds.length)], origin, param);
-				
-				param.volume = 1.f;
-				param.referenceDistance = 26.f;
-				audioDevice.Play(fireFarSound, origin, param);
-				param.referenceDistance = 4.f;
-				param.volume = 1.f;
-				audioDevice.Play(fireStereoSound, origin, param);
-			}
-		}
-		
-		void ReloadingWeapon() {
-			if(!muted){
-				Vector3 origin = originMatrix * Vector3(0.f, 0.f, 0.f);
-				AudioParam param;
-				param.volume = 0.2f;
-				audioDevice.Play(reloadSound, origin, param);
-			}
-		}
-		
-		void ReloadedWeapon() {
-		}
-		
-		void AddToScene() {
-			Matrix4 mat = CreateScaleMatrix(0.05f);
-			mat = mat * CreateScaleMatrix(-1.f, -1.f, 1.f);
-			mat = CreateTranslateMatrix(0.35f, -1.f, 0.0f) * mat;
-			
-			ModelRenderParam param;
-			param.matrix = originMatrix * mat;
-			renderer.AddModel(model, param);
-		}
-	}
-	
-	IWeaponSkin@ CreateThirdPersonRifleSkin(Renderer@ r, AudioDevice@ dev) {
-		return ThirdPersonRifleSkin(r, dev);
-	}
+    class ThirdPersonRifleSkin: 
+    IToolSkin, IThirdPersonToolSkin, IWeaponSkin {
+        private float sprintState;
+        private float raiseState;
+        private Vector3 teamColor;
+        private bool muted = true;
+        private Matrix4 originMatrix;
+        private float aimDownSightState;
+        private float readyState;
+        private bool reloading;
+        private float reloadProgress;
+        private int ammo, clipSize;
+        
+        float SprintState { 
+            set { sprintState = value; }
+        }
+        
+        float RaiseState { 
+            set { raiseState = value; }
+        }
+        
+        bool IsMuted {
+            set { muted = value; }
+        }
+        
+        Vector3 TeamColor { 
+            set { teamColor = value; } 
+        }
+        
+        Matrix4 OriginMatrix {
+            set { originMatrix = value; }
+        }
+        
+        float PitchBias {
+            get { return 0.f; }
+        }
+        
+        float AimDownSightState {
+            set { aimDownSightState = value; }
+        }
+        
+        bool IsReloading {
+            set { reloading = value; }
+        }
+        float ReloadProgress {
+            set { reloadProgress = value; }
+        }
+        int Ammo {
+            set { ammo = value; }
+        }
+        int ClipSize {
+            set { clipSize = value; }
+        }
+        
+        float ReadyState {
+            set { readyState = value; }
+        }
+        
+        private Renderer@ renderer;
+        private AudioDevice@ audioDevice;
+        private Model@ model;
+        private AudioChunk@[] fireSounds(3);
+        private AudioChunk@ fireFarSound;
+        private AudioChunk@ fireStereoSound;
+        private AudioChunk@ reloadSound;
+        
+        ThirdPersonRifleSkin(Renderer@ r, AudioDevice@ dev) {
+            @renderer = r;
+            @audioDevice = dev;
+            @model = renderer.RegisterModel
+                ("Models/Weapons/Rifle/Weapon.kv6");
+            
+            @fireSounds[0] = dev.RegisterSound
+                ("Sounds/Weapons/Rifle/Fire1.wav");
+            @fireSounds[1] = dev.RegisterSound
+                ("Sounds/Weapons/Rifle/Fire2.wav");
+            @fireSounds[2] = dev.RegisterSound
+                ("Sounds/Weapons/Rifle/Fire3.wav");
+            @fireFarSound = dev.RegisterSound
+                ("Sounds/Weapons/Rifle/FireFar.wav");
+            @fireStereoSound = dev.RegisterSound
+                ("Sounds/Weapons/Rifle/FireStereo.wav");
+            @reloadSound = dev.RegisterSound
+                ("Sounds/Weapons/Rifle/Reload.wav");
+        }
+        
+        void Update(float dt) {
+        }
+        
+        void WeaponFired(){
+            if(!muted){
+                Vector3 origin = originMatrix * Vector3(0.f, 0.f, 0.f);
+                AudioParam param;
+                param.volume = 20.f;
+                audioDevice.Play(fireSounds[GetRandom(fireSounds.length)], origin, param);
+                
+                param.volume = 1.f;
+                param.referenceDistance = 26.f;
+                audioDevice.Play(fireFarSound, origin, param);
+                param.referenceDistance = 4.f;
+                param.volume = 1.f;
+                audioDevice.Play(fireStereoSound, origin, param);
+            }
+        }
+        
+        void ReloadingWeapon() {
+            if(!muted){
+                Vector3 origin = originMatrix * Vector3(0.f, 0.f, 0.f);
+                AudioParam param;
+                param.volume = 0.2f;
+                audioDevice.Play(reloadSound, origin, param);
+            }
+        }
+        
+        void ReloadedWeapon() {
+        }
+        
+        void AddToScene() {
+            Matrix4 mat = CreateScaleMatrix(0.05f);
+            mat = mat * CreateScaleMatrix(-1.f, -1.f, 1.f);
+            mat = CreateTranslateMatrix(0.35f, -1.f, 0.0f) * mat;
+            
+            ModelRenderParam param;
+            param.matrix = originMatrix * mat;
+            renderer.AddModel(model, param);
+        }
+    }
+    
+    IWeaponSkin@ CreateThirdPersonRifleSkin(Renderer@ r, AudioDevice@ dev) {
+        return ThirdPersonRifleSkin(r, dev);
+    }
 }

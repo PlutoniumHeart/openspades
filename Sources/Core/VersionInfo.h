@@ -3,5 +3,5 @@
 class VersionInfo
 {
 public:
-	static std::string GetVersionInfo();
+    static std::string GetVersionInfo();
 };

@@ -32,273 +32,273 @@
 #include <ScriptBindings/Config.h>
 
 namespace spades {
-	namespace gui {
-		StartupScreen::StartupScreen(client::IRenderer *r, client::IAudioDevice *a, StartupScreenHelper *helper) :
-		renderer(r),
-		audioDevice(a),
-		startRequested(false),
-		helper(helper){
-			SPADES_MARK_FUNCTION();
-			if(r == NULL)
-				SPInvalidArgument("r");
-			if(a == NULL)
-				SPInvalidArgument("a");
-			
-			
-			font = client::CreateGuiFont(r);
-			
-			helper->BindStartupScreen(this);
-			
-			DoInit();
-		}
-		
-		StartupScreen::~StartupScreen(){
-			SPADES_MARK_FUNCTION();
-			helper->StartupScreenDestroyed();
-		}
-		
-		// Restores renderer's state (game map, fog color)
-		// after returning from the game client.
-		void StartupScreen::RestoreRenderer() {
-			ScopedPrivilegeEscalation privilege;
-			static ScriptFunction func("StartupScreenUI", "void SetupRenderer()");
-			ScriptContextHandle c = func.Prepare();
-			c->SetObject(&*ui);
-			c.ExecuteChecked();
-		}
-		
-		bool StartupScreen::NeedsAbsoluteMouseCoordinate() {
-			SPADES_MARK_FUNCTION();
-			return true;
-		}
-		
-		void StartupScreen::MouseEvent(float x, float y) {
-			SPADES_MARK_FUNCTION();
-			if(!ui){
-				return;
-			}
-			
-			ScopedPrivilegeEscalation privilege;
-			static ScriptFunction func("StartupScreenUI", "void MouseEvent(float, float)");
-			ScriptContextHandle c = func.Prepare();
-			c->SetObject(&*ui);
-			c->SetArgFloat(0, x);
-			c->SetArgFloat(1, y);
-			c.ExecuteChecked();
-		}
-		
-		
-		void StartupScreen::WheelEvent(float x, float y) {
-			SPADES_MARK_FUNCTION();
-			if(!ui){
-				return;
-			}
-			
-			ScopedPrivilegeEscalation privilege;
-			static ScriptFunction func("StartupScreenUI", "void WheelEvent(float, float)");
-			ScriptContextHandle c = func.Prepare();
-			c->SetObject(&*ui);
-			c->SetArgFloat(0, x);
-			c->SetArgFloat(1, y);
-			c.ExecuteChecked();
-		}
-		
-		void StartupScreen::KeyEvent(const std::string & key, bool down) {
-			SPADES_MARK_FUNCTION();
-			if(!ui){
-				return;
-			}
-			ScopedPrivilegeEscalation privilege;
-			static ScriptFunction func("StartupScreenUI", "void KeyEvent(string, bool)");
-			ScriptContextHandle c = func.Prepare();
-			std::string k = key;
-			c->SetObject(&*ui);
-			c->SetArgObject(0, reinterpret_cast<void*>(&k));
-			c->SetArgByte(1, down ? 1 : 0);
-			c.ExecuteChecked();
-		}
-		
-		void StartupScreen::TextInputEvent(const std::string &ch) {
-			SPADES_MARK_FUNCTION();
-			if(!ui){
-				return;
-			}
-			ScopedPrivilegeEscalation privilege;
-			static ScriptFunction func("StartupScreenUI", "void TextInputEvent(string)");
-			ScriptContextHandle c = func.Prepare();
-			std::string k = ch;
-			c->SetObject(&*ui);
-			c->SetArgObject(0, reinterpret_cast<void*>(&k));
-			c.ExecuteChecked();
-		}
-		
-		void StartupScreen::TextEditingEvent(const std::string &ch,
-										  int start, int len) {
-			SPADES_MARK_FUNCTION();
-			if(!ui){
-				return;
-			}
-			ScopedPrivilegeEscalation privilege;
-			static ScriptFunction func("StartupScreenUI", "void TextEditingEvent(string, int, int)");
-			ScriptContextHandle c = func.Prepare();
-			std::string k = ch;
-			c->SetObject(&*ui);
-			c->SetArgObject(0, reinterpret_cast<void*>(&k));
-			c->SetArgDWord(1, static_cast<asDWORD>(start));
-			c->SetArgDWord(2, static_cast<asDWORD>(len));
-			c.ExecuteChecked();
-		}
-		
-		bool StartupScreen::AcceptsTextInput() {
-			SPADES_MARK_FUNCTION();
-			if(!ui){
-				return false;
-			}
-			ScopedPrivilegeEscalation privilege;
-			static ScriptFunction func("StartupScreenUI", "bool AcceptsTextInput()");
-			ScriptContextHandle c = func.Prepare();
-			c->SetObject(&*ui);
-			c.ExecuteChecked();
-			return c->GetReturnByte() != 0;
-		}
-		
-		AABB2 StartupScreen::GetTextInputRect() {
-			SPADES_MARK_FUNCTION();
-			if(!ui){
-				return AABB2();
-			}
-			ScopedPrivilegeEscalation privilege;
-			static ScriptFunction func("StartupScreenUI", "AABB2 GetTextInputRect()");
-			ScriptContextHandle c = func.Prepare();
-			c->SetObject(&*ui);
-			c.ExecuteChecked();
-			return *reinterpret_cast<AABB2*>(c->GetReturnObject());
-		}
-		
-		bool StartupScreen::WantsToBeClosed() {
-			SPADES_MARK_FUNCTION();
-			if(!ui){
-				return false;
-			}
-			ScopedPrivilegeEscalation privilege;
-			static ScriptFunction func("StartupScreenUI", "bool WantsToBeClosed()");
-			ScriptContextHandle c = func.Prepare();
-			c->SetObject(&*ui);
-			c.ExecuteChecked();
-			return c->GetReturnByte() != 0;
-		}
-		
-		void StartupScreen::DrawStartupScreen() {
-			SPADES_MARK_FUNCTION();
-			
-			// FIXME: not used
-			Handle<client::IImage> img;
-			Vector2 scrSize = {renderer->ScreenWidth(),
-				renderer->ScreenHeight()};
-			
-			renderer->SetColorAlphaPremultiplied(MakeVector4(0, 0, 0, 1.));
-			img = renderer->RegisterImage("Gfx/White.tga");
-			renderer->DrawImage(img, AABB2(0, 0,
-										   scrSize.x, scrSize.y));
-			
-			std::string str = "NOW LOADING";
-			Vector2 size = font->Measure(str);
-			Vector2 pos = MakeVector2(scrSize.x - 16.f, scrSize.y - 16.f);
-			pos -= size;
-			font->DrawShadow(str, pos, 1.f, MakeVector4(1,1,1,1), MakeVector4(0,0,0,0.5));
-			
-			renderer->FrameDone();
-			renderer->Flip();
-		}
-		
-		void StartupScreen::RunFrame(float dt) {
-			SPADES_MARK_FUNCTION();
-			
-			ScopedPrivilegeEscalation privilege;
-			static ScriptFunction func("StartupScreenUI", "void RunFrame(float)");
-			ScriptContextHandle c = func.Prepare();
-			c->SetObject(&*ui);
-			c->SetArgFloat(0, dt);
-			c.ExecuteChecked();
-		}
-		
-		void StartupScreen::DoInit() {
-			SPADES_MARK_FUNCTION();
-			
-			ScopedPrivilegeEscalation privilege;
-			static ScriptFunction uiFactory("StartupScreenUI@ CreateStartupScreenUI(Renderer@, AudioDevice@, Font@, StartupScreenHelper@)");
-			{
-				ScriptContextHandle ctx = uiFactory.Prepare();
-				ctx->SetArgObject(0, renderer);
-				ctx->SetArgObject(1, audioDevice);
-				ctx->SetArgObject(2, font);
-				ctx->SetArgObject(3, &*helper);
-				
-				ctx.ExecuteChecked();
-				ui = reinterpret_cast<asIScriptObject *>(ctx->GetReturnObject());
-			}
-			
-		}
-		
-		void StartupScreen::Closing() {
-			SPADES_MARK_FUNCTION();
-			
-			if(!ui){
-				return;
-			}
-			ScopedPrivilegeEscalation privilege;
-			static ScriptFunction func("StartupScreenUI", "void Closing()");
-			ScriptContextHandle c = func.Prepare();
-			c->SetObject(&*ui);
-			c.ExecuteChecked();
-		}
-		
-		void StartupScreen::Start() {
-			startRequested = true;
-		}
-		
-		void StartupScreen::Run() {
-			
-			SDL_InitSubSystem(SDL_INIT_VIDEO);
-			
-			auto *helper = new StartupScreenHelper();
-			helper->ExamineSystem();
-			
-			class ConcreteRunner: public SDLRunner {
-				Handle<StartupScreen> view;
-				StartupScreenHelper *helper;
-			protected:
-				
-				virtual auto GetRendererType() -> RendererType {
-					return RendererType::SW;
-				}
-				virtual client::IAudioDevice *CreateAudioDevice() {
-					return new audio::NullDevice();
-				}
-				virtual View *CreateView(client::IRenderer *renderer, client::IAudioDevice *dev) {
-					view.Set(new StartupScreen(renderer, dev, helper), true);
-					return view;
-				}
-			public:
-				ConcreteRunner(StartupScreenHelper *helper):
-				helper(helper){
-					
-				}
-				bool RunAndGetStartFlag() {
-					this->Run(720, 480);
-					return view->startRequested;
-				}
-			};
-			
-			bool startFlag;
-			{
-				ConcreteRunner runner(helper);
-				runner.SetHasSystemMenu(true);
-				startFlag = runner.RunAndGetStartFlag();
-			}
-			
-			if(startFlag)
-				spades::StartMainScreen();
-		}
-	}
+    namespace gui {
+        StartupScreen::StartupScreen(client::IRenderer *r, client::IAudioDevice *a, StartupScreenHelper *helper) :
+        renderer(r),
+        audioDevice(a),
+        startRequested(false),
+        helper(helper){
+            SPADES_MARK_FUNCTION();
+            if(r == NULL)
+                SPInvalidArgument("r");
+            if(a == NULL)
+                SPInvalidArgument("a");
+            
+            
+            font = client::CreateGuiFont(r);
+            
+            helper->BindStartupScreen(this);
+            
+            DoInit();
+        }
+        
+        StartupScreen::~StartupScreen(){
+            SPADES_MARK_FUNCTION();
+            helper->StartupScreenDestroyed();
+        }
+        
+        // Restores renderer's state (game map, fog color)
+        // after returning from the game client.
+        void StartupScreen::RestoreRenderer() {
+            ScopedPrivilegeEscalation privilege;
+            static ScriptFunction func("StartupScreenUI", "void SetupRenderer()");
+            ScriptContextHandle c = func.Prepare();
+            c->SetObject(&*ui);
+            c.ExecuteChecked();
+        }
+        
+        bool StartupScreen::NeedsAbsoluteMouseCoordinate() {
+            SPADES_MARK_FUNCTION();
+            return true;
+        }
+        
+        void StartupScreen::MouseEvent(float x, float y) {
+            SPADES_MARK_FUNCTION();
+            if(!ui){
+                return;
+            }
+            
+            ScopedPrivilegeEscalation privilege;
+            static ScriptFunction func("StartupScreenUI", "void MouseEvent(float, float)");
+            ScriptContextHandle c = func.Prepare();
+            c->SetObject(&*ui);
+            c->SetArgFloat(0, x);
+            c->SetArgFloat(1, y);
+            c.ExecuteChecked();
+        }
+        
+        
+        void StartupScreen::WheelEvent(float x, float y) {
+            SPADES_MARK_FUNCTION();
+            if(!ui){
+                return;
+            }
+            
+            ScopedPrivilegeEscalation privilege;
+            static ScriptFunction func("StartupScreenUI", "void WheelEvent(float, float)");
+            ScriptContextHandle c = func.Prepare();
+            c->SetObject(&*ui);
+            c->SetArgFloat(0, x);
+            c->SetArgFloat(1, y);
+            c.ExecuteChecked();
+        }
+        
+        void StartupScreen::KeyEvent(const std::string & key, bool down) {
+            SPADES_MARK_FUNCTION();
+            if(!ui){
+                return;
+            }
+            ScopedPrivilegeEscalation privilege;
+            static ScriptFunction func("StartupScreenUI", "void KeyEvent(string, bool)");
+            ScriptContextHandle c = func.Prepare();
+            std::string k = key;
+            c->SetObject(&*ui);
+            c->SetArgObject(0, reinterpret_cast<void*>(&k));
+            c->SetArgByte(1, down ? 1 : 0);
+            c.ExecuteChecked();
+        }
+        
+        void StartupScreen::TextInputEvent(const std::string &ch) {
+            SPADES_MARK_FUNCTION();
+            if(!ui){
+                return;
+            }
+            ScopedPrivilegeEscalation privilege;
+            static ScriptFunction func("StartupScreenUI", "void TextInputEvent(string)");
+            ScriptContextHandle c = func.Prepare();
+            std::string k = ch;
+            c->SetObject(&*ui);
+            c->SetArgObject(0, reinterpret_cast<void*>(&k));
+            c.ExecuteChecked();
+        }
+        
+        void StartupScreen::TextEditingEvent(const std::string &ch,
+                                          int start, int len) {
+            SPADES_MARK_FUNCTION();
+            if(!ui){
+                return;
+            }
+            ScopedPrivilegeEscalation privilege;
+            static ScriptFunction func("StartupScreenUI", "void TextEditingEvent(string, int, int)");
+            ScriptContextHandle c = func.Prepare();
+            std::string k = ch;
+            c->SetObject(&*ui);
+            c->SetArgObject(0, reinterpret_cast<void*>(&k));
+            c->SetArgDWord(1, static_cast<asDWORD>(start));
+            c->SetArgDWord(2, static_cast<asDWORD>(len));
+            c.ExecuteChecked();
+        }
+        
+        bool StartupScreen::AcceptsTextInput() {
+            SPADES_MARK_FUNCTION();
+            if(!ui){
+                return false;
+            }
+            ScopedPrivilegeEscalation privilege;
+            static ScriptFunction func("StartupScreenUI", "bool AcceptsTextInput()");
+            ScriptContextHandle c = func.Prepare();
+            c->SetObject(&*ui);
+            c.ExecuteChecked();
+            return c->GetReturnByte() != 0;
+        }
+        
+        AABB2 StartupScreen::GetTextInputRect() {
+            SPADES_MARK_FUNCTION();
+            if(!ui){
+                return AABB2();
+            }
+            ScopedPrivilegeEscalation privilege;
+            static ScriptFunction func("StartupScreenUI", "AABB2 GetTextInputRect()");
+            ScriptContextHandle c = func.Prepare();
+            c->SetObject(&*ui);
+            c.ExecuteChecked();
+            return *reinterpret_cast<AABB2*>(c->GetReturnObject());
+        }
+        
+        bool StartupScreen::WantsToBeClosed() {
+            SPADES_MARK_FUNCTION();
+            if(!ui){
+                return false;
+            }
+            ScopedPrivilegeEscalation privilege;
+            static ScriptFunction func("StartupScreenUI", "bool WantsToBeClosed()");
+            ScriptContextHandle c = func.Prepare();
+            c->SetObject(&*ui);
+            c.ExecuteChecked();
+            return c->GetReturnByte() != 0;
+        }
+        
+        void StartupScreen::DrawStartupScreen() {
+            SPADES_MARK_FUNCTION();
+            
+            // FIXME: not used
+            Handle<client::IImage> img;
+            Vector2 scrSize = {renderer->ScreenWidth(),
+                renderer->ScreenHeight()};
+            
+            renderer->SetColorAlphaPremultiplied(MakeVector4(0, 0, 0, 1.));
+            img = renderer->RegisterImage("Gfx/White.tga");
+            renderer->DrawImage(img, AABB2(0, 0,
+                                           scrSize.x, scrSize.y));
+            
+            std::string str = "NOW LOADING";
+            Vector2 size = font->Measure(str);
+            Vector2 pos = MakeVector2(scrSize.x - 16.f, scrSize.y - 16.f);
+            pos -= size;
+            font->DrawShadow(str, pos, 1.f, MakeVector4(1,1,1,1), MakeVector4(0,0,0,0.5));
+            
+            renderer->FrameDone();
+            renderer->Flip();
+        }
+        
+        void StartupScreen::RunFrame(float dt) {
+            SPADES_MARK_FUNCTION();
+            
+            ScopedPrivilegeEscalation privilege;
+            static ScriptFunction func("StartupScreenUI", "void RunFrame(float)");
+            ScriptContextHandle c = func.Prepare();
+            c->SetObject(&*ui);
+            c->SetArgFloat(0, dt);
+            c.ExecuteChecked();
+        }
+        
+        void StartupScreen::DoInit() {
+            SPADES_MARK_FUNCTION();
+            
+            ScopedPrivilegeEscalation privilege;
+            static ScriptFunction uiFactory("StartupScreenUI@ CreateStartupScreenUI(Renderer@, AudioDevice@, Font@, StartupScreenHelper@)");
+            {
+                ScriptContextHandle ctx = uiFactory.Prepare();
+                ctx->SetArgObject(0, renderer);
+                ctx->SetArgObject(1, audioDevice);
+                ctx->SetArgObject(2, font);
+                ctx->SetArgObject(3, &*helper);
+                
+                ctx.ExecuteChecked();
+                ui = reinterpret_cast<asIScriptObject *>(ctx->GetReturnObject());
+            }
+            
+        }
+        
+        void StartupScreen::Closing() {
+            SPADES_MARK_FUNCTION();
+            
+            if(!ui){
+                return;
+            }
+            ScopedPrivilegeEscalation privilege;
+            static ScriptFunction func("StartupScreenUI", "void Closing()");
+            ScriptContextHandle c = func.Prepare();
+            c->SetObject(&*ui);
+            c.ExecuteChecked();
+        }
+        
+        void StartupScreen::Start() {
+            startRequested = true;
+        }
+        
+        void StartupScreen::Run() {
+            
+            SDL_InitSubSystem(SDL_INIT_VIDEO);
+            
+            auto *helper = new StartupScreenHelper();
+            helper->ExamineSystem();
+            
+            class ConcreteRunner: public SDLRunner {
+                Handle<StartupScreen> view;
+                StartupScreenHelper *helper;
+            protected:
+                
+                virtual auto GetRendererType() -> RendererType {
+                    return RendererType::SW;
+                }
+                virtual client::IAudioDevice *CreateAudioDevice() {
+                    return new audio::NullDevice();
+                }
+                virtual View *CreateView(client::IRenderer *renderer, client::IAudioDevice *dev) {
+                    view.Set(new StartupScreen(renderer, dev, helper), true);
+                    return view;
+                }
+            public:
+                ConcreteRunner(StartupScreenHelper *helper):
+                helper(helper){
+                    
+                }
+                bool RunAndGetStartFlag() {
+                    this->Run(720, 480);
+                    return view->startRequested;
+                }
+            };
+            
+            bool startFlag;
+            {
+                ConcreteRunner runner(helper);
+                runner.SetHasSystemMenu(true);
+                startFlag = runner.RunAndGetStartFlag();
+            }
+            
+            if(startFlag)
+                spades::StartMainScreen();
+        }
+    }
 }

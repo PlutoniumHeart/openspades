@@ -109,13 +109,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     const MyContent &myContent = content.content;
   
     printf("\t%9s of size %3dx%3d at position %3d,%3d,%2d rotated=%s\n",
-	   myContent.str.c_str(), 
-	   content.size.w, 
-	   content.size.h, 
-	   content.coord.x, 
-	   content.coord.y, 
-	   content.coord.z, 
-	   (content.rotated ? "yes":" no"));
+       myContent.str.c_str(), 
+       content.size.w, 
+       content.size.h, 
+       content.coord.x, 
+       content.coord.y, 
+       content.coord.z, 
+       (content.rotated ? "yes":" no"));
   }
   
   printf("NOT PLACED:\n");
@@ -126,9 +126,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     const MyContent &myContent = content.content;
   
     printf("\t%9s of size %3dx%3d\n",
-	   myContent.str.c_str(), 
-	   content.size.w, 
-	   content.size.h);
+       myContent.str.c_str(), 
+       content.size.w, 
+       content.size.h);
   }
   
   exit(0);
@@ -417,8 +417,8 @@ namespace BinPack2D
             const Size  &size = content.size;
             const Coord &coord = content.coord;
 
-            topLefts.push_front	( Coord( coord.x + size.w, coord.y          ) );
-            topLefts.push_back	( Coord( coord.x         , coord.y + size.h ) );
+            topLefts.push_front    ( Coord( coord.x + size.w, coord.y          ) );
+            topLefts.push_back    ( Coord( coord.x         , coord.y + size.h ) );
 
             contentVector.push_back( content );
 

@@ -55,22 +55,22 @@ class asCScriptEngine;
 class asCOutputBuffer
 {
 public:
-	~asCOutputBuffer ();
-	void Clear();
-	void Callback(asSMessageInfo *msg);
-	void Append(asCOutputBuffer &in);
-	void SendToCallback(asCScriptEngine *engine, asSSystemFunctionInterface *func, void *obj);
+    ~asCOutputBuffer ();
+    void Clear();
+    void Callback(asSMessageInfo *msg);
+    void Append(asCOutputBuffer &in);
+    void SendToCallback(asCScriptEngine *engine, asSSystemFunctionInterface *func, void *obj);
 
-	struct message_t
-	{
-		asCString section;
-		int row;
-		int col;
-		asEMsgType type;
-		asCString msg;
-	};
+    struct message_t
+    {
+        asCString section;
+        int row;
+        int col;
+        asEMsgType type;
+        asCString msg;
+    };
 
-	asCArray<message_t*> messages;
+    asCArray<message_t*> messages;
 };
 
 END_AS_NAMESPACE

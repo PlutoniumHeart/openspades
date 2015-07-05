@@ -19,14 +19,14 @@
  */
  
 namespace spades {
-	
-	/** Raises an exception, usually resulting a program crash. */
-	void Raise(const string& description) {}
-	
-	/** Asserts the expression is true. */
-	void Assert(bool cond) {}
-	
-	/** Raises 'not implemented' exception. */
-	void NotImplemented() {}
-	
+    
+    /** Raises an exception, usually resulting a program crash. */
+    void Raise(const string& description) {}
+    
+    /** Asserts the expression is true. */
+    void Assert(bool cond) {}
+    
+    /** Raises 'not implemented' exception. */
+    void NotImplemented() {}
+    
 }

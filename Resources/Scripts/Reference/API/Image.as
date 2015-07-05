@@ -19,19 +19,19 @@
  */
  
 namespace spades {
-	
-	/** Image is an opaque type which can be passed to rendering methods to 
-	 *  draw an image quickly. */
-	class Image {
-		/** Retrieves the width of the image, in pixels. */
-		float Width {
-			get {}
-		}
-		
-		/** Retrieves the width of the image, in pixels. */
-		float Height {
-			get {}
-		}
-	}
-	
+    
+    /** Image is an opaque type which can be passed to rendering methods to 
+     *  draw an image quickly. */
+    class Image {
+        /** Retrieves the width of the image, in pixels. */
+        float Width {
+            get {}
+        }
+        
+        /** Retrieves the width of the image, in pixels. */
+        float Height {
+            get {}
+        }
+    }
+    
 }

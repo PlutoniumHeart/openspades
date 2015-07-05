@@ -22,38 +22,38 @@
 #include "ClientUI.h"
 
 namespace spades {
-	namespace client {
-		ClientUIHelper::ClientUIHelper(ClientUI *ui):
-		ui(ui){
-			
-		}
-		
-		void ClientUIHelper::ClientUIDestroyed() {
-			ui = NULL;
-		}
-		
-		void ClientUIHelper::SayGlobal(const std::string &text) {
-			if(!ui) return;
-			ui->SendChat(text, true);
-		}
-		
-		void ClientUIHelper::SayTeam(const std::string &text){
-			if(!ui) return;
-			ui->SendChat(text, false);
-		}
-		
-		void ClientUIHelper::AlertNotice(const std::string &text) {
-			if(!ui) return;
-			ui->AlertNotice(text);
-		}
-		void ClientUIHelper::AlertWarning(const std::string &text) {
-			if(!ui) return;
-			ui->AlertWarning(text);
-		}
-		void ClientUIHelper::AlertError(const std::string &text) {
-			if(!ui) return;
-			ui->AlertError(text);
-		}
-	}
+    namespace client {
+        ClientUIHelper::ClientUIHelper(ClientUI *ui):
+        ui(ui){
+            
+        }
+        
+        void ClientUIHelper::ClientUIDestroyed() {
+            ui = NULL;
+        }
+        
+        void ClientUIHelper::SayGlobal(const std::string &text) {
+            if(!ui) return;
+            ui->SendChat(text, true);
+        }
+        
+        void ClientUIHelper::SayTeam(const std::string &text){
+            if(!ui) return;
+            ui->SendChat(text, false);
+        }
+        
+        void ClientUIHelper::AlertNotice(const std::string &text) {
+            if(!ui) return;
+            ui->AlertNotice(text);
+        }
+        void ClientUIHelper::AlertWarning(const std::string &text) {
+            if(!ui) return;
+            ui->AlertWarning(text);
+        }
+        void ClientUIHelper::AlertError(const std::string &text) {
+            if(!ui) return;
+            ui->AlertError(text);
+        }
+    }
 }
 

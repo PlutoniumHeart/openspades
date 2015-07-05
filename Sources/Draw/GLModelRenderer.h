@@ -27,39 +27,39 @@
 #include "GLDynamicLight.h"
 
 namespace spades {
-	namespace draw {
-		class GLRenderer;
-		class GLModel;
-		class GLSparseShadowMapRenderer;
-		class GLModelRenderer {
-			friend class GLSparseShadowMapRenderer;
-			
-			GLRenderer *renderer;
-			IGLDevice *device;
-			
-			struct RenderModel {
-				GLModel *model;
-				std::vector<client::ModelRenderParam> params;
-			};
-			
-			std::vector<RenderModel> models;
-			int modelCount;
-			
-		public:
-			GLModelRenderer(GLRenderer *);
-			~GLModelRenderer();
-			
-			void AddModel(GLModel *model,
-						  const client::ModelRenderParam& param);
-			
-			void RenderShadowMapPass();
-			
-			void Prerender();
-			void RenderSunlightPass();
-			void RenderDynamicLightPass(std::vector<GLDynamicLight> lights);
-			
-			void Clear();
-			
-		};
-	}
+    namespace draw {
+        class GLRenderer;
+        class GLModel;
+        class GLSparseShadowMapRenderer;
+        class GLModelRenderer {
+            friend class GLSparseShadowMapRenderer;
+            
+            GLRenderer *renderer;
+            IGLDevice *device;
+            
+            struct RenderModel {
+                GLModel *model;
+                std::vector<client::ModelRenderParam> params;
+            };
+            
+            std::vector<RenderModel> models;
+            int modelCount;
+            
+        public:
+            GLModelRenderer(GLRenderer *);
+            ~GLModelRenderer();
+            
+            void AddModel(GLModel *model,
+                          const client::ModelRenderParam& param);
+            
+            void RenderShadowMapPass();
+            
+            void Prerender();
+            void RenderSunlightPass();
+            void RenderDynamicLightPass(std::vector<GLDynamicLight> lights);
+            
+            void Clear();
+            
+        };
+    }
 }

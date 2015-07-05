@@ -28,36 +28,36 @@
 #include <Core/Math.h>
 
 namespace spades {
-	namespace client {
-		class IRenderer;
-		class World;
-		
-		/** HitTestDebugger is used to debug hit detection issues. */
-		class HitTestDebugger {
-			class Port;
-			
-			Handle<IRenderer> renderer;
-			World *world; // weak ref
-			Handle<Port> port;
-		public:
-			HitTestDebugger(World *world);
-			~HitTestDebugger();
-			HitTestDebugger(const HitTestDebugger&) = delete;
-			void operator =(const HitTestDebugger&) = delete;
-			
-			struct PlayerHit {
-				int numHeadHits;
-				std::array<int, 3> numLimbHits;
-				int numTorsoHits;
-				PlayerHit():
-				numHeadHits(0),
-				numLimbHits({0, 0, 0}),
-				numTorsoHits(0){ }
-			};
-			
-			/** Save hit detection debug image */
-			void SaveImage(const std::map<int, PlayerHit>& hits,
-						   const std::vector<Vector3>& bullets);
-		};
-	}
+    namespace client {
+        class IRenderer;
+        class World;
+        
+        /** HitTestDebugger is used to debug hit detection issues. */
+        class HitTestDebugger {
+            class Port;
+            
+            Handle<IRenderer> renderer;
+            World *world; // weak ref
+            Handle<Port> port;
+        public:
+            HitTestDebugger(World *world);
+            ~HitTestDebugger();
+            HitTestDebugger(const HitTestDebugger&) = delete;
+            void operator =(const HitTestDebugger&) = delete;
+            
+            struct PlayerHit {
+                int numHeadHits;
+                std::array<int, 3> numLimbHits;
+                int numTorsoHits;
+                PlayerHit():
+                numHeadHits(0),
+                numLimbHits({0, 0, 0}),
+                numTorsoHits(0){ }
+            };
+            
+            /** Save hit detection debug image */
+            void SaveImage(const std::map<int, PlayerHit>& hits,
+                           const std::vector<Vector3>& bullets);
+        };
+    }
 }

@@ -23,38 +23,38 @@
 #include "../Core/Math.h"
 
 namespace spades {
-	namespace client {
-		class Client;
-		class IRenderer;
-		class IImage;
-		class MapView {
-			Client *client;
-			IRenderer *renderer;
-			
-			int scaleMode;
-			float actualScale;
-			float lastScale; // used for animation
-			
-			float zoomState;
-			bool zoomed;
-			
-			bool largeMap;
-			
-			AABB2 inRect;
-			AABB2 outRect;
-			
-			void DrawIcon(Vector3 pos,
-						  IImage *img,
-						  float rotation);
-		public:
-			MapView(Client *, bool largeMap);
-			~MapView();
-			
-			void Update(float dt);
-			void SwitchScale();
-			bool ToggleZoom();
-			
-			void Draw();
-		};
-	}
+    namespace client {
+        class Client;
+        class IRenderer;
+        class IImage;
+        class MapView {
+            Client *client;
+            IRenderer *renderer;
+            
+            int scaleMode;
+            float actualScale;
+            float lastScale; // used for animation
+            
+            float zoomState;
+            bool zoomed;
+            
+            bool largeMap;
+            
+            AABB2 inRect;
+            AABB2 outRect;
+            
+            void DrawIcon(Vector3 pos,
+                          IImage *img,
+                          float rotation);
+        public:
+            MapView(Client *, bool largeMap);
+            ~MapView();
+            
+            void Update(float dt);
+            void SwitchScale();
+            bool ToggleZoom();
+            
+            void Draw();
+        };
+    }
 }

@@ -26,25 +26,25 @@
 #include <array>
 
 namespace spades {
-	namespace audio {
-				
-		class NullDevice: public client::IAudioDevice {
-		protected:
-			virtual ~NullDevice();
-		public:
-			NullDevice();
-			
-			virtual client::IAudioChunk *RegisterSound(const char *name);
-			
-			virtual void SetGameMap(client::GameMap *);
-			
-			virtual void Play(client::IAudioChunk *, const Vector3& origin, const client::AudioParam&);
-			virtual void PlayLocal(client::IAudioChunk *, const Vector3& origin, const client::AudioParam&);
-			virtual void PlayLocal(client::IAudioChunk *, const client::AudioParam&);
-			
-			virtual void Respatialize(const Vector3& eye,
-									  const Vector3& front,
-									  const Vector3& up);
-		};
-	}
+    namespace audio {
+                
+        class NullDevice: public client::IAudioDevice {
+        protected:
+            virtual ~NullDevice();
+        public:
+            NullDevice();
+            
+            virtual client::IAudioChunk *RegisterSound(const char *name);
+            
+            virtual void SetGameMap(client::GameMap *);
+            
+            virtual void Play(client::IAudioChunk *, const Vector3& origin, const client::AudioParam&);
+            virtual void PlayLocal(client::IAudioChunk *, const Vector3& origin, const client::AudioParam&);
+            virtual void PlayLocal(client::IAudioChunk *, const client::AudioParam&);
+            
+            virtual void Respatialize(const Vector3& eye,
+                                      const Vector3& front,
+                                      const Vector3& up);
+        };
+    }
 }

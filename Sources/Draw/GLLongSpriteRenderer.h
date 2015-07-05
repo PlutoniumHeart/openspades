@@ -27,63 +27,63 @@
 #include "GLProgramUniform.h"
 
 namespace spades {
-	namespace draw {
-		class GLRenderer;
-		class IGLDevice;
-		class GLImage;
-		class GLLongSpriteRenderer {
-			struct Sprite {
-				GLImage *image;
-				Vector3 start;
-				Vector3 end;
-				float radius;
-				Vector4 color;
-			};
-			
-			struct Vertex {
-				float x, y, z;
-				float pad;
-				float u, v;
-				// color
-				float r, g, b, a;
-				
-				void operator =(const Vector3& vec){
-					x = vec.x; y = vec.y; z = vec.z;
-				}
-			};
-			
-			GLRenderer *renderer;
-			IGLDevice *device;
-			std::vector<Sprite> sprites;
-			
-			GLImage *lastImage;
-			
-			std::vector<Vertex> vertices;
-			std::vector<uint32_t> indices;
-			
-			GLProgram *program;
-			GLProgramUniform projectionViewMatrix;
-			GLProgramUniform rightVector;
-			GLProgramUniform upVector;
-			GLProgramUniform texture;
-			GLProgramUniform viewMatrix;
-			GLProgramUniform fogDistance;
-			GLProgramUniform fogColor;
-			
-			GLProgramAttribute positionAttribute;
-			GLProgramAttribute texCoordAttribute;
-			GLProgramAttribute colorAttribute;
-			
-			void Flush();
-			
-		public:
-			GLLongSpriteRenderer(GLRenderer *);
-			~GLLongSpriteRenderer();
-			
-			void Add(GLImage *img, Vector3 p1, Vector3 p2,
-							 float rad,  Vector4 color);
-			void Clear();
-			void Render();
-		};
-	}
+    namespace draw {
+        class GLRenderer;
+        class IGLDevice;
+        class GLImage;
+        class GLLongSpriteRenderer {
+            struct Sprite {
+                GLImage *image;
+                Vector3 start;
+                Vector3 end;
+                float radius;
+                Vector4 color;
+            };
+            
+            struct Vertex {
+                float x, y, z;
+                float pad;
+                float u, v;
+                // color
+                float r, g, b, a;
+                
+                void operator =(const Vector3& vec){
+                    x = vec.x; y = vec.y; z = vec.z;
+                }
+            };
+            
+            GLRenderer *renderer;
+            IGLDevice *device;
+            std::vector<Sprite> sprites;
+            
+            GLImage *lastImage;
+            
+            std::vector<Vertex> vertices;
+            std::vector<uint32_t> indices;
+            
+            GLProgram *program;
+            GLProgramUniform projectionViewMatrix;
+            GLProgramUniform rightVector;
+            GLProgramUniform upVector;
+            GLProgramUniform texture;
+            GLProgramUniform viewMatrix;
+            GLProgramUniform fogDistance;
+            GLProgramUniform fogColor;
+            
+            GLProgramAttribute positionAttribute;
+            GLProgramAttribute texCoordAttribute;
+            GLProgramAttribute colorAttribute;
+            
+            void Flush();
+            
+        public:
+            GLLongSpriteRenderer(GLRenderer *);
+            ~GLLongSpriteRenderer();
+            
+            void Add(GLImage *img, Vector3 p1, Vector3 p2,
+                             float rad,  Vector4 color);
+            void Clear();
+            void Render();
+        };
+    }
 }

@@ -19,30 +19,30 @@
  */
  
 namespace spades {
-	
-	/** A skin of all tools for third-person view. */
-	interface IToolSkin {
-		
-		/** Receives a value that indicates whether the owner of the tool is sprinting.
-		 * 0 = not sprinting, 1 = sprinting. */	
-		float SprintState { set; }
-		
-		/** Receives a value that indicates whether this tool is raised.
-		 * 0 = brought down, 1 = raised. */
-		float RaiseState { set; }
-		
-		/** Receives the team color. */
-		Vector3 TeamColor { set; }
-		
-		/** Receives whether this skin should play a sound. */
-		bool IsMuted { set; }
-		
-		/** Advances the animation by the specified time span. */
-		void Update(float dt);
-		
-		/** Issues draw commands to add models of this tool to the scene. */
-		void AddToScene();
-		
-	}
-	
+    
+    /** A skin of all tools for third-person view. */
+    interface IToolSkin {
+        
+        /** Receives a value that indicates whether the owner of the tool is sprinting.
+         * 0 = not sprinting, 1 = sprinting. */    
+        float SprintState { set; }
+        
+        /** Receives a value that indicates whether this tool is raised.
+         * 0 = brought down, 1 = raised. */
+        float RaiseState { set; }
+        
+        /** Receives the team color. */
+        Vector3 TeamColor { set; }
+        
+        /** Receives whether this skin should play a sound. */
+        bool IsMuted { set; }
+        
+        /** Advances the animation by the specified time span. */
+        void Update(float dt);
+        
+        /** Issues draw commands to add models of this tool to the scene. */
+        void AddToScene();
+        
+    }
+    
 }

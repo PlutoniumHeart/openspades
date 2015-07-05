@@ -37,19 +37,19 @@ varying vec4 fogDensity;
 vec4 FogDensity(float poweredLength);
 
 void main() {
-	vec3 pos = positionAttribute.xyz;
-	
-	gl_Position = projectionViewMatrix * vec4(pos,1.);
-	
-	color = colorAttribute;
-	
-	texCoord = texCoordAttribute;
-	
-	// fog.
-	// FIXME: cannot gamma correct because sprite may be
-	// alpha-blended.
-	vec4 viewPos = viewMatrix * vec4(pos,1.);
-	float distance = dot(viewPos.xyz, viewPos.xyz);
-	fogDensity = FogDensity(distance);
+    vec3 pos = positionAttribute.xyz;
+    
+    gl_Position = projectionViewMatrix * vec4(pos,1.);
+    
+    color = colorAttribute;
+    
+    texCoord = texCoordAttribute;
+    
+    // fog.
+    // FIXME: cannot gamma correct because sprite may be
+    // alpha-blended.
+    vec4 viewPos = viewMatrix * vec4(pos,1.);
+    float distance = dot(viewPos.xyz, viewPos.xyz);
+    fogDensity = FogDensity(distance);
 }
 

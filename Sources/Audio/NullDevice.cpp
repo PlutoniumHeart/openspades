@@ -22,30 +22,30 @@
 #include <Client/IAudioChunk.h>
 
 namespace spades {
-	namespace audio {
-		class NullChunk: public client::IAudioChunk {
-			
-		};
-		
-		NullDevice::NullDevice(){}
-		
-		NullDevice::~NullDevice() {}
-		
-		static NullChunk nullChunkInstance;
-		
-		client::IAudioChunk *NullDevice::RegisterSound(const char *) {
-			return &nullChunkInstance;
-		}
-		
-		void NullDevice::SetGameMap(client::GameMap *) {}
-		
-		void NullDevice::Play(client::IAudioChunk *, const spades::Vector3 &, const client::AudioParam &) {}
-		
-		void NullDevice::PlayLocal(client::IAudioChunk *, const spades::Vector3 &, const client::AudioParam &) {}
-		
-		void NullDevice::PlayLocal(client::IAudioChunk *, const client::AudioParam &) {}
-		
-		void NullDevice::Respatialize(const spades::Vector3 &, const spades::Vector3 &, const spades::Vector3 &) { }
-		
-	}
+    namespace audio {
+        class NullChunk: public client::IAudioChunk {
+            
+        };
+        
+        NullDevice::NullDevice(){}
+        
+        NullDevice::~NullDevice() {}
+        
+        static NullChunk nullChunkInstance;
+        
+        client::IAudioChunk *NullDevice::RegisterSound(const char *) {
+            return &nullChunkInstance;
+        }
+        
+        void NullDevice::SetGameMap(client::GameMap *) {}
+        
+        void NullDevice::Play(client::IAudioChunk *, const spades::Vector3 &, const client::AudioParam &) {}
+        
+        void NullDevice::PlayLocal(client::IAudioChunk *, const spades::Vector3 &, const client::AudioParam &) {}
+        
+        void NullDevice::PlayLocal(client::IAudioChunk *, const client::AudioParam &) {}
+        
+        void NullDevice::Respatialize(const spades::Vector3 &, const spades::Vector3 &, const spades::Vector3 &) { }
+        
+    }
 }

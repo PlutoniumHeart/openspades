@@ -22,88 +22,88 @@
 #include <Gui/StartupScreenHelper.h>
 
 namespace spades {
-	class StartupScreenHelperRegistrar: public ScriptObjectRegistrar {
-		
-		
-	public:
-		StartupScreenHelperRegistrar():
-		ScriptObjectRegistrar("StartupScreenHelper") {}
-		
-		virtual void Register(ScriptManager *manager, Phase phase) {
-			asIScriptEngine *eng = manager->GetEngine();
-			int r;
-			eng->SetDefaultNamespace("spades");
-			switch(phase){
-				case PhaseObjectType:
-					r = eng->RegisterObjectType("StartupScreenHelper",
-												0, asOBJ_REF);
-					manager->CheckError(r);
-					break;
-				case PhaseObjectMember:
-					r = eng->RegisterObjectBehaviour("StartupScreenHelper",
-													 asBEHAVE_ADDREF,
-													 "void f()",
-													 asMETHOD(gui::StartupScreenHelper, AddRef),
-													 asCALL_THISCALL);
-					manager->CheckError(r);
-					r = eng->RegisterObjectBehaviour("StartupScreenHelper",
-													 asBEHAVE_RELEASE,
-													 "void f()",
-													 asMETHOD(gui::StartupScreenHelper, Release),
-													 asCALL_THISCALL);
-					manager->CheckError(r);
-					r = eng->RegisterObjectMethod("StartupScreenHelper",
-												  "void Start()",
-												  asMETHOD(gui::StartupScreenHelper, Start),
-												  asCALL_THISCALL);
-					manager->CheckError(r);
-					r = eng->RegisterObjectMethod("StartupScreenHelper",
-												  "int GetNumVideoModes()",
-												  asMETHOD(gui::StartupScreenHelper, GetNumVideoModes),
-												  asCALL_THISCALL);
-					manager->CheckError(r);
-					r = eng->RegisterObjectMethod("StartupScreenHelper",
-												  "int GetVideoModeWidth(int)",
-												  asMETHOD(gui::StartupScreenHelper, GetVideoModeWidth),
-												  asCALL_THISCALL);
-					manager->CheckError(r);
-					r = eng->RegisterObjectMethod("StartupScreenHelper",
-												  "int GetVideoModeHeight(int)",
-												  asMETHOD(gui::StartupScreenHelper, GetVideoModeHeight),
-												  asCALL_THISCALL);
-					manager->CheckError(r);
-					r = eng->RegisterObjectMethod("StartupScreenHelper",
-												  "int GetNumReportLines()",
-												  asMETHOD(gui::StartupScreenHelper, GetNumReportLines),
-												  asCALL_THISCALL);
-					manager->CheckError(r);
-					r = eng->RegisterObjectMethod("StartupScreenHelper",
-												  "string GetReport()",
-												  asMETHOD(gui::StartupScreenHelper, GetReport),
-												  asCALL_THISCALL);
-					manager->CheckError(r);
-					r = eng->RegisterObjectMethod("StartupScreenHelper",
-												  "string GetReportLineText(int)",
-												  asMETHOD(gui::StartupScreenHelper, GetReportLineText),
-												  asCALL_THISCALL);
-					manager->CheckError(r);
-					r = eng->RegisterObjectMethod("StartupScreenHelper",
-												  "Vector4 GetReportLineColor(int)",
-												  asMETHOD(gui::StartupScreenHelper, GetReportLineColor),
-												  asCALL_THISCALL);
-					manager->CheckError(r);
-					r = eng->RegisterObjectMethod("StartupScreenHelper",
-												  "string CheckConfigCapability(const string&in, const string&in)",
-												  asMETHOD(gui::StartupScreenHelper, CheckConfigCapability),
-												  asCALL_THISCALL);
-					manager->CheckError(r);
-					break;
-				default:
-					break;
-			}
-		}
-	};
-	
-	static StartupScreenHelperRegistrar registrar;
+    class StartupScreenHelperRegistrar: public ScriptObjectRegistrar {
+        
+        
+    public:
+        StartupScreenHelperRegistrar():
+        ScriptObjectRegistrar("StartupScreenHelper") {}
+        
+        virtual void Register(ScriptManager *manager, Phase phase) {
+            asIScriptEngine *eng = manager->GetEngine();
+            int r;
+            eng->SetDefaultNamespace("spades");
+            switch(phase){
+                case PhaseObjectType:
+                    r = eng->RegisterObjectType("StartupScreenHelper",
+                                                0, asOBJ_REF);
+                    manager->CheckError(r);
+                    break;
+                case PhaseObjectMember:
+                    r = eng->RegisterObjectBehaviour("StartupScreenHelper",
+                                                     asBEHAVE_ADDREF,
+                                                     "void f()",
+                                                     asMETHOD(gui::StartupScreenHelper, AddRef),
+                                                     asCALL_THISCALL);
+                    manager->CheckError(r);
+                    r = eng->RegisterObjectBehaviour("StartupScreenHelper",
+                                                     asBEHAVE_RELEASE,
+                                                     "void f()",
+                                                     asMETHOD(gui::StartupScreenHelper, Release),
+                                                     asCALL_THISCALL);
+                    manager->CheckError(r);
+                    r = eng->RegisterObjectMethod("StartupScreenHelper",
+                                                  "void Start()",
+                                                  asMETHOD(gui::StartupScreenHelper, Start),
+                                                  asCALL_THISCALL);
+                    manager->CheckError(r);
+                    r = eng->RegisterObjectMethod("StartupScreenHelper",
+                                                  "int GetNumVideoModes()",
+                                                  asMETHOD(gui::StartupScreenHelper, GetNumVideoModes),
+                                                  asCALL_THISCALL);
+                    manager->CheckError(r);
+                    r = eng->RegisterObjectMethod("StartupScreenHelper",
+                                                  "int GetVideoModeWidth(int)",
+                                                  asMETHOD(gui::StartupScreenHelper, GetVideoModeWidth),
+                                                  asCALL_THISCALL);
+                    manager->CheckError(r);
+                    r = eng->RegisterObjectMethod("StartupScreenHelper",
+                                                  "int GetVideoModeHeight(int)",
+                                                  asMETHOD(gui::StartupScreenHelper, GetVideoModeHeight),
+                                                  asCALL_THISCALL);
+                    manager->CheckError(r);
+                    r = eng->RegisterObjectMethod("StartupScreenHelper",
+                                                  "int GetNumReportLines()",
+                                                  asMETHOD(gui::StartupScreenHelper, GetNumReportLines),
+                                                  asCALL_THISCALL);
+                    manager->CheckError(r);
+                    r = eng->RegisterObjectMethod("StartupScreenHelper",
+                                                  "string GetReport()",
+                                                  asMETHOD(gui::StartupScreenHelper, GetReport),
+                                                  asCALL_THISCALL);
+                    manager->CheckError(r);
+                    r = eng->RegisterObjectMethod("StartupScreenHelper",
+                                                  "string GetReportLineText(int)",
+                                                  asMETHOD(gui::StartupScreenHelper, GetReportLineText),
+                                                  asCALL_THISCALL);
+                    manager->CheckError(r);
+                    r = eng->RegisterObjectMethod("StartupScreenHelper",
+                                                  "Vector4 GetReportLineColor(int)",
+                                                  asMETHOD(gui::StartupScreenHelper, GetReportLineColor),
+                                                  asCALL_THISCALL);
+                    manager->CheckError(r);
+                    r = eng->RegisterObjectMethod("StartupScreenHelper",
+                                                  "string CheckConfigCapability(const string&in, const string&in)",
+                                                  asMETHOD(gui::StartupScreenHelper, CheckConfigCapability),
+                                                  asCALL_THISCALL);
+                    manager->CheckError(r);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+    
+    static StartupScreenHelperRegistrar registrar;
 }
 

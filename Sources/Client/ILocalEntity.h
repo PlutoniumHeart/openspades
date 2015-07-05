@@ -21,14 +21,14 @@
 #pragma once
 
 namespace spades {
-	namespace client {
-		class ILocalEntity {
-		public:
-			virtual ~ILocalEntity(){}
-			/** @return false if this entity should be removed from the scene. */
-			virtual bool Update(float dt) = 0;
-			virtual void Render3D(){}
-			virtual void Render2D(){}
-		};
-	}
+    namespace client {
+        class ILocalEntity {
+        public:
+            virtual ~ILocalEntity(){}
+            /** @return false if this entity should be removed from the scene. */
+            virtual bool Update(float dt) = 0;
+            virtual void Render3D(){}
+            virtual void Render2D(){}
+        };
+    }
 }

@@ -24,14 +24,14 @@
 #include <Core/Math.h>
 
 namespace spades {
-	namespace client {
-		class IModel: public RefCountedObject {
-		protected:
-			virtual ~IModel(){}
-		public:
-			IModel(){}
-			
-			virtual AABB3 GetBoundingBox() = 0;
-		};
-	}
+    namespace client {
+        class IModel: public RefCountedObject {
+        protected:
+            virtual ~IModel(){}
+        public:
+            IModel(){}
+            
+            virtual AABB3 GetBoundingBox() = 0;
+        };
+    }
 }

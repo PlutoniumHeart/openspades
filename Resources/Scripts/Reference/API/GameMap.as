@@ -19,81 +19,81 @@
  */
  
 namespace spades {
-	
-	/** Represents a game world map. */
-	class GameMap {
-		
-		/** Creates a new map. 
-		 * @param width You must specify 512. 
-		 * @param height You must specify 512. 
-		 * @param depth You must specify 64. 
-		 */
-		GameMap(int width, int height, int depth) {}
-		
-		/** Loads a map from the specified file. */
-		GameMap(const string@ path) {}
-		
-		/** Gets the color of the specified voxel. */
-		uint GetColor(int x, int y, int z) {}
-		
-		/** Returns if the specified voxel is solid (or air). */
-		bool IsSolid(int x, int y, int z) {}
-		
-		/** Gets the color of the specified voxel. */
-		uint GetColorWrapped(int x, int y, int z) {}
-		
-		/** Returns if the specified voxel is solid (or air). */
-		bool IsSolidWrapped(int x, int y, int z) {}
-		
-		/** Makes the specified voxel non-solid. */
-		void SetAir(int x, int y, int z) {}
-		
-		/** Makes the specified voxel solid, and sets its color. */
-		void SetSolid(int x, int y, int z, uint color) {}
-		
-		/** Retrieves the width of the map. */
-		int Width {
-			get { }
-		}
-		
-		/** Retrieves the height of the map. */
-		int Height {
-			get { }
-		}
-		
-		/** Retrieves the depth of the map. */
-		int Depth {
-			get { }
-		}
-		
-		bool ClipBox(int x, int y, int z) {}
-		bool ClipWorld(int x, int y, int z) {}
-		
-		bool ClipBox(float x, float y, float z) {}
-		bool ClipWorld(float x, float y, float z) {}
-		
-		/** Casts a ray. */
-		GameMapRayCastResult CastRay(Vector3 start, Vector3 direction,
-		                             int maxScanSteps);
-		
-	}
-	
-	/** GameMapRayCastResult contains the result of the ray-cast. */
-	class GameMapRayCastResult {
-		/** true when the ray hit a solid voxel. */
-		bool hit;
-		
-		/** true when the start position is in a solid voxel. */
-		bool startSolid;
-		
-		/** Position where the ray hit a solid voxel. */
-		Vector3 hitPos;
-		
-		/** Coordinate of the voxel that the ray hit. */
-		IntVector3 hitBlock;
-		
-		/** Normal of the face that the ray hit. */
-		IntVector3 normal;
-	}
-	
+    
+    /** Represents a game world map. */
+    class GameMap {
+        
+        /** Creates a new map. 
+         * @param width You must specify 512. 
+         * @param height You must specify 512. 
+         * @param depth You must specify 64. 
+         */
+        GameMap(int width, int height, int depth) {}
+        
+        /** Loads a map from the specified file. */
+        GameMap(const string@ path) {}
+        
+        /** Gets the color of the specified voxel. */
+        uint GetColor(int x, int y, int z) {}
+        
+        /** Returns if the specified voxel is solid (or air). */
+        bool IsSolid(int x, int y, int z) {}
+        
+        /** Gets the color of the specified voxel. */
+        uint GetColorWrapped(int x, int y, int z) {}
+        
+        /** Returns if the specified voxel is solid (or air). */
+        bool IsSolidWrapped(int x, int y, int z) {}
+        
+        /** Makes the specified voxel non-solid. */
+        void SetAir(int x, int y, int z) {}
+        
+        /** Makes the specified voxel solid, and sets its color. */
+        void SetSolid(int x, int y, int z, uint color) {}
+        
+        /** Retrieves the width of the map. */
+        int Width {
+            get { }
+        }
+        
+        /** Retrieves the height of the map. */
+        int Height {
+            get { }
+        }
+        
+        /** Retrieves the depth of the map. */
+        int Depth {
+            get { }
+        }
+        
+        bool ClipBox(int x, int y, int z) {}
+        bool ClipWorld(int x, int y, int z) {}
+        
+        bool ClipBox(float x, float y, float z) {}
+        bool ClipWorld(float x, float y, float z) {}
+        
+        /** Casts a ray. */
+        GameMapRayCastResult CastRay(Vector3 start, Vector3 direction,
+                                     int maxScanSteps);
+        
+    }
+    
+    /** GameMapRayCastResult contains the result of the ray-cast. */
+    class GameMapRayCastResult {
+        /** true when the ray hit a solid voxel. */
+        bool hit;
+        
+        /** true when the start position is in a solid voxel. */
+        bool startSolid;
+        
+        /** Position where the ray hit a solid voxel. */
+        Vector3 hitPos;
+        
+        /** Coordinate of the voxel that the ray hit. */
+        IntVector3 hitBlock;
+        
+        /** Normal of the face that the ray hit. */
+        IntVector3 normal;
+    }
+    
 }

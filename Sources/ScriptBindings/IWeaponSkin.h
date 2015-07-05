@@ -24,21 +24,21 @@
 #include <Core/Math.h>
 
 namespace spades {
-	namespace client {
-		
-		class ScriptIWeaponSkin {
-			asIScriptObject *obj;
-		public:
-			ScriptIWeaponSkin(asIScriptObject *obj);
-			void SetReadyState(float);
-			void SetAimDownSightState(float);
-			void SetReloading(bool);
-			void SetReloadProgress(float);
-			void SetAmmo(int);
-			void SetClipSize(int);
-			void WeaponFired();
-			void ReloadingWeapon();
-			void ReloadedWeapon();
-		};
-	}
+    namespace client {
+        
+        class ScriptIWeaponSkin {
+            asIScriptObject *obj;
+        public:
+            ScriptIWeaponSkin(asIScriptObject *obj);
+            void SetReadyState(float);
+            void SetAimDownSightState(float);
+            void SetReloading(bool);
+            void SetReloadProgress(float);
+            void SetAmmo(int);
+            void SetClipSize(int);
+            void WeaponFired();
+            void ReloadingWeapon();
+            void ReloadedWeapon();
+        };
+    }
 }

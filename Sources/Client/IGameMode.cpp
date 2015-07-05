@@ -21,6 +21,6 @@
 #include "IGameMode.h"
 
 namespace spades {
-	namespace client {
-	}
+    namespace client {
+    }
 }

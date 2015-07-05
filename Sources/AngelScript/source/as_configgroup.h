@@ -50,31 +50,31 @@ BEGIN_AS_NAMESPACE
 class asCConfigGroup
 {
 public:
-	asCConfigGroup();
-	~asCConfigGroup();
+    asCConfigGroup();
+    ~asCConfigGroup();
 
-	// Memory management
-	int AddRef();
-	int Release();
+    // Memory management
+    int AddRef();
+    int Release();
 
-	asCObjectType *FindType(const char *obj);
-	void RefConfigGroup(asCConfigGroup *group);
+    asCObjectType *FindType(const char *obj);
+    void RefConfigGroup(asCConfigGroup *group);
 
-	bool HasLiveObjects();
-	void RemoveConfiguration(asCScriptEngine *engine, bool notUsed = false);
+    bool HasLiveObjects();
+    void RemoveConfiguration(asCScriptEngine *engine, bool notUsed = false);
 
 #ifdef AS_DEBUG
-	void ValidateNoUsage(asCScriptEngine *engine, asCObjectType *type);
+    void ValidateNoUsage(asCScriptEngine *engine, asCObjectType *type);
 #endif
 
-	asCString groupName;
-	int refCount;
+    asCString groupName;
+    int refCount;
 
-	asCArray<asCObjectType*>     objTypes;
-	asCArray<asCScriptFunction*> scriptFunctions;
-	asCArray<asCGlobalProperty*> globalProps;
-	asCArray<asCConfigGroup*>    referencedConfigGroups;
-	asCArray<asCScriptFunction*> funcDefs;
+    asCArray<asCObjectType*>     objTypes;
+    asCArray<asCScriptFunction*> scriptFunctions;
+    asCArray<asCGlobalProperty*> globalProps;
+    asCArray<asCConfigGroup*>    referencedConfigGroups;
+    asCArray<asCScriptFunction*> funcDefs;
 };
 
 END_AS_NAMESPACE

@@ -24,21 +24,21 @@
 #include <Core/Math.h>
 
 namespace spades {
-	namespace client {
-		
-		enum SpadeActionType {
-			SpadeActionTypeIdle = 0,
-			SpadeActionTypeBash,
-			SpadeActionTypeDig,
-			SpadeActionTypeDigStart
-		};
-		
-		class ScriptISpadeSkin {
-			asIScriptObject *obj;
-		public:
-			ScriptISpadeSkin(asIScriptObject *obj);
-			void SetActionType(SpadeActionType);
-			void SetActionProgress(float);
-		};
-	}
+    namespace client {
+        
+        enum SpadeActionType {
+            SpadeActionTypeIdle = 0,
+            SpadeActionTypeBash,
+            SpadeActionTypeDig,
+            SpadeActionTypeDigStart
+        };
+        
+        class ScriptISpadeSkin {
+            asIScriptObject *obj;
+        public:
+            ScriptISpadeSkin(asIScriptObject *obj);
+            void SetActionType(SpadeActionType);
+            void SetActionProgress(float);
+        };
+    }
 }

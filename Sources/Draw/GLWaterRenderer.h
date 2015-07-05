@@ -25,64 +25,64 @@
 #include <stdint.h>
 
 namespace spades {
-	namespace client {
-		class GameMap;
-	}
-	namespace draw {
-		class GLRenderer;
-		class IGLDevice;
-		class GLProgram;
-		class GLWaterRenderer{
-			class IWaveTank;
-			class StandardWaveTank;
-			class FFTWaveTank;
-			
-			GLRenderer *renderer;
-			IGLDevice *device;
-			client::GameMap *map;
-			
-			std::vector<IWaveTank *> waveTanks;
-			
-			int w, h;
-			
-			size_t updateBitmapPitch;
-			std::vector<uint32_t> updateBitmap;
-			
-			std::vector<uint32_t> bitmap;
-			
-			IGLDevice::UInteger texture; // water color
-			std::vector<IGLDevice::UInteger> waveTextures; // bumpmap
-			
-			struct Vertex;
-			
-			IGLDevice::UInteger buffer;
-			IGLDevice::UInteger idxBuffer;
-			size_t numIndices;
-			
-			IGLDevice::UInteger tempFramebuffer;
-			IGLDevice::UInteger tempDepthTexture;
-			
-			IGLDevice::UInteger occlusionQuery;
-			
-			GLProgram *program;
-			
-			void BuildVertices();
-			void MarkUpdate(int x, int y);
-		public:
-			GLWaterRenderer(GLRenderer *, client::GameMap *map);
-			~GLWaterRenderer();
-			
-			static void PreloadShaders(GLRenderer *);
-			
-			void Render();
-			
-			void Update(float dt);
-			
-			void GameMapChanged(int x, int y, int z, client::GameMap *);
-			
-			IGLDevice::UInteger GetOcclusionQuery() {
-				return occlusionQuery;
-			}
-		};
-	}
+    namespace client {
+        class GameMap;
+    }
+    namespace draw {
+        class GLRenderer;
+        class IGLDevice;
+        class GLProgram;
+        class GLWaterRenderer{
+            class IWaveTank;
+            class StandardWaveTank;
+            class FFTWaveTank;
+            
+            GLRenderer *renderer;
+            IGLDevice *device;
+            client::GameMap *map;
+            
+            std::vector<IWaveTank *> waveTanks;
+            
+            int w, h;
+            
+            size_t updateBitmapPitch;
+            std::vector<uint32_t> updateBitmap;
+            
+            std::vector<uint32_t> bitmap;
+            
+            IGLDevice::UInteger texture; // water color
+            std::vector<IGLDevice::UInteger> waveTextures; // bumpmap
+            
+            struct Vertex;
+            
+            IGLDevice::UInteger buffer;
+            IGLDevice::UInteger idxBuffer;
+            size_t numIndices;
+            
+            IGLDevice::UInteger tempFramebuffer;
+            IGLDevice::UInteger tempDepthTexture;
+            
+            IGLDevice::UInteger occlusionQuery;
+            
+            GLProgram *program;
+            
+            void BuildVertices();
+            void MarkUpdate(int x, int y);
+        public:
+            GLWaterRenderer(GLRenderer *, client::GameMap *map);
+            ~GLWaterRenderer();
+            
+            static void PreloadShaders(GLRenderer *);
+            
+            void Render();
+            
+            void Update(float dt);
+            
+            void GameMapChanged(int x, int y, int z, client::GameMap *);
+            
+            IGLDevice::UInteger GetOcclusionQuery() {
+                return occlusionQuery;
+            }
+        };
+    }
 }

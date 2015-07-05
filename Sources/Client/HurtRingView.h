@@ -24,32 +24,32 @@
 #include <list>
 
 namespace spades {
-	namespace client{
-		class IRenderer;
-		class Client;
-		class IImage;
-		
-		class HurtRingView {
-			Client *client;
-			IRenderer *renderer;
-			IImage *image;
-			
-			struct Item{
-				Vector3 dir;
-				float fade;
-			};
-			
-			std::list<Item> items;
-			
-		public:
-			HurtRingView(Client *);
-			~HurtRingView();
-			
-			void ClearAll();
-			void Add(Vector3);
-			
-			void Update(float dt);
-			void Draw();
-		};
-	}
+    namespace client{
+        class IRenderer;
+        class Client;
+        class IImage;
+        
+        class HurtRingView {
+            Client *client;
+            IRenderer *renderer;
+            IImage *image;
+            
+            struct Item{
+                Vector3 dir;
+                float fade;
+            };
+            
+            std::list<Item> items;
+            
+        public:
+            HurtRingView(Client *);
+            ~HurtRingView();
+            
+            void ClearAll();
+            void Add(Vector3);
+            
+            void Update(float dt);
+            void Draw();
+        };
+    }
 }

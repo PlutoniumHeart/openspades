@@ -54,20 +54,20 @@ class asCObjectType;
 class asCLockableSharedBool : public asILockableSharedBool
 {
 public:
-	asCLockableSharedBool();
-	int AddRef() const;
-	int Release() const;
+    asCLockableSharedBool();
+    int AddRef() const;
+    int Release() const;
 
-	bool Get() const;
-	void Set(bool);
-	
-	void Lock() const;
-	void Unlock() const;
+    bool Get() const;
+    void Set(bool);
+    
+    void Lock() const;
+    void Unlock() const;
 
 protected:
-	mutable asCAtomic refCount;
-	bool      value;
-	DECLARECRITICALSECTION(mutable lock);
+    mutable asCAtomic refCount;
+    bool      value;
+    DECLARECRITICALSECTION(mutable lock);
 };
 
 class asCScriptObject : public asIScriptObject
@@ -76,62 +76,62 @@ public:
 //===================================
 // From asIScriptObject
 //===================================
-	asIScriptEngine *GetEngine() const;
+    asIScriptEngine *GetEngine() const;
 
-	// Memory management
-	int AddRef() const;
-	int Release() const;
+    // Memory management
+    int AddRef() const;
+    int Release() const;
 
-	// Type info
-	int            GetTypeId() const;
-	asIObjectType *GetObjectType() const;
+    // Type info
+    int            GetTypeId() const;
+    asIObjectType *GetObjectType() const;
 
-	// Class properties
-	asUINT      GetPropertyCount() const;
-	int         GetPropertyTypeId(asUINT prop) const;
-	const char *GetPropertyName(asUINT prop) const;
-	void       *GetAddressOfProperty(asUINT prop);
+    // Class properties
+    asUINT      GetPropertyCount() const;
+    int         GetPropertyTypeId(asUINT prop) const;
+    const char *GetPropertyName(asUINT prop) const;
+    void       *GetAddressOfProperty(asUINT prop);
 
-	int         CopyFrom(asIScriptObject *other);
+    int         CopyFrom(asIScriptObject *other);
 
 //====================================
 // Internal
 //====================================
-	asCScriptObject(asCObjectType *objType, bool doInitialize = true);
-	virtual ~asCScriptObject();
+    asCScriptObject(asCObjectType *objType, bool doInitialize = true);
+    virtual ~asCScriptObject();
 
-	asCScriptObject &operator=(const asCScriptObject &other);
+    asCScriptObject &operator=(const asCScriptObject &other);
 
-	// GC methods
-	void Destruct();
-	int  GetRefCount();
-	void SetFlag();
-	bool GetFlag();
-	void EnumReferences(asIScriptEngine *engine);
-	void ReleaseAllHandles(asIScriptEngine *engine);
+    // GC methods
+    void Destruct();
+    int  GetRefCount();
+    void SetFlag();
+    bool GetFlag();
+    void EnumReferences(asIScriptEngine *engine);
+    void ReleaseAllHandles(asIScriptEngine *engine);
 
-	// Weakref methods
-	asILockableSharedBool *GetWeakRefFlag() const;
+    // Weakref methods
+    asILockableSharedBool *GetWeakRefFlag() const;
 
-	// Used for properties
-	void *AllocateUninitializedObject(asCObjectType *objType, asCScriptEngine *engine);
-	void FreeObject(void *ptr, asCObjectType *objType, asCScriptEngine *engine);
-	void CopyObject(void *src, void *dst, asCObjectType *objType, asCScriptEngine *engine);
-	void CopyHandle(asPWORD *src, asPWORD *dst, asCObjectType *objType, asCScriptEngine *engine);
+    // Used for properties
+    void *AllocateUninitializedObject(asCObjectType *objType, asCScriptEngine *engine);
+    void FreeObject(void *ptr, asCObjectType *objType, asCScriptEngine *engine);
+    void CopyObject(void *src, void *dst, asCObjectType *objType, asCScriptEngine *engine);
+    void CopyHandle(asPWORD *src, asPWORD *dst, asCObjectType *objType, asCScriptEngine *engine);
 
-	void CallDestructor();
+    void CallDestructor();
 
 //=============================================
 // Properties
 //=============================================
 public:
-	asCObjectType *objType;
+    asCObjectType *objType;
 
 protected:
-	mutable asCAtomic refCount;
-	mutable bool gcFlag;
-	bool isDestructCalled;
-	mutable asCLockableSharedBool *weakRefFlag;
+    mutable asCAtomic refCount;
+    mutable bool gcFlag;
+    bool isDestructCalled;
+    mutable asCLockableSharedBool *weakRefFlag;
 };
 
 void ScriptObject_Construct(asCObjectType *objType, asCScriptObject *self);

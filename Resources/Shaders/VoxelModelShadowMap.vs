@@ -37,16 +37,16 @@ varying vec3 fogDensity;
 void PrepareForShadowMapRender(vec3 position, vec3 normal);
 
 void main() {
-	
-	vec4 vertexPos = vec4(positionAttribute.xyz, 1.);
-	
-	vertexPos.xyz += modelOrigin;
-	
-	// direct sunlight
-	vec3 normal = normalAttribute;
-	normal = (modelNormalMatrix * vec4(normal, 1.)).xyz;
-	normal = normalize(normal);
-	
-	PrepareForShadowMapRender((modelMatrix * vertexPos).xyz, normal);
+    
+    vec4 vertexPos = vec4(positionAttribute.xyz, 1.);
+    
+    vertexPos.xyz += modelOrigin;
+    
+    // direct sunlight
+    vec3 normal = normalAttribute;
+    normal = (modelNormalMatrix * vec4(normal, 1.)).xyz;
+    normal = normalize(normal);
+    
+    PrepareForShadowMapRender((modelMatrix * vertexPos).xyz, normal);
 }
 

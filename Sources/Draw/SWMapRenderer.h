@@ -33,63 +33,63 @@ namespace spades
 {
     namespace client
     {
-		class GameMap;
-	}
-	
-	class Bitmap;
-	
+        class GameMap;
+    }
+    
+    class Bitmap;
+    
     namespace draw
     {
-		class SWRenderer;
+        class SWRenderer;
 
         class SWMapRenderer
         {
-			struct Line;
-			struct LinePixel;
-			
-			int w, h;
-			SWRenderer *renderer;
-			
-			SWFeatureLevel level;
-			client::SceneDefinition sceneDef;
-			Handle<client::GameMap> map;
-			Bitmap *frameBuf;
-			float *depthBuf;
-			std::vector<Line> lines;
-			std::vector<MiniHeap::Ref> rle;
-			std::vector<size_t> rleLen;
-			
-			int lineResolution;
-			
-			typedef int8_t RleData;
-			std::vector<RleData> rleBuf;
-			
-			MiniHeap rleHeap;
-			
-			template<SWFeatureLevel level>
-			void BuildLine(Line& line,
-						   float minPitch, float maxPitch);
-			void BuildRle(int x, int y, std::vector<RleData>&);
-			
-			template<SWFeatureLevel level, int undersamp>
-			void RenderFinal(float yawMin, float yawMax,
-							 unsigned int numLines,
-							 unsigned int threadId, unsigned int numThreads);
-			
-			template<SWFeatureLevel level>
-			void RenderInner(const client::SceneDefinition&,
-						Bitmap *fb, float *depthBuffer);
-		public:
-			SWMapRenderer(SWRenderer *r,
-						  client::GameMap *,
-						  SWFeatureLevel level);
-			~SWMapRenderer();
-			
-			void Render(const client::SceneDefinition&,
-						Bitmap *fb, float *depthBuffer);
-			
-			void UpdateRle(int x, int y);
-		};
-	}
+            struct Line;
+            struct LinePixel;
+            
+            int w, h;
+            SWRenderer *renderer;
+            
+            SWFeatureLevel level;
+            client::SceneDefinition sceneDef;
+            Handle<client::GameMap> map;
+            Bitmap *frameBuf;
+            float *depthBuf;
+            std::vector<Line> lines;
+            std::vector<MiniHeap::Ref> rle;
+            std::vector<size_t> rleLen;
+            
+            int lineResolution;
+            
+            typedef int8_t RleData;
+            std::vector<RleData> rleBuf;
+            
+            MiniHeap rleHeap;
+            
+            template<SWFeatureLevel level>
+            void BuildLine(Line& line,
+                           float minPitch, float maxPitch);
+            void BuildRle(int x, int y, std::vector<RleData>&);
+            
+            template<SWFeatureLevel level, int undersamp>
+            void RenderFinal(float yawMin, float yawMax,
+                             unsigned int numLines,
+                             unsigned int threadId, unsigned int numThreads);
+            
+            template<SWFeatureLevel level>
+            void RenderInner(const client::SceneDefinition&,
+                        Bitmap *fb, float *depthBuffer);
+        public:
+            SWMapRenderer(SWRenderer *r,
+                          client::GameMap *,
+                          SWFeatureLevel level);
+            ~SWMapRenderer();
+            
+            void Render(const client::SceneDefinition&,
+                        Bitmap *fb, float *depthBuffer);
+            
+            void UpdateRle(int x, int y);
+        };
+    }
 }
 

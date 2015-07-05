@@ -30,14 +30,14 @@ varying vec3 scanPos;
 varying vec2 circlePos;
 
 void main() {
-	scanPos.xy = mix(scanRange.xy, scanRange.zw,
-				  positionAttribute.xy);
-	scanPos.z = scanZ;
-	gl_Position.xy = mix(drawRange.xy, drawRange.zw,
-						 positionAttribute.xy);
-	gl_Position.z = 0.5;
-	gl_Position.w = 1.;
-	
-	circlePos = mix(vec2(-1.), vec2(1.), positionAttribute.xy);
+    scanPos.xy = mix(scanRange.xy, scanRange.zw,
+                  positionAttribute.xy);
+    scanPos.z = scanZ;
+    gl_Position.xy = mix(drawRange.xy, drawRange.zw,
+                         positionAttribute.xy);
+    gl_Position.z = 0.5;
+    gl_Position.w = 1.;
+    
+    circlePos = mix(vec2(-1.), vec2(1.), positionAttribute.xy);
 }
 

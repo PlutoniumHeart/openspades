@@ -31,27 +31,27 @@ varying vec4 shadowMapCoord3;
 #define shadowMapViewPosZ shadowMapCoord1.w
 
 void TransformShadowMatrix(out vec4 shadowMapCoord,
-						   in vec3 vertexCoord,
-						   in mat4 matrix) {
-	vec4 c;
-	c = matrix * vec4(vertexCoord, 1.);
-	c.xyz = (c.xyz * 0.5) + c.w * 0.5;
-	// bias
-	c.z -= c.w * 0.0003;
-	shadowMapCoord = c;
+                           in vec3 vertexCoord,
+                           in mat4 matrix) {
+    vec4 c;
+    c = matrix * vec4(vertexCoord, 1.);
+    c.xyz = (c.xyz * 0.5) + c.w * 0.5;
+    // bias
+    c.z -= c.w * 0.0003;
+    shadowMapCoord = c;
 }
 
 void PrepareForShadow_Model(vec3 vertexCoord, vec3 normal) {
-	vec4 shadowMapViewPos = shadowMapViewMatrix * vec4(vertexCoord, 1.);
-	TransformShadowMatrix(shadowMapCoord1,
-						  vertexCoord,
-						  shadowMapMatrix1);
-	TransformShadowMatrix(shadowMapCoord2,
-						  vertexCoord,
-						  shadowMapMatrix2);
-	TransformShadowMatrix(shadowMapCoord3,
-						  vertexCoord,
-						  shadowMapMatrix3);
-	shadowMapViewPosZ = shadowMapViewPos.z;
-	
+    vec4 shadowMapViewPos = shadowMapViewMatrix * vec4(vertexCoord, 1.);
+    TransformShadowMatrix(shadowMapCoord1,
+                          vertexCoord,
+                          shadowMapMatrix1);
+    TransformShadowMatrix(shadowMapCoord2,
+                          vertexCoord,
+                          shadowMapMatrix2);
+    TransformShadowMatrix(shadowMapCoord3,
+                          vertexCoord,
+                          shadowMapMatrix3);
+    shadowMapViewPosZ = shadowMapViewPos.z;
+    
 }

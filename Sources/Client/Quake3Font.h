@@ -24,45 +24,45 @@
 #define PROP_SPACE_WIDTH -2
 
 namespace spades {
-	namespace client {
-		class IRenderer;
-		class IImage;
-		class Quake3Font: public IFont {
-			
-			enum GlyphType {
-				Invalid = 0,
-				Image,
-				Space
-			};
-			struct GlyphInfo {
-				GlyphType type;
-				AABB2 imageRect;
-				float advance;
-			};
-			
-			IRenderer *renderer;
-			IImage *tex;
-			int glyphHeight;
-			std::vector<GlyphInfo> glyphs;
-			float spaceWidth;
-			
-			float yMin, yMax;
-		protected:
-			virtual ~Quake3Font();
-		public:
-			Quake3Font(IRenderer *,
-					   IImage *texture,
-					   const int *map,
-					   int glyphHeight,
-					   float spaceWidth,
-					   bool extended = false);
-			
-			virtual Vector2 Measure(const std::string&);
-			virtual void Draw(const std::string&,
-							  Vector2 offset,
-							  float scale,
-							  Vector4 color);
-			void SetGlyphYRange(float yMin, float yMax);
-		};
-	}
+    namespace client {
+        class IRenderer;
+        class IImage;
+        class Quake3Font: public IFont {
+            
+            enum GlyphType {
+                Invalid = 0,
+                Image,
+                Space
+            };
+            struct GlyphInfo {
+                GlyphType type;
+                AABB2 imageRect;
+                float advance;
+            };
+            
+            IRenderer *renderer;
+            IImage *tex;
+            int glyphHeight;
+            std::vector<GlyphInfo> glyphs;
+            float spaceWidth;
+            
+            float yMin, yMax;
+        protected:
+            virtual ~Quake3Font();
+        public:
+            Quake3Font(IRenderer *,
+                       IImage *texture,
+                       const int *map,
+                       int glyphHeight,
+                       float spaceWidth,
+                       bool extended = false);
+            
+            virtual Vector2 Measure(const std::string&);
+            virtual void Draw(const std::string&,
+                              Vector2 offset,
+                              float scale,
+                              Vector4 color);
+            void SetGlyphYRange(float yMin, float yMax);
+        };
+    }
 }

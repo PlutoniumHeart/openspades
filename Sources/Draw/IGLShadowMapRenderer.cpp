@@ -24,12 +24,12 @@
 #include "../Core/Debug.h"
 
 namespace spades {
-	namespace draw {
-		IGLShadowMapRenderer::IGLShadowMapRenderer(GLRenderer *renderer):
-		renderer(renderer){}
-		void IGLShadowMapRenderer::RenderShadowMapPass() {
-			SPADES_MARK_FUNCTION();
-			renderer->modelRenderer->RenderShadowMapPass();
-		}
-	}
+    namespace draw {
+        IGLShadowMapRenderer::IGLShadowMapRenderer(GLRenderer *renderer):
+        renderer(renderer){}
+        void IGLShadowMapRenderer::RenderShadowMapPass() {
+            SPADES_MARK_FUNCTION();
+            renderer->modelRenderer->RenderShadowMapPass();
+        }
+    }
 }

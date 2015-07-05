@@ -24,33 +24,33 @@
 #include "IRunnable.h"
 
 namespace spades {
-	
-	class Thread {
-		void * volatile threadInfo;
-		Mutex lock;
-		IRunnable *runnable;
-		bool volatile autoDelete;
-		unsigned int volatile threadId;
-		
-		static int InternalRunner(void *);
-		void Quited();
-	public:
-		Thread();
-		Thread(IRunnable *r);
-		virtual ~Thread();
-		
-		virtual void Run();
-		
-		static void InitThreadSystem();
-		static void CleanupExitedThreads();
-		
-		void Start();
-		void Join();
-		
-		bool IsAlive();
-		
-		void MarkForAutoDeletion();
-	};
-	
+    
+    class Thread {
+        void * volatile threadInfo;
+        Mutex lock;
+        IRunnable *runnable;
+        bool volatile autoDelete;
+        unsigned int volatile threadId;
+        
+        static int InternalRunner(void *);
+        void Quited();
+    public:
+        Thread();
+        Thread(IRunnable *r);
+        virtual ~Thread();
+        
+        virtual void Run();
+        
+        static void InitThreadSystem();
+        static void CleanupExitedThreads();
+        
+        void Start();
+        void Join();
+        
+        bool IsAlive();
+        
+        void MarkForAutoDeletion();
+    };
+    
 
 }

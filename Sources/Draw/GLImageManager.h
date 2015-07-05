@@ -25,25 +25,25 @@
 #include <map>
 
 namespace spades {
-	namespace draw {
-		class IGLDevice;
-		class GLImage;
-		class GLRenderer;
-		
-		class GLImageManager {
-			IGLDevice *device;
-			std::map<std::string, GLImage *> images;
-			GLImage *whiteImage;
-			
-			GLImage *CreateImage(const std::string&);
-		public:
-			GLImageManager(IGLDevice *);
-			~GLImageManager();
-			
-			GLImage *RegisterImage(const std::string&);
-			GLImage *GetWhiteImage();
-			
-			void DrawAllImages(GLRenderer *);
-		};
-	}
+    namespace draw {
+        class IGLDevice;
+        class GLImage;
+        class GLRenderer;
+        
+        class GLImageManager {
+            IGLDevice *device;
+            std::map<std::string, GLImage *> images;
+            GLImage *whiteImage;
+            
+            GLImage *CreateImage(const std::string&);
+        public:
+            GLImageManager(IGLDevice *);
+            ~GLImageManager();
+            
+            GLImage *RegisterImage(const std::string&);
+            GLImage *GetWhiteImage();
+            
+            void DrawAllImages(GLRenderer *);
+        };
+    }
 }

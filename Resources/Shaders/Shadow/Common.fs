@@ -26,14 +26,14 @@ float VisibilityOfSunLight_Model();
 vec3 Radiosity_Map(float detailAmbientOcclusion);
 
 float VisibilityOfSunLight() {
-	return VisibilityOfSunLight_Map() * 
-	VisibilityOfSunLight_Model();
+    return VisibilityOfSunLight_Map() * 
+    VisibilityOfSunLight_Model();
 }
 
 vec3 EvaluateSunLight(){
-	return vec3(.6) * VisibilityOfSunLight();
+    return vec3(.6) * VisibilityOfSunLight();
 }
 
 vec3 EvaluateAmbientLight(float detailAmbientOcclusion) {
-	return Radiosity_Map(detailAmbientOcclusion);
+    return Radiosity_Map(detailAmbientOcclusion);
 }

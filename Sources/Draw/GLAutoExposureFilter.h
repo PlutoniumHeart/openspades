@@ -23,22 +23,22 @@
 #include "GLFramebufferManager.h"
 
 namespace spades {
-	namespace draw {
-		class GLRenderer;
-		class GLProgram;
-		class GLAutoExposureFilter {
-			GLProgram *thru;
-			GLProgram *computeGain;
-			GLProgram *preprocess;
-			GLRenderer *renderer;
-			
-			// 1x1 of framebuffer that holds the scene brightness
-			IGLDevice::UInteger exposureFramebuffer;
-			IGLDevice::UInteger exposureTexture;
-		public:
-			GLAutoExposureFilter(GLRenderer *);
-			~GLAutoExposureFilter();
-			GLColorBuffer Filter(GLColorBuffer);
-		};
-	}
+    namespace draw {
+        class GLRenderer;
+        class GLProgram;
+        class GLAutoExposureFilter {
+            GLProgram *thru;
+            GLProgram *computeGain;
+            GLProgram *preprocess;
+            GLRenderer *renderer;
+            
+            // 1x1 of framebuffer that holds the scene brightness
+            IGLDevice::UInteger exposureFramebuffer;
+            IGLDevice::UInteger exposureTexture;
+        public:
+            GLAutoExposureFilter(GLRenderer *);
+            ~GLAutoExposureFilter();
+            GLColorBuffer Filter(GLColorBuffer);
+        };
+    }
 }

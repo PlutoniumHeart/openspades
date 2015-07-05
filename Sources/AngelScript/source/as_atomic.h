@@ -49,19 +49,19 @@ BEGIN_AS_NAMESPACE
 class asCAtomic
 {
 public:
-	asCAtomic();
+    asCAtomic();
 
-	asDWORD get() const;
-	void    set(asDWORD val);
+    asDWORD get() const;
+    void    set(asDWORD val);
 
-	// Increase and return new value
-	asDWORD atomicInc();
+    // Increase and return new value
+    asDWORD atomicInc();
 
-	// Decrease and return new value
-	asDWORD atomicDec();
+    // Decrease and return new value
+    asDWORD atomicDec();
 
 protected:
-	asDWORD value;
+    asDWORD value;
 };
 
 END_AS_NAMESPACE

@@ -51,33 +51,33 @@ BEGIN_AS_NAMESPACE
 
 struct sVariable
 {
-	asCString   name;
-	asCDataType type;
-	int         stackOffset;
-	bool        isInitialized;
-	bool        isPureConstant;
-	asQWORD     constantValue;
-	bool        onHeap;
+    asCString   name;
+    asCDataType type;
+    int         stackOffset;
+    bool        isInitialized;
+    bool        isPureConstant;
+    asQWORD     constantValue;
+    bool        onHeap;
 };
 
 class asCVariableScope
 {
 public:
-	asCVariableScope(asCVariableScope *parent);
-	~asCVariableScope();
+    asCVariableScope(asCVariableScope *parent);
+    ~asCVariableScope();
 
-	void Reset();
+    void Reset();
 
-	int DeclareVariable(const char *name, const asCDataType &type, int stackOffset, bool isObjectOnHeap);
-	sVariable *GetVariable(const char *name);
-	sVariable *GetVariableByOffset(int offset);
+    int DeclareVariable(const char *name, const asCDataType &type, int stackOffset, bool isObjectOnHeap);
+    sVariable *GetVariable(const char *name);
+    sVariable *GetVariableByOffset(int offset);
 
-	asCVariableScope *parent;
+    asCVariableScope *parent;
 
-	bool isBreakScope;
-	bool isContinueScope;
+    bool isBreakScope;
+    bool isContinueScope;
 
-	asCArray<sVariable *> variables;
+    asCArray<sVariable *> variables;
 };
 
 END_AS_NAMESPACE

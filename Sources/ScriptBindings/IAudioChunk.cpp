@@ -22,45 +22,45 @@
 #include <Client/IAudioChunk.h>
 
 namespace spades{
-	namespace client {
-		
-		
-		class AudioChunkRegistrar: public ScriptObjectRegistrar {
-		public:
-			AudioChunkRegistrar():
-			ScriptObjectRegistrar("AudioChunk"){
-				
-			}
-			virtual void Register(ScriptManager *manager, Phase phase) {
-				asIScriptEngine *eng = manager->GetEngine();
-				int r;
-				eng->SetDefaultNamespace("spades");
-				switch(phase){
-					case PhaseObjectType:
-						r = eng->RegisterObjectType("AudioChunk",
-													0, asOBJ_REF);
-						manager->CheckError(r);
-						r = eng->RegisterObjectBehaviour("AudioChunk",
-														 asBEHAVE_ADDREF, "void f()",
-														 asMETHOD(IAudioChunk, AddRef),
-														 asCALL_THISCALL);
-						manager->CheckError(r);
-						r = eng->RegisterObjectBehaviour("AudioChunk",
-														 asBEHAVE_RELEASE, "void f()",
-														 asMETHOD(IAudioChunk, Release),
-														 asCALL_THISCALL);
-						manager->CheckError(r);
-						
-						break;
-					case PhaseObjectMember:
-						break;
-					default:
-						
-						break;
-				}
-			}
-		};
-		
-		static AudioChunkRegistrar registrar;
-	}
+    namespace client {
+        
+        
+        class AudioChunkRegistrar: public ScriptObjectRegistrar {
+        public:
+            AudioChunkRegistrar():
+            ScriptObjectRegistrar("AudioChunk"){
+                
+            }
+            virtual void Register(ScriptManager *manager, Phase phase) {
+                asIScriptEngine *eng = manager->GetEngine();
+                int r;
+                eng->SetDefaultNamespace("spades");
+                switch(phase){
+                    case PhaseObjectType:
+                        r = eng->RegisterObjectType("AudioChunk",
+                                                    0, asOBJ_REF);
+                        manager->CheckError(r);
+                        r = eng->RegisterObjectBehaviour("AudioChunk",
+                                                         asBEHAVE_ADDREF, "void f()",
+                                                         asMETHOD(IAudioChunk, AddRef),
+                                                         asCALL_THISCALL);
+                        manager->CheckError(r);
+                        r = eng->RegisterObjectBehaviour("AudioChunk",
+                                                         asBEHAVE_RELEASE, "void f()",
+                                                         asMETHOD(IAudioChunk, Release),
+                                                         asCALL_THISCALL);
+                        manager->CheckError(r);
+                        
+                        break;
+                    case PhaseObjectMember:
+                        break;
+                    default:
+                        
+                        break;
+                }
+            }
+        };
+        
+        static AudioChunkRegistrar registrar;
+    }
 }

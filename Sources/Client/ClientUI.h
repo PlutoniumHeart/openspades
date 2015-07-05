@@ -28,67 +28,67 @@
 #include <ScriptBindings/ScriptManager.h>
 
 namespace spades {
-	namespace client {
-		class IFont;
-		class Client;
-		class ClientUIHelper;
-		class ClientUI: public RefCountedObject {
-			friend class ClientUIHelper;
-			Handle<client::IRenderer> renderer;
-			Handle<client::IAudioDevice> audioDevice;
-			Handle<client::IFont> font;
-			
-			Handle<ClientUIHelper> helper;
-			Handle<asIScriptObject> ui;
-			
-			// weak reference
-			Client *client;
-			std::string ignoreInput;
-			
-			void SendChat(const std::string&, bool isGlobal);
-			
-			void AlertNotice(const std::string&);
-			void AlertWarning(const std::string&);
-			void AlertError(const std::string&);
-			
-		protected:
-			virtual ~ClientUI();
-		public:
-			ClientUI(client::IRenderer *, client::IAudioDevice *, client::IFont *font, Client *client);
-			void ClientDestroyed();
-			
-			client::IRenderer *GetRenderer() { return &*renderer; }
-			client::IAudioDevice *GetAudioDevice() { return &*audioDevice; }
-			
-			void MouseEvent(float x, float y);
-			void WheelEvent(float x, float y);
-			void KeyEvent(const std::string&,
-						  bool down);
-			void TextInputEvent(const std::string&);
-			void TextEditingEvent(const std::string&,
-										  int start, int len);
-			bool AcceptsTextInput();
-			AABB2 GetTextInputRect();
-			
-			void RunFrame(float dt);
-			
-			void Closing();
-			
-			bool WantsClientToBeClosed();
-			
-			bool NeedsInput();
-			
-			void RecordChatLog(const std::string&, Vector4 color);
-			
-			void EnterClientMenu();
-			void EnterGlobalChatWindow();
-			void EnterTeamChatWindow();
-			void EnterCommandWindow();
-			void CloseUI();
+    namespace client {
+        class IFont;
+        class Client;
+        class ClientUIHelper;
+        class ClientUI: public RefCountedObject {
+            friend class ClientUIHelper;
+            Handle<client::IRenderer> renderer;
+            Handle<client::IAudioDevice> audioDevice;
+            Handle<client::IFont> font;
+            
+            Handle<ClientUIHelper> helper;
+            Handle<asIScriptObject> ui;
+            
+            // weak reference
+            Client *client;
+            std::string ignoreInput;
+            
+            void SendChat(const std::string&, bool isGlobal);
+            
+            void AlertNotice(const std::string&);
+            void AlertWarning(const std::string&);
+            void AlertError(const std::string&);
+            
+        protected:
+            virtual ~ClientUI();
+        public:
+            ClientUI(client::IRenderer *, client::IAudioDevice *, client::IFont *font, Client *client);
+            void ClientDestroyed();
+            
+            client::IRenderer *GetRenderer() { return &*renderer; }
+            client::IAudioDevice *GetAudioDevice() { return &*audioDevice; }
+            
+            void MouseEvent(float x, float y);
+            void WheelEvent(float x, float y);
+            void KeyEvent(const std::string&,
+                          bool down);
+            void TextInputEvent(const std::string&);
+            void TextEditingEvent(const std::string&,
+                                          int start, int len);
+            bool AcceptsTextInput();
+            AABB2 GetTextInputRect();
+            
+            void RunFrame(float dt);
+            
+            void Closing();
+            
+            bool WantsClientToBeClosed();
+            
+            bool NeedsInput();
+            
+            void RecordChatLog(const std::string&, Vector4 color);
+            
+            void EnterClientMenu();
+            void EnterGlobalChatWindow();
+            void EnterTeamChatWindow();
+            void EnterCommandWindow();
+            void CloseUI();
 
-			//lm: so the chat does not have the initial chat key
-			bool isIgnored(const std::string& key);
-			void setIgnored(const std::string& key);
-		};;
-	}
+            //lm: so the chat does not have the initial chat key
+            bool isIgnored(const std::string& key);
+            void setIgnored(const std::string& key);
+        };;
+    }
 }

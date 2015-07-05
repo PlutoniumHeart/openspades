@@ -75,56 +75,56 @@ const asDWORD asOBJ_TEMPLATE_SUBTYPE = 0x20000000;
 
 struct asSTypeBehaviour
 {
-	asSTypeBehaviour() 
-	{
-		factory = 0;
-		listFactory = 0;
-		copyfactory = 0;
-		construct = 0; 
-		copyconstruct = 0;
-		destruct = 0; 
-		copy = 0; 
-		addref = 0; 
-		release = 0; 
-		gcGetRefCount = 0; 
-		gcSetFlag = 0; 
-		gcGetFlag = 0; 
-		gcEnumReferences = 0; 
-		gcReleaseAllReferences = 0;
-		templateCallback = 0;
-		getWeakRefFlag = 0;
-	}
+    asSTypeBehaviour() 
+    {
+        factory = 0;
+        listFactory = 0;
+        copyfactory = 0;
+        construct = 0; 
+        copyconstruct = 0;
+        destruct = 0; 
+        copy = 0; 
+        addref = 0; 
+        release = 0; 
+        gcGetRefCount = 0; 
+        gcSetFlag = 0; 
+        gcGetFlag = 0; 
+        gcEnumReferences = 0; 
+        gcReleaseAllReferences = 0;
+        templateCallback = 0;
+        getWeakRefFlag = 0;
+    }
 
-	int factory;
-	int listFactory; // Used for initialization lists only
-	int copyfactory;
-	int construct;
-	int copyconstruct;
-	int destruct;
-	int copy;
-	int addref;
-	int release;
-	int templateCallback;
+    int factory;
+    int listFactory; // Used for initialization lists only
+    int copyfactory;
+    int construct;
+    int copyconstruct;
+    int destruct;
+    int copy;
+    int addref;
+    int release;
+    int templateCallback;
 
-	// GC behaviours
-	int gcGetRefCount;
-	int gcSetFlag;
-	int gcGetFlag;
-	int gcEnumReferences;
-	int gcReleaseAllReferences;
+    // GC behaviours
+    int gcGetRefCount;
+    int gcSetFlag;
+    int gcGetFlag;
+    int gcEnumReferences;
+    int gcReleaseAllReferences;
 
-	// Weakref behaviours
-	int getWeakRefFlag;
+    // Weakref behaviours
+    int getWeakRefFlag;
 
-	asCArray<int> factories;
-	asCArray<int> constructors;
-	asCArray<int> operators;
+    asCArray<int> factories;
+    asCArray<int> constructors;
+    asCArray<int> operators;
 };
 
 struct asSEnumValue
 {
-	asCString name;
-	int       value;
+    asCString name;
+    int       value;
 };
 
 class asCScriptEngine;
@@ -138,108 +138,108 @@ public:
 //=====================================
 // From asIObjectType
 //=====================================
-	asIScriptEngine *GetEngine() const;
-	const char      *GetConfigGroup() const;
-	asDWORD          GetAccessMask() const;
-	asIScriptModule *GetModule() const;
+    asIScriptEngine *GetEngine() const;
+    const char      *GetConfigGroup() const;
+    asDWORD          GetAccessMask() const;
+    asIScriptModule *GetModule() const;
 
-	// Memory management
-	int AddRef() const;
-	int Release() const;
+    // Memory management
+    int AddRef() const;
+    int Release() const;
 
-	// Type info
-	const char      *GetName() const;
-	const char      *GetNamespace() const;
-	asIObjectType   *GetBaseType() const;
-	bool             DerivesFrom(const asIObjectType *objType) const;
-	asDWORD          GetFlags() const;
-	asUINT           GetSize() const;
-	int              GetTypeId() const;
-	int              GetSubTypeId(asUINT subtypeIndex = 0) const;
-	asIObjectType   *GetSubType(asUINT subtypeIndex = 0) const;
-	asUINT			 GetSubTypeCount() const;
+    // Type info
+    const char      *GetName() const;
+    const char      *GetNamespace() const;
+    asIObjectType   *GetBaseType() const;
+    bool             DerivesFrom(const asIObjectType *objType) const;
+    asDWORD          GetFlags() const;
+    asUINT           GetSize() const;
+    int              GetTypeId() const;
+    int              GetSubTypeId(asUINT subtypeIndex = 0) const;
+    asIObjectType   *GetSubType(asUINT subtypeIndex = 0) const;
+    asUINT             GetSubTypeCount() const;
 
-	// Interfaces
-	asUINT           GetInterfaceCount() const;
-	asIObjectType   *GetInterface(asUINT index) const;
-	bool             Implements(const asIObjectType *objType) const;
+    // Interfaces
+    asUINT           GetInterfaceCount() const;
+    asIObjectType   *GetInterface(asUINT index) const;
+    bool             Implements(const asIObjectType *objType) const;
 
-	// Factories
-	asUINT             GetFactoryCount() const;
-	asIScriptFunction *GetFactoryByIndex(asUINT index) const;
-	asIScriptFunction *GetFactoryByDecl(const char *decl) const;
+    // Factories
+    asUINT             GetFactoryCount() const;
+    asIScriptFunction *GetFactoryByIndex(asUINT index) const;
+    asIScriptFunction *GetFactoryByDecl(const char *decl) const;
 
-	// Methods
-	asUINT             GetMethodCount() const;
-	asIScriptFunction *GetMethodByIndex(asUINT index, bool getVirtual) const;
-	asIScriptFunction *GetMethodByName(const char *name, bool getVirtual) const;
-	asIScriptFunction *GetMethodByDecl(const char *decl, bool getVirtual) const;
+    // Methods
+    asUINT             GetMethodCount() const;
+    asIScriptFunction *GetMethodByIndex(asUINT index, bool getVirtual) const;
+    asIScriptFunction *GetMethodByName(const char *name, bool getVirtual) const;
+    asIScriptFunction *GetMethodByDecl(const char *decl, bool getVirtual) const;
 
-	// Properties
-	asUINT      GetPropertyCount() const;
-	int         GetProperty(asUINT index, const char **name, int *typeId, bool *isPrivate, int *offset, bool *isReference, asDWORD *accessMask) const;
-	const char *GetPropertyDeclaration(asUINT index) const;
+    // Properties
+    asUINT      GetPropertyCount() const;
+    int         GetProperty(asUINT index, const char **name, int *typeId, bool *isPrivate, int *offset, bool *isReference, asDWORD *accessMask) const;
+    const char *GetPropertyDeclaration(asUINT index) const;
 
-	// Behaviours
-	asUINT             GetBehaviourCount() const;
-	asIScriptFunction *GetBehaviourByIndex(asUINT index, asEBehaviours *outBehaviour) const;
+    // Behaviours
+    asUINT             GetBehaviourCount() const;
+    asIScriptFunction *GetBehaviourByIndex(asUINT index, asEBehaviours *outBehaviour) const;
 
-	// User data
-	void *SetUserData(void *data, asPWORD type);
-	void *GetUserData(asPWORD type) const;
+    // User data
+    void *SetUserData(void *data, asPWORD type);
+    void *GetUserData(asPWORD type) const;
 
 //===========================================
 // Internal
 //===========================================
 public:
-	asCObjectType(asCScriptEngine *engine);
-	~asCObjectType();
+    asCObjectType(asCScriptEngine *engine);
+    ~asCObjectType();
 
-	void Orphan(asCModule *module);
-	int  GetRefCount();
-	void SetGCFlag();
-	bool GetGCFlag();
-	void EnumReferences(asIScriptEngine *);
-	void ReleaseAllHandles(asIScriptEngine *);
+    void Orphan(asCModule *module);
+    int  GetRefCount();
+    void SetGCFlag();
+    bool GetGCFlag();
+    void EnumReferences(asIScriptEngine *);
+    void ReleaseAllHandles(asIScriptEngine *);
 
-	void ReleaseAllFunctions();
+    void ReleaseAllFunctions();
 
-	bool IsInterface() const;
-	bool IsShared() const;
+    bool IsInterface() const;
+    bool IsShared() const;
 
-	asCObjectProperty *AddPropertyToClass(const asCString &name, const asCDataType &dt, bool isPrivate);
-	void ReleaseAllProperties();
+    asCObjectProperty *AddPropertyToClass(const asCString &name, const asCDataType &dt, bool isPrivate);
+    void ReleaseAllProperties();
 
-	asCString                    name;
-	asSNameSpace                *nameSpace;
-	int                          size;
-	asCArray<asCObjectProperty*> properties;
-	asCArray<int>                methods;
-	asCArray<asCObjectType*>     interfaces;
-	asCArray<asSEnumValue*>      enumValues;
-	asCObjectType *              derivedFrom;
-	asCArray<asCScriptFunction*> virtualFunctionTable;
+    asCString                    name;
+    asSNameSpace                *nameSpace;
+    int                          size;
+    asCArray<asCObjectProperty*> properties;
+    asCArray<int>                methods;
+    asCArray<asCObjectType*>     interfaces;
+    asCArray<asSEnumValue*>      enumValues;
+    asCObjectType *              derivedFrom;
+    asCArray<asCScriptFunction*> virtualFunctionTable;
 
-	asDWORD flags;
-	asDWORD accessMask;
+    asDWORD flags;
+    asDWORD accessMask;
 
-	asSTypeBehaviour beh;
+    asSTypeBehaviour beh;
 
-	// Used for template types
-	asCArray<asCDataType> templateSubTypes;
-	bool                  acceptValueSubType;
-	bool                  acceptRefSubType;
+    // Used for template types
+    asCArray<asCDataType> templateSubTypes;
+    bool                  acceptValueSubType;
+    bool                  acceptRefSubType;
 
-	asCScriptEngine  *engine;
-	asCModule        *module;
-	asCArray<asPWORD> userData;
+    asCScriptEngine  *engine;
+    asCModule        *module;
+    asCArray<asPWORD> userData;
 
 protected:
-	friend class asCScriptEngine;
-	asCObjectType();
+    friend class asCScriptEngine;
+    asCObjectType();
 
-	mutable asCAtomic refCount;
-	mutable bool      gcFlag;
+    mutable asCAtomic refCount;
+    mutable bool      gcFlag;
 };
 
 END_AS_NAMESPACE

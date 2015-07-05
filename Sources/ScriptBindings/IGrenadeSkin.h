@@ -24,14 +24,14 @@
 #include <Core/Math.h>
 
 namespace spades {
-	namespace client {
-		
-		class ScriptIGrenadeSkin {
-			asIScriptObject *obj;
-		public:
-			ScriptIGrenadeSkin(asIScriptObject *obj);
-			void SetReadyState(float);
-			void SetCookTime(float);
-		};
-	}
+    namespace client {
+        
+        class ScriptIGrenadeSkin {
+            asIScriptObject *obj;
+        public:
+            ScriptIGrenadeSkin(asIScriptObject *obj);
+            void SetReadyState(float);
+            void SetCookTime(float);
+        };
+    }
 }

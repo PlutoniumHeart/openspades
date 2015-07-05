@@ -24,27 +24,27 @@
 #include <Imports/SDL.h>
 
 namespace spades {
-	class SdlFileStream: public IStream {
-		SDL_RWops *ops;
-		bool autoClose;
-	public:
-		SdlFileStream(SDL_RWops *f, bool autoClose = false);
-		SdlFileStream(const SdlFileStream&) = delete;
-		void operator =(const SdlFileStream&) = delete;
-		virtual ~SdlFileStream();
-		
-		virtual int ReadByte();
-		virtual size_t Read(void *, size_t bytes);
-		
-		virtual void WriteByte(int);
-		virtual void Write(const void *, size_t bytes);
-		
-		virtual uint64_t GetPosition();
-		virtual void SetPosition(uint64_t);
-		
-		virtual uint64_t GetLength();
-		virtual void SetLength(uint64_t);
-		
-		virtual void Flush();
-	};
+    class SdlFileStream: public IStream {
+        SDL_RWops *ops;
+        bool autoClose;
+    public:
+        SdlFileStream(SDL_RWops *f, bool autoClose = false);
+        SdlFileStream(const SdlFileStream&) = delete;
+        void operator =(const SdlFileStream&) = delete;
+        virtual ~SdlFileStream();
+        
+        virtual int ReadByte();
+        virtual size_t Read(void *, size_t bytes);
+        
+        virtual void WriteByte(int);
+        virtual void Write(const void *, size_t bytes);
+        
+        virtual uint64_t GetPosition();
+        virtual void SetPosition(uint64_t);
+        
+        virtual uint64_t GetLength();
+        virtual void SetLength(uint64_t);
+        
+        virtual void Flush();
+    };
 }

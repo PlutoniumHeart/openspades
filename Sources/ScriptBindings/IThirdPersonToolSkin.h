@@ -24,13 +24,13 @@
 #include <Core/Math.h>
 
 namespace spades {
-	namespace client {
-		class ScriptIThirdPersonToolSkin {
-			asIScriptObject *obj;
-		public:
-			ScriptIThirdPersonToolSkin(asIScriptObject *obj);
-			void SetOriginMatrix(Matrix4 m);
-			float GetPitchBias();
-		};
-	}
+    namespace client {
+        class ScriptIThirdPersonToolSkin {
+            asIScriptObject *obj;
+        public:
+            ScriptIThirdPersonToolSkin(asIScriptObject *obj);
+            void SetOriginMatrix(Matrix4 m);
+            float GetPitchBias();
+        };
+    }
 }

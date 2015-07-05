@@ -46,55 +46,55 @@ BEGIN_AS_NAMESPACE
 
 enum eScriptNode
 {
-	snUndefined,
-	snScript,
-	snFunction,
-	snConstant,
-	snDataType,
-	snIdentifier,
-	snParameterList,
-	snStatementBlock,
-	snDeclaration,
-	snExpressionStatement,
-	snIf,
-	snFor,
-	snWhile,
-	snReturn,
-	snExpression,
-	snExprTerm,
-	snFunctionCall,
-	snConstructCall,
-	snArgList,
-	snExprPreOp,
-	snExprPostOp,
-	snExprOperator,
-	snExprValue,
-	snBreak,
-	snContinue,
-	snDoWhile,
-	snAssignment,
-	snCondition,
-	snSwitch,
-	snCase,
-	snImport,
-	snClass,
-	snInitList,
-	snInterface,
-	snEnum,
-	snTypedef,
-	snCast,
-	snVariableAccess,
-	snFuncDef,
-	snVirtualProperty,
-	snNamespace,
-	snMixin
+    snUndefined,
+    snScript,
+    snFunction,
+    snConstant,
+    snDataType,
+    snIdentifier,
+    snParameterList,
+    snStatementBlock,
+    snDeclaration,
+    snExpressionStatement,
+    snIf,
+    snFor,
+    snWhile,
+    snReturn,
+    snExpression,
+    snExprTerm,
+    snFunctionCall,
+    snConstructCall,
+    snArgList,
+    snExprPreOp,
+    snExprPostOp,
+    snExprOperator,
+    snExprValue,
+    snBreak,
+    snContinue,
+    snDoWhile,
+    snAssignment,
+    snCondition,
+    snSwitch,
+    snCase,
+    snImport,
+    snClass,
+    snInitList,
+    snInterface,
+    snEnum,
+    snTypedef,
+    snCast,
+    snVariableAccess,
+    snFuncDef,
+    snVirtualProperty,
+    snNamespace,
+    snMixin
 };
 
 struct sToken
 {
-	eTokenType type;
-	size_t pos;
-	size_t length;
+    eTokenType type;
+    size_t pos;
+    size_t length;
 };
 
 class asCScriptEngine;
@@ -102,31 +102,31 @@ class asCScriptEngine;
 class asCScriptNode
 {
 public:
-	asCScriptNode(eScriptNode nodeType);
+    asCScriptNode(eScriptNode nodeType);
 
-	void Destroy(asCScriptEngine *engine);
-	asCScriptNode *CreateCopy(asCScriptEngine *engine);
+    void Destroy(asCScriptEngine *engine);
+    asCScriptNode *CreateCopy(asCScriptEngine *engine);
 
-	void SetToken(sToken *token);
-	void AddChildLast(asCScriptNode *node);
-	void DisconnectParent();
+    void SetToken(sToken *token);
+    void AddChildLast(asCScriptNode *node);
+    void DisconnectParent();
 
-	void UpdateSourcePos(size_t pos, size_t length);
+    void UpdateSourcePos(size_t pos, size_t length);
 
-	eScriptNode nodeType;
-	eTokenType tokenType;
-	size_t tokenPos;
-	size_t tokenLength;
+    eScriptNode nodeType;
+    eTokenType tokenType;
+    size_t tokenPos;
+    size_t tokenLength;
 
-	asCScriptNode *parent;
-	asCScriptNode *next;
-	asCScriptNode *prev;
-	asCScriptNode *firstChild;
-	asCScriptNode *lastChild;
+    asCScriptNode *parent;
+    asCScriptNode *next;
+    asCScriptNode *prev;
+    asCScriptNode *firstChild;
+    asCScriptNode *lastChild;
 
 protected:
-	// Must call Destroy instead
-	~asCScriptNode() {}
+    // Must call Destroy instead
+    ~asCScriptNode() {}
 };
 
 END_AS_NAMESPACE

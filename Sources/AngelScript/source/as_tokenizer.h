@@ -50,28 +50,28 @@ BEGIN_AS_NAMESPACE
 class asCTokenizer
 {
 public:
-	eTokenType GetToken(const char *source, size_t sourceLength, size_t *tokenLength, asETokenClass *tc = 0) const;
-	
-	static const char *GetDefinition(int tokenType);
+    eTokenType GetToken(const char *source, size_t sourceLength, size_t *tokenLength, asETokenClass *tc = 0) const;
+    
+    static const char *GetDefinition(int tokenType);
 
 protected:
-	friend class asCScriptEngine;
+    friend class asCScriptEngine;
 
-	asCTokenizer();
-	~asCTokenizer();
+    asCTokenizer();
+    ~asCTokenizer();
 
-	asETokenClass ParseToken(const char *source, size_t sourceLength, size_t &tokenLength, eTokenType &tokenType) const;
-	bool IsWhiteSpace(const char *source, size_t sourceLength, size_t &tokenLength, eTokenType &tokenType) const;
-	bool IsComment(const char *source, size_t sourceLength, size_t &tokenLength, eTokenType &tokenType) const;
-	bool IsConstant(const char *source, size_t sourceLength, size_t &tokenLength, eTokenType &tokenType) const;
-	bool IsKeyWord(const char *source, size_t sourceLength, size_t &tokenLength, eTokenType &tokenType) const;
-	bool IsIdentifier(const char *source, size_t sourceLength, size_t &tokenLength, eTokenType &tokenType) const;
-	bool IsDigitInRadix(char ch, int radix) const;
+    asETokenClass ParseToken(const char *source, size_t sourceLength, size_t &tokenLength, eTokenType &tokenType) const;
+    bool IsWhiteSpace(const char *source, size_t sourceLength, size_t &tokenLength, eTokenType &tokenType) const;
+    bool IsComment(const char *source, size_t sourceLength, size_t &tokenLength, eTokenType &tokenType) const;
+    bool IsConstant(const char *source, size_t sourceLength, size_t &tokenLength, eTokenType &tokenType) const;
+    bool IsKeyWord(const char *source, size_t sourceLength, size_t &tokenLength, eTokenType &tokenType) const;
+    bool IsIdentifier(const char *source, size_t sourceLength, size_t &tokenLength, eTokenType &tokenType) const;
+    bool IsDigitInRadix(char ch, int radix) const;
 
-	const asCScriptEngine *engine;
+    const asCScriptEngine *engine;
 
-	asCMap<asCStringPointer, eTokenType> alphaKeywordMap;
-	asCMap<asCStringPointer, eTokenType> nonAlphaKeywordMap;
+    asCMap<asCStringPointer, eTokenType> alphaKeywordMap;
+    asCMap<asCStringPointer, eTokenType> nonAlphaKeywordMap;
 };
 
 END_AS_NAMESPACE

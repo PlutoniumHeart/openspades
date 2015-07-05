@@ -28,109 +28,109 @@
 #include <memory>
 
 namespace spades {
-	class SdlImageReader: public IBitmapCodec {
-	public:
-		virtual std::string GetName() = 0;
-		
-		virtual SDL_Surface *LoadSdlImage(const std::string& data) = 0;
-		
-		virtual bool CanLoad() { return true; }
-		virtual bool CanSave() { return false; }
-		
-		virtual bool CheckExtension(const std::string&) = 0;
-		
-		virtual Bitmap *Load(IStream *stream){
-			SPADES_MARK_FUNCTION();
-			
-			// read all
-			std::string data = stream->ReadAllBytes();
-			
-			auto deleter = [](SDL_Surface *s){SDL_FreeSurface(s);};
-			
-			// copy to buffer
-			std::unique_ptr<SDL_Surface, decltype(deleter)> imgraw(LoadSdlImage(data), deleter);
-			if(imgraw == nullptr) {
-				SPRaise("SDL surface was not loaded.");
-			}
-			
-			std::unique_ptr<SDL_Surface, decltype(deleter)> img(SDL_ConvertSurfaceFormat(imgraw.get(), SDL_PIXELFORMAT_ABGR8888, 0), deleter);
-			if(img == nullptr) {
-				SPRaise("SDL surface was loaded, but format conversion failed.");
-			}
-			
-			const unsigned char* inPixels =
-			(const unsigned char *)img->pixels;
-			int width = img->w;
-			int height = img->h;
-			int pitch = img->pitch;
-			
-			Handle<Bitmap> bmp;
-			bmp.Set(new Bitmap(width, height), false);
-			try{
-				unsigned char *outPixels = (unsigned char *)bmp->GetPixels();
-				
-				if(pitch == width * 4){
-					// if the pitch matches the requirement of Bitmap,
-					// just use it
-					memcpy(outPixels, inPixels, pitch * height);
-				} else {
-					// convert
-					for(int y = 0; y < height; y++){
-						memcpy(outPixels, inPixels, width * 4);
-						outPixels += width * 4;
-						inPixels += pitch;
-					}
-				}
-				return bmp.Unmanage();
-			}catch(...){
-				throw;
-			}
-		}
-		
-		virtual void Save(IStream *, Bitmap *) {
-			SPADES_MARK_FUNCTION();
-			SPNotImplemented();
-		}
-	};
-	
-	class StringSdlRWops {
-		SDL_RWops *op;
-		std::string str;
-	public:
-		StringSdlRWops(std::string s):str(s) {
-			op = SDL_RWFromConstMem(str.data(), str.size());
-		}
-		~StringSdlRWops() {
-			SDL_RWclose(op);
-		}
-		operator SDL_RWops *() { return op; }
-	};
-	
-	class SdlImageImageReader: public SdlImageReader {
-	public:
-		virtual std::string GetName(){
-			return "SDL_image Image Reader";
-		}
-		
-		virtual SDL_Surface *LoadSdlImage(const std::string& data) {
-			StringSdlRWops ops(data);
-			int flags = IMG_INIT_PNG|IMG_INIT_JPG;
-			int initted = IMG_Init(flags);
-			if((initted & flags) != flags) {
-				SPRaise("IMG_Init failed: %s", IMG_GetError());
-			}
-			auto *s = IMG_Load_RW(ops, 0);
-			if(s == nullptr) {
-				SPRaise("IMG_Load_RW failed: %s", IMG_GetError());
-			}
-			return s;
-		}
-		
-		virtual bool CheckExtension(const std::string& fn) {
-			return EndsWith(fn, ".png") || EndsWith(fn, ".jpg") || EndsWith(fn, ".tif") || EndsWith(fn, ".bmp");
-		}
-	} imgReader;
-	
-	
+    class SdlImageReader: public IBitmapCodec {
+    public:
+        virtual std::string GetName() = 0;
+        
+        virtual SDL_Surface *LoadSdlImage(const std::string& data) = 0;
+        
+        virtual bool CanLoad() { return true; }
+        virtual bool CanSave() { return false; }
+        
+        virtual bool CheckExtension(const std::string&) = 0;
+        
+        virtual Bitmap *Load(IStream *stream){
+            SPADES_MARK_FUNCTION();
+            
+            // read all
+            std::string data = stream->ReadAllBytes();
+            
+            auto deleter = [](SDL_Surface *s){SDL_FreeSurface(s);};
+            
+            // copy to buffer
+            std::unique_ptr<SDL_Surface, decltype(deleter)> imgraw(LoadSdlImage(data), deleter);
+            if(imgraw == nullptr) {
+                SPRaise("SDL surface was not loaded.");
+            }
+            
+            std::unique_ptr<SDL_Surface, decltype(deleter)> img(SDL_ConvertSurfaceFormat(imgraw.get(), SDL_PIXELFORMAT_ABGR8888, 0), deleter);
+            if(img == nullptr) {
+                SPRaise("SDL surface was loaded, but format conversion failed.");
+            }
+            
+            const unsigned char* inPixels =
+            (const unsigned char *)img->pixels;
+            int width = img->w;
+            int height = img->h;
+            int pitch = img->pitch;
+            
+            Handle<Bitmap> bmp;
+            bmp.Set(new Bitmap(width, height), false);
+            try{
+                unsigned char *outPixels = (unsigned char *)bmp->GetPixels();
+                
+                if(pitch == width * 4){
+                    // if the pitch matches the requirement of Bitmap,
+                    // just use it
+                    memcpy(outPixels, inPixels, pitch * height);
+                } else {
+                    // convert
+                    for(int y = 0; y < height; y++){
+                        memcpy(outPixels, inPixels, width * 4);
+                        outPixels += width * 4;
+                        inPixels += pitch;
+                    }
+                }
+                return bmp.Unmanage();
+            }catch(...){
+                throw;
+            }
+        }
+        
+        virtual void Save(IStream *, Bitmap *) {
+            SPADES_MARK_FUNCTION();
+            SPNotImplemented();
+        }
+    };
+    
+    class StringSdlRWops {
+        SDL_RWops *op;
+        std::string str;
+    public:
+        StringSdlRWops(std::string s):str(s) {
+            op = SDL_RWFromConstMem(str.data(), str.size());
+        }
+        ~StringSdlRWops() {
+            SDL_RWclose(op);
+        }
+        operator SDL_RWops *() { return op; }
+    };
+    
+    class SdlImageImageReader: public SdlImageReader {
+    public:
+        virtual std::string GetName(){
+            return "SDL_image Image Reader";
+        }
+        
+        virtual SDL_Surface *LoadSdlImage(const std::string& data) {
+            StringSdlRWops ops(data);
+            int flags = IMG_INIT_PNG|IMG_INIT_JPG;
+            int initted = IMG_Init(flags);
+            if((initted & flags) != flags) {
+                SPRaise("IMG_Init failed: %s", IMG_GetError());
+            }
+            auto *s = IMG_Load_RW(ops, 0);
+            if(s == nullptr) {
+                SPRaise("IMG_Load_RW failed: %s", IMG_GetError());
+            }
+            return s;
+        }
+        
+        virtual bool CheckExtension(const std::string& fn) {
+            return EndsWith(fn, ".png") || EndsWith(fn, ".jpg") || EndsWith(fn, ".tif") || EndsWith(fn, ".bmp");
+        }
+    } imgReader;
+    
+    
 }
 

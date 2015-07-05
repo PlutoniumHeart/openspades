@@ -22,45 +22,45 @@
 #include <Client/IModel.h>
 
 namespace spades{
-	namespace client {
-		
-		
-		class ModelRegistrar: public ScriptObjectRegistrar {
-		public:
-			ModelRegistrar():
-			ScriptObjectRegistrar("Model"){
-				
-			}
-			virtual void Register(ScriptManager *manager, Phase phase) {
-				asIScriptEngine *eng = manager->GetEngine();
-				int r;
-				eng->SetDefaultNamespace("spades");
-				switch(phase){
-					case PhaseObjectType:
-						r = eng->RegisterObjectType("Model",
-													0, asOBJ_REF);
-						manager->CheckError(r);
-						r = eng->RegisterObjectBehaviour("Model",
-														 asBEHAVE_ADDREF, "void f()",
-														 asMETHOD(IModel, AddRef),
-														 asCALL_THISCALL);
-						manager->CheckError(r);
-						r = eng->RegisterObjectBehaviour("Model",
-														 asBEHAVE_RELEASE, "void f()",
-														 asMETHOD(IModel, Release),
-														 asCALL_THISCALL);
-						manager->CheckError(r);
-						
-						break;
-					case PhaseObjectMember:
-						break;
-					default:
-						
-						break;
-				}
-			}
-		};
-		
-		static ModelRegistrar registrar;
-	}
+    namespace client {
+        
+        
+        class ModelRegistrar: public ScriptObjectRegistrar {
+        public:
+            ModelRegistrar():
+            ScriptObjectRegistrar("Model"){
+                
+            }
+            virtual void Register(ScriptManager *manager, Phase phase) {
+                asIScriptEngine *eng = manager->GetEngine();
+                int r;
+                eng->SetDefaultNamespace("spades");
+                switch(phase){
+                    case PhaseObjectType:
+                        r = eng->RegisterObjectType("Model",
+                                                    0, asOBJ_REF);
+                        manager->CheckError(r);
+                        r = eng->RegisterObjectBehaviour("Model",
+                                                         asBEHAVE_ADDREF, "void f()",
+                                                         asMETHOD(IModel, AddRef),
+                                                         asCALL_THISCALL);
+                        manager->CheckError(r);
+                        r = eng->RegisterObjectBehaviour("Model",
+                                                         asBEHAVE_RELEASE, "void f()",
+                                                         asMETHOD(IModel, Release),
+                                                         asCALL_THISCALL);
+                        manager->CheckError(r);
+                        
+                        break;
+                    case PhaseObjectMember:
+                        break;
+                    default:
+                        
+                        break;
+                }
+            }
+        };
+        
+        static ModelRegistrar registrar;
+    }
 }

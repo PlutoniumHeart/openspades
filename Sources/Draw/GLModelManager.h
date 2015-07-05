@@ -25,17 +25,17 @@
 #include <string>
 
 namespace spades {
-	namespace draw {
-		class GLModel;
-		class GLRenderer;
-		class GLModelManager {
-			GLRenderer *renderer;
-			std::map<std::string, GLModel *> models;
-			GLModel *CreateModel(const char *);
-		public:
-			GLModelManager(GLRenderer *);
-			~GLModelManager();
-			GLModel *RegisterModel(const char *);
-		};
-	}
+    namespace draw {
+        class GLModel;
+        class GLRenderer;
+        class GLModelManager {
+            GLRenderer *renderer;
+            std::map<std::string, GLModel *> models;
+            GLModel *CreateModel(const char *);
+        public:
+            GLModelManager(GLRenderer *);
+            ~GLModelManager();
+            GLModel *RegisterModel(const char *);
+        };
+    }
 }

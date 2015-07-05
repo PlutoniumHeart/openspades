@@ -30,192 +30,192 @@
 #include "../Core/Debug.h"
 
 namespace spades {
-	namespace draw {
-		GLAutoExposureFilter::GLAutoExposureFilter(GLRenderer *renderer):
-		renderer(renderer){
-			thru = renderer->RegisterProgram("Shaders/PostFilters/PassThrough.program");
-			preprocess = renderer->RegisterProgram("Shaders/PostFilters/AutoExposurePreprocess.program");
-			computeGain = renderer->RegisterProgram("Shaders/PostFilters/AutoExposure.program");
-			
-			IGLDevice *dev = renderer->GetGLDevice();
-			
-			exposureTexture = dev->GenTexture();
-			
-			dev->BindTexture(IGLDevice::Texture2D, exposureTexture);
-			
-			dev->TexImage2D(IGLDevice::Texture2D,
-							0,
-							IGLDevice::RGBA16F,
-							1,
-							1,
-							0,
-							IGLDevice::RGBA,
-							IGLDevice::UnsignedByte, NULL);
-			SPLog("Brightness Texture Allocated");
-			dev->TexParamater(IGLDevice::Texture2D,
-							  IGLDevice::TextureMagFilter,
-							  IGLDevice::Nearest);
-			dev->TexParamater(IGLDevice::Texture2D,
-							  IGLDevice::TextureMinFilter,
-							  IGLDevice::Nearest);
-			dev->TexParamater(IGLDevice::Texture2D,
-							  IGLDevice::TextureWrapS,
-							  IGLDevice::ClampToEdge);
-			dev->TexParamater(IGLDevice::Texture2D,
-							  IGLDevice::TextureWrapT,
-							  IGLDevice::ClampToEdge);
-			
-			exposureFramebuffer = dev->GenFramebuffer();
-			dev->BindFramebuffer(IGLDevice::Framebuffer, exposureFramebuffer);
-			
-			dev->FramebufferTexture2D(IGLDevice::Framebuffer,
-									  IGLDevice::ColorAttachment0,
-									  IGLDevice::Texture2D,
-									  exposureTexture, 0);
-			dev->Viewport(0, 0, 1, 1);
-			dev->ClearColor(1.f, 1.f, 1.f, 1.f);
-			dev->Clear(IGLDevice::ColorBufferBit);
-			
-			dev->BindFramebuffer(IGLDevice::Framebuffer, 0);
-			dev->BindTexture(IGLDevice::Texture2D, 0);
-			
-			SPLog("Brightness Framebuffer Allocated");
-			
-		}
-		
-		GLAutoExposureFilter::~GLAutoExposureFilter()
-		{
-			IGLDevice *dev = renderer->GetGLDevice();
-			dev->DeleteTexture(exposureTexture);
-			dev->DeleteFramebuffer(exposureFramebuffer);
-		}
-		
+    namespace draw {
+        GLAutoExposureFilter::GLAutoExposureFilter(GLRenderer *renderer):
+        renderer(renderer){
+            thru = renderer->RegisterProgram("Shaders/PostFilters/PassThrough.program");
+            preprocess = renderer->RegisterProgram("Shaders/PostFilters/AutoExposurePreprocess.program");
+            computeGain = renderer->RegisterProgram("Shaders/PostFilters/AutoExposure.program");
+            
+            IGLDevice *dev = renderer->GetGLDevice();
+            
+            exposureTexture = dev->GenTexture();
+            
+            dev->BindTexture(IGLDevice::Texture2D, exposureTexture);
+            
+            dev->TexImage2D(IGLDevice::Texture2D,
+                            0,
+                            IGLDevice::RGBA16F,
+                            1,
+                            1,
+                            0,
+                            IGLDevice::RGBA,
+                            IGLDevice::UnsignedByte, NULL);
+            SPLog("Brightness Texture Allocated");
+            dev->TexParamater(IGLDevice::Texture2D,
+                              IGLDevice::TextureMagFilter,
+                              IGLDevice::Nearest);
+            dev->TexParamater(IGLDevice::Texture2D,
+                              IGLDevice::TextureMinFilter,
+                              IGLDevice::Nearest);
+            dev->TexParamater(IGLDevice::Texture2D,
+                              IGLDevice::TextureWrapS,
+                              IGLDevice::ClampToEdge);
+            dev->TexParamater(IGLDevice::Texture2D,
+                              IGLDevice::TextureWrapT,
+                              IGLDevice::ClampToEdge);
+            
+            exposureFramebuffer = dev->GenFramebuffer();
+            dev->BindFramebuffer(IGLDevice::Framebuffer, exposureFramebuffer);
+            
+            dev->FramebufferTexture2D(IGLDevice::Framebuffer,
+                                      IGLDevice::ColorAttachment0,
+                                      IGLDevice::Texture2D,
+                                      exposureTexture, 0);
+            dev->Viewport(0, 0, 1, 1);
+            dev->ClearColor(1.f, 1.f, 1.f, 1.f);
+            dev->Clear(IGLDevice::ColorBufferBit);
+            
+            dev->BindFramebuffer(IGLDevice::Framebuffer, 0);
+            dev->BindTexture(IGLDevice::Texture2D, 0);
+            
+            SPLog("Brightness Framebuffer Allocated");
+            
+        }
+        
+        GLAutoExposureFilter::~GLAutoExposureFilter()
+        {
+            IGLDevice *dev = renderer->GetGLDevice();
+            dev->DeleteTexture(exposureTexture);
+            dev->DeleteFramebuffer(exposureFramebuffer);
+        }
+        
 #define Level BloomLevel
-		
-		struct Level {
-			int w, h;
-			GLColorBuffer buffer;
-		};
-		
-		GLColorBuffer GLAutoExposureFilter::Filter(GLColorBuffer input) {
-			SPADES_MARK_FUNCTION();
-			
-			std::vector<Level> levels;
-			
-			IGLDevice *dev = renderer->GetGLDevice();
-			GLQuadRenderer qr(dev);
-			
-			static GLProgramAttribute thruPosition("positionAttribute");
-			static GLProgramUniform thruColor("colorUniform");
-			static GLProgramUniform thruTexture("texture");
-			static GLProgramUniform thruTexCoordRange("texCoordRange");
-			
-			thruPosition(thru);
-			thruColor(thru);
-			thruTexture(thru);
-			thruTexCoordRange(thru);
-			
-			static GLProgramAttribute preprocessPosition("positionAttribute");
-			static GLProgramUniform preprocessColor("colorUniform");
-			static GLProgramUniform preprocessTexture("texture");
-			static GLProgramUniform preprocessTexCoordRange("texCoordRange");
-			
-			preprocessPosition(preprocess);
-			preprocessColor(preprocess);
-			preprocessTexture(preprocess);
-			preprocessTexCoordRange(preprocess);
-			
-			static GLProgramAttribute computeGainPosition("positionAttribute");
-			static GLProgramUniform computeGainColor("colorUniform");
-			static GLProgramUniform computeGainTexture("texture");
-			static GLProgramUniform computeGainTexCoordRange("texCoordRange");
-			
-			computeGainPosition(computeGain);
-			computeGainColor(computeGain);
-			computeGainTexture(computeGain);
-			computeGainTexCoordRange(computeGain);
-			
-			
-			preprocess->Use();
-			preprocessColor.SetValue(1.f, 1.f, 1.f, 1.f);
-			preprocessTexture.SetValue(0);
-			preprocessTexCoordRange.SetValue(0.f, 0.f, 1.f, 1.f);
-			
-			thru->Use();
-			thruColor.SetValue(1.f, 1.f, 1.f, 1.f);
-			thruTexture.SetValue(0);
-			thruTexCoordRange.SetValue(0.f, 0.f, 1.f, 1.f);
-			
-			dev->Enable(IGLDevice::Blend, false);
-			dev->ActiveTexture(0);
-			
-			// downsample until it becomes 1x1x
-			GLColorBuffer buffer = input;
-			bool firstLevel = true;
-			
-			while (buffer.GetWidth() > 1 || buffer.GetHeight() > 1) {
-				int prevW = buffer.GetWidth();
-				int prevH = buffer.GetHeight();
-				int newW = (prevW + 1) / 2;
-				int newH = (prevH + 1) / 2;
-				GLColorBuffer newLevel = input.GetManager()->CreateBufferHandle(newW, newH);
-				
-				dev->BindTexture(IGLDevice::Texture2D, buffer.GetTexture());
-				dev->BindFramebuffer(IGLDevice::Framebuffer, newLevel.GetFramebuffer());
-				if (firstLevel) {
-					preprocess->Use();
-					qr.SetCoordAttributeIndex(preprocessPosition());
-					firstLevel = false;
-				} else {
-					thru->Use();
-					qr.SetCoordAttributeIndex(thruPosition());
-				}
-				dev->Viewport(0, 0, newLevel.GetWidth(), newLevel.GetHeight());
-				dev->ClearColor(1.f, 1.f, 1.f, 1.f);
-				dev->Clear(IGLDevice::ColorBufferBit);
-				qr.Draw();
-				dev->BindTexture(IGLDevice::Texture2D, 0);
-				
-				buffer = newLevel;
-			}
-			
-			// compute estimated brightness on GPU
-			dev->Enable(IGLDevice::Blend, true);
-			dev->BlendFunc(IGLDevice::SrcAlpha,
-						   IGLDevice::OneMinusSrcAlpha);
-			
-			computeGain->Use();
-			computeGainTexCoordRange.SetValue(0.f, 0.f, 1.f, 1.f);
-			computeGainTexture.SetValue(0);
-			computeGainColor.SetValue(1.f, 1.f, 1.f, 0.1f);
-			qr.SetCoordAttributeIndex(computeGainPosition());
-			dev->BindFramebuffer(IGLDevice::Framebuffer, exposureFramebuffer);
-			dev->BindTexture(IGLDevice::Texture2D, buffer.GetTexture());
-			dev->Viewport(0, 0, 1, 1);
-			qr.Draw();
-			dev->BindTexture(IGLDevice::Texture2D, 0);
-			
-			// apply exposure adjustment
-			thru->Use();
-			thruColor.SetValue(1.f, 1.f, 1.f, 1.f);
-			thruTexCoordRange.SetValue(0.f, 0.f, 1.f, 1.f);
-			thruTexture.SetValue(0);
-			dev->Enable(IGLDevice::Blend, true);
-			dev->BlendFunc(IGLDevice::DestColor, IGLDevice::Zero); // multiply
-			qr.SetCoordAttributeIndex(thruPosition());
-			dev->BindTexture(IGLDevice::Texture2D, exposureTexture);
-			dev->BindFramebuffer(IGLDevice::Framebuffer, input.GetFramebuffer());
-			dev->Viewport(0, 0, input.GetWidth(), input.GetHeight());
-			
-			qr.Draw();
-			dev->BindTexture(IGLDevice::Texture2D, 0);
-			
-			dev->BlendFunc(IGLDevice::SrcAlpha,
-						   IGLDevice::OneMinusSrcAlpha);
-			
-			return input;
-		}
-	}
+        
+        struct Level {
+            int w, h;
+            GLColorBuffer buffer;
+        };
+        
+        GLColorBuffer GLAutoExposureFilter::Filter(GLColorBuffer input) {
+            SPADES_MARK_FUNCTION();
+            
+            std::vector<Level> levels;
+            
+            IGLDevice *dev = renderer->GetGLDevice();
+            GLQuadRenderer qr(dev);
+            
+            static GLProgramAttribute thruPosition("positionAttribute");
+            static GLProgramUniform thruColor("colorUniform");
+            static GLProgramUniform thruTexture("texture");
+            static GLProgramUniform thruTexCoordRange("texCoordRange");
+            
+            thruPosition(thru);
+            thruColor(thru);
+            thruTexture(thru);
+            thruTexCoordRange(thru);
+            
+            static GLProgramAttribute preprocessPosition("positionAttribute");
+            static GLProgramUniform preprocessColor("colorUniform");
+            static GLProgramUniform preprocessTexture("texture");
+            static GLProgramUniform preprocessTexCoordRange("texCoordRange");
+            
+            preprocessPosition(preprocess);
+            preprocessColor(preprocess);
+            preprocessTexture(preprocess);
+            preprocessTexCoordRange(preprocess);
+            
+            static GLProgramAttribute computeGainPosition("positionAttribute");
+            static GLProgramUniform computeGainColor("colorUniform");
+            static GLProgramUniform computeGainTexture("texture");
+            static GLProgramUniform computeGainTexCoordRange("texCoordRange");
+            
+            computeGainPosition(computeGain);
+            computeGainColor(computeGain);
+            computeGainTexture(computeGain);
+            computeGainTexCoordRange(computeGain);
+            
+            
+            preprocess->Use();
+            preprocessColor.SetValue(1.f, 1.f, 1.f, 1.f);
+            preprocessTexture.SetValue(0);
+            preprocessTexCoordRange.SetValue(0.f, 0.f, 1.f, 1.f);
+            
+            thru->Use();
+            thruColor.SetValue(1.f, 1.f, 1.f, 1.f);
+            thruTexture.SetValue(0);
+            thruTexCoordRange.SetValue(0.f, 0.f, 1.f, 1.f);
+            
+            dev->Enable(IGLDevice::Blend, false);
+            dev->ActiveTexture(0);
+            
+            // downsample until it becomes 1x1x
+            GLColorBuffer buffer = input;
+            bool firstLevel = true;
+            
+            while (buffer.GetWidth() > 1 || buffer.GetHeight() > 1) {
+                int prevW = buffer.GetWidth();
+                int prevH = buffer.GetHeight();
+                int newW = (prevW + 1) / 2;
+                int newH = (prevH + 1) / 2;
+                GLColorBuffer newLevel = input.GetManager()->CreateBufferHandle(newW, newH);
+                
+                dev->BindTexture(IGLDevice::Texture2D, buffer.GetTexture());
+                dev->BindFramebuffer(IGLDevice::Framebuffer, newLevel.GetFramebuffer());
+                if (firstLevel) {
+                    preprocess->Use();
+                    qr.SetCoordAttributeIndex(preprocessPosition());
+                    firstLevel = false;
+                } else {
+                    thru->Use();
+                    qr.SetCoordAttributeIndex(thruPosition());
+                }
+                dev->Viewport(0, 0, newLevel.GetWidth(), newLevel.GetHeight());
+                dev->ClearColor(1.f, 1.f, 1.f, 1.f);
+                dev->Clear(IGLDevice::ColorBufferBit);
+                qr.Draw();
+                dev->BindTexture(IGLDevice::Texture2D, 0);
+                
+                buffer = newLevel;
+            }
+            
+            // compute estimated brightness on GPU
+            dev->Enable(IGLDevice::Blend, true);
+            dev->BlendFunc(IGLDevice::SrcAlpha,
+                           IGLDevice::OneMinusSrcAlpha);
+            
+            computeGain->Use();
+            computeGainTexCoordRange.SetValue(0.f, 0.f, 1.f, 1.f);
+            computeGainTexture.SetValue(0);
+            computeGainColor.SetValue(1.f, 1.f, 1.f, 0.1f);
+            qr.SetCoordAttributeIndex(computeGainPosition());
+            dev->BindFramebuffer(IGLDevice::Framebuffer, exposureFramebuffer);
+            dev->BindTexture(IGLDevice::Texture2D, buffer.GetTexture());
+            dev->Viewport(0, 0, 1, 1);
+            qr.Draw();
+            dev->BindTexture(IGLDevice::Texture2D, 0);
+            
+            // apply exposure adjustment
+            thru->Use();
+            thruColor.SetValue(1.f, 1.f, 1.f, 1.f);
+            thruTexCoordRange.SetValue(0.f, 0.f, 1.f, 1.f);
+            thruTexture.SetValue(0);
+            dev->Enable(IGLDevice::Blend, true);
+            dev->BlendFunc(IGLDevice::DestColor, IGLDevice::Zero); // multiply
+            qr.SetCoordAttributeIndex(thruPosition());
+            dev->BindTexture(IGLDevice::Texture2D, exposureTexture);
+            dev->BindFramebuffer(IGLDevice::Framebuffer, input.GetFramebuffer());
+            dev->Viewport(0, 0, input.GetWidth(), input.GetHeight());
+            
+            qr.Draw();
+            dev->BindTexture(IGLDevice::Texture2D, 0);
+            
+            dev->BlendFunc(IGLDevice::SrcAlpha,
+                           IGLDevice::OneMinusSrcAlpha);
+            
+            return input;
+        }
+    }
 }
 
 

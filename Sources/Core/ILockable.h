@@ -21,9 +21,9 @@
 #pragma once
 
 namespace spades {
-	class ILockable {
-	public:
-		virtual void Lock() = 0;
-		virtual void Unlock() = 0;
-	};
+    class ILockable {
+    public:
+        virtual void Lock() = 0;
+        virtual void Unlock() = 0;
+    };
 }

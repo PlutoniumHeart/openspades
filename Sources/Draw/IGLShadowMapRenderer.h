@@ -23,31 +23,31 @@
 #include "../Core/Math.h"
 
 namespace spades {
-	namespace draw {
-		
-		class GLRenderer;
-		
-		struct GLShadowMapRenderParam {
-			Matrix4 matrix;
-			
-			virtual ~GLShadowMapRenderParam(){}
-			
-		};
-		
-		class IGLShadowMapRenderer{
-			GLRenderer *renderer;
-		protected:
-			virtual void RenderShadowMapPass();
-		public:
-			IGLShadowMapRenderer(GLRenderer *);
-			virtual ~IGLShadowMapRenderer(){}
-			
-			GLRenderer *GetRenderer() { return renderer; }
-			
-			virtual void Render() = 0;
-			
-			virtual bool Cull(const AABB3&) = 0;
-			virtual bool SphereCull(const Vector3& center, float rad) = 0;
-		};
-	}
+    namespace draw {
+        
+        class GLRenderer;
+        
+        struct GLShadowMapRenderParam {
+            Matrix4 matrix;
+            
+            virtual ~GLShadowMapRenderParam(){}
+            
+        };
+        
+        class IGLShadowMapRenderer{
+            GLRenderer *renderer;
+        protected:
+            virtual void RenderShadowMapPass();
+        public:
+            IGLShadowMapRenderer(GLRenderer *);
+            virtual ~IGLShadowMapRenderer(){}
+            
+            GLRenderer *GetRenderer() { return renderer; }
+            
+            virtual void Render() = 0;
+            
+            virtual bool Cull(const AABB3&) = 0;
+            virtual bool SphereCull(const Vector3& center, float rad) = 0;
+        };
+    }
 }

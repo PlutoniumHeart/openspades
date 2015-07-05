@@ -26,35 +26,35 @@
 #include <atomic>
 
 namespace spades {
-	namespace client{
-		class Client;
-	}
-	namespace gui {
-		class SDLAsyncRunner: public SDLRunner {
-			class ClientThread;
-			ClientThread *cliThread;
-			View *currentView;
-			DispatchQueue *cliQueue;
-			int modState;
-			std::string clientError;
-			
-			struct PulledState {
-				bool acceptsTextInput;
-				SDL_Rect textInputRect;
-				bool needsAbsoluteMouseCoord;
-			};
-			
-			std::atomic<bool> rendererErrorOccured;
-			PulledState state;
-			Mutex stateMutex;
-		protected:
-			virtual int GetModState() { return modState; }
-			virtual void RunClientLoop(client::IRenderer *renderer, client::IAudioDevice *dev);
-			virtual void ClientThreadProc(client::IRenderer *renderer, client::IAudioDevice *dev);
-		public:
-			SDLAsyncRunner();
-			virtual ~SDLAsyncRunner();
-		};
-	}
+    namespace client{
+        class Client;
+    }
+    namespace gui {
+        class SDLAsyncRunner: public SDLRunner {
+            class ClientThread;
+            ClientThread *cliThread;
+            View *currentView;
+            DispatchQueue *cliQueue;
+            int modState;
+            std::string clientError;
+            
+            struct PulledState {
+                bool acceptsTextInput;
+                SDL_Rect textInputRect;
+                bool needsAbsoluteMouseCoord;
+            };
+            
+            std::atomic<bool> rendererErrorOccured;
+            PulledState state;
+            Mutex stateMutex;
+        protected:
+            virtual int GetModState() { return modState; }
+            virtual void RunClientLoop(client::IRenderer *renderer, client::IAudioDevice *dev);
+            virtual void ClientThreadProc(client::IRenderer *renderer, client::IAudioDevice *dev);
+        public:
+            SDLAsyncRunner();
+            virtual ~SDLAsyncRunner();
+        };
+    }
 }
 

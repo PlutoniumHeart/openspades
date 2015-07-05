@@ -35,288 +35,288 @@
 SPADES_SETTING(r_hdr, "");
 
 namespace spades {
-	namespace draw {
-		GLLensDustFilter::GLLensDustFilter(GLRenderer *renderer):
-		renderer(renderer){
-			thru = renderer->RegisterProgram("Shaders/PostFilters/PassThroughConstAlpha.program");
-			dust = renderer->RegisterProgram("Shaders/PostFilters/LensDust.program");
-			dustImg = (GLImage *)renderer->RegisterImage("Textures/RealLens.jpg");
-			
-			IGLDevice *dev = renderer->GetGLDevice();
-			noiseTex = dev->GenTexture();
-			dev->BindTexture(IGLDevice::Texture2D, noiseTex);
-			dev->TexImage2D(IGLDevice::Texture2D, 0,
-							   IGLDevice::RGBA8,
-							   128, 128,
-							   0, IGLDevice::BGRA, IGLDevice::UnsignedByte,
-							   NULL);
-			dev->TexParamater(IGLDevice::Texture2D,
-								 IGLDevice::TextureMagFilter,
-								 IGLDevice::Nearest);
-			dev->TexParamater(IGLDevice::Texture2D,
-								 IGLDevice::TextureMinFilter,
-								 IGLDevice::Nearest);
-			dev->TexParamater(IGLDevice::Texture2D,
-								 IGLDevice::TextureWrapS,
-								 IGLDevice::Repeat);
-			dev->TexParamater(IGLDevice::Texture2D,
-								 IGLDevice::TextureWrapT,
-								 IGLDevice::Repeat);
-		}
-		
-		GLLensDustFilter::~GLLensDustFilter() {
-			renderer->GetGLDevice()->DeleteTexture(noiseTex);
-		}
-		
+    namespace draw {
+        GLLensDustFilter::GLLensDustFilter(GLRenderer *renderer):
+        renderer(renderer){
+            thru = renderer->RegisterProgram("Shaders/PostFilters/PassThroughConstAlpha.program");
+            dust = renderer->RegisterProgram("Shaders/PostFilters/LensDust.program");
+            dustImg = (GLImage *)renderer->RegisterImage("Textures/RealLens.jpg");
+            
+            IGLDevice *dev = renderer->GetGLDevice();
+            noiseTex = dev->GenTexture();
+            dev->BindTexture(IGLDevice::Texture2D, noiseTex);
+            dev->TexImage2D(IGLDevice::Texture2D, 0,
+                               IGLDevice::RGBA8,
+                               128, 128,
+                               0, IGLDevice::BGRA, IGLDevice::UnsignedByte,
+                               NULL);
+            dev->TexParamater(IGLDevice::Texture2D,
+                                 IGLDevice::TextureMagFilter,
+                                 IGLDevice::Nearest);
+            dev->TexParamater(IGLDevice::Texture2D,
+                                 IGLDevice::TextureMinFilter,
+                                 IGLDevice::Nearest);
+            dev->TexParamater(IGLDevice::Texture2D,
+                                 IGLDevice::TextureWrapS,
+                                 IGLDevice::Repeat);
+            dev->TexParamater(IGLDevice::Texture2D,
+                                 IGLDevice::TextureWrapT,
+                                 IGLDevice::Repeat);
+        }
+        
+        GLLensDustFilter::~GLLensDustFilter() {
+            renderer->GetGLDevice()->DeleteTexture(noiseTex);
+        }
+        
 #define Level GLLensDustFilterLevel
-		
-		GLColorBuffer GLLensDustFilter::DownSample(GLColorBuffer tex,
-												   bool linearize) {
-			SPADES_MARK_FUNCTION();
-			GLProgram *program = thru;
-			IGLDevice *dev = renderer->GetGLDevice();
-			GLQuadRenderer qr(dev);
-			int w = tex.GetWidth();
-			int h = tex.GetHeight();
-			
-			static GLProgramAttribute blur_positionAttribute("positionAttribute");
-			static GLProgramUniform blur_textureUniform("texture");
-			static GLProgramUniform blur_colorUniform("colorUniform");
-			static GLProgramUniform blur_texCoordRangeUniform("texCoordRange");
-			program->Use();
-			blur_positionAttribute(program);
-			
-			blur_textureUniform(program);
-			blur_textureUniform.SetValue(0);
-			dev->ActiveTexture(0);
-			dev->BindTexture(IGLDevice::Texture2D, tex.GetTexture());
-			
-			blur_colorUniform(program);
-			blur_colorUniform.SetValue(1.f,1.f,1.f,1.f);
-			
-			blur_texCoordRangeUniform(program);
-			blur_texCoordRangeUniform.SetValue(0.f, 0.f, 1.f, 1.f);
-			
-			qr.SetCoordAttributeIndex(blur_positionAttribute());
-			if(linearize){
-				dev->Enable(IGLDevice::Blend, true);
-				dev->BlendFunc(IGLDevice::SrcColor,
-							   IGLDevice::Zero);
-			}else{
-				dev->Enable(IGLDevice::Blend, false);
-			}
-			
-			GLColorBuffer buf2 = renderer->GetFramebufferManager()->CreateBufferHandle((w+1)/2, (h+1)/2, false);
-			dev->Viewport(0, 0, buf2.GetWidth(), buf2.GetHeight());
-			dev->BindFramebuffer(IGLDevice::Framebuffer, buf2.GetFramebuffer());
-			qr.Draw();
-			return buf2;
-		}
-		
-		void GLLensDustFilter::UpdateNoise() {
-			SPADES_MARK_FUNCTION();
-			
-			noise.resize(128 * 128);
-			uint32_t rnd = (uint32_t)rand() ^ ((uint32_t)rand() << 16);
-			rnd ^= 0x7abd4513;
-			for(size_t i = 0; i < 128 * 128; i++) {
-				noise[i] = rnd;
-				
-				rnd = (rnd * 0x71931) + 0x981f311;
-				if(rnd == 0xffffffff) // mod 2^32-1
-					rnd = 0;
-			}
-			
-			IGLDevice *dev = renderer->GetGLDevice();
-			dev->BindTexture(IGLDevice::Texture2D, noiseTex);
-			dev->TexSubImage2D(IGLDevice::Texture2D,
-							   0, 0, 0, 128, 128,
-							   IGLDevice::BGRA, IGLDevice::UnsignedByte,
-							   noise.data());
-		}
-		
-		struct Level {
-			int w, h;
-			GLColorBuffer buffer;
-			GLColorBuffer retBuf[4];
-		};
-		
-		GLColorBuffer GLLensDustFilter::Filter(GLColorBuffer input) {
-			SPADES_MARK_FUNCTION();
-			
-			UpdateNoise();
-			
-			std::vector<Level> levels;
-			
-			IGLDevice *dev = renderer->GetGLDevice();
-			GLQuadRenderer qr(dev);
-			
-			static GLProgramAttribute thruPosition("positionAttribute");
-			static GLProgramUniform thruColor("colorUniform");
-			static GLProgramUniform thruTexture("texture");
-			static GLProgramUniform thruTexCoordRange("texCoordRange");
-			
-			thruPosition(thru);
-			thruColor(thru);
-			thruTexture(thru);
-			thruTexCoordRange(thru);
-						
-			GLColorBuffer downSampled = DownSample(input, r_hdr ? false : true);
-			downSampled = DownSample(downSampled);
-			downSampled = DownSample(downSampled);
-			
-			thru->Use();
-			thruColor.SetValue(1.f, 1.f, 1.f, 1.f);
-			thruTexture.SetValue(0);
-			dev->Enable(IGLDevice::Blend, false);
-			
-			levels.reserve(8);
-			
-			// create downsample levels
-			for(int i = 0; i < 8; i++){
-				GLColorBuffer prevLevel;
-				if(i == 0){
-					prevLevel = downSampled;
-				}else{
-					prevLevel = levels.back().buffer;
-				}
-				
-				int prevW = prevLevel.GetWidth();
-				int prevH = prevLevel.GetHeight();
-				int newW = (prevW + 1) / 2;
-				int newH = (prevH + 1) / 2;
-				if(newW <= 1 || newH <= 1)
-					break;
-				GLColorBuffer newLevel = DownSample(prevLevel);
-				
-				Level lv;
-				lv.w = newW; lv.h = newH;
-				lv.buffer = newLevel;
-				levels.push_back(lv);
-			}
-			
-			dev->Enable(IGLDevice::Blend, true);
-			dev->BlendFunc(IGLDevice::SrcAlpha,
-						   IGLDevice::OneMinusSrcAlpha);
-			
-			// composite levels in the opposite direction
-			thru->Use();
-			qr.SetCoordAttributeIndex(thruPosition());
-			for(int i = (int)levels.size() - 1; i >= 1; i--){
-				int cnt = (int)levels.size() - i;
-				float alpha = (float)cnt / (float)(cnt + 1);
-				alpha = sqrtf(alpha);
-				
-				GLColorBuffer curLevel = levels[i].buffer;
-				
-				float sx = .7f / curLevel.GetWidth();
-				float sy = .7f / curLevel.GetHeight();
-				
-				for(int j = 0; j < 4; j++) {
-					if(i < (int)levels.size() - 1) {
-						curLevel = levels[i].retBuf[j];
-					}
-					GLColorBuffer targLevel = levels[i - 1].buffer;
-					GLColorBuffer targRet = input.GetManager()->CreateBufferHandle(targLevel.GetWidth(),
-																	   targLevel.GetHeight(),
-																	   false);
-					levels[i - 1].retBuf[j] = targRet;
-					
-					dev->BindFramebuffer(IGLDevice::Framebuffer, targRet.GetFramebuffer());
-					dev->Viewport(0, 0, targRet.GetWidth(), targRet.GetHeight());
-					
-					dev->BindTexture(IGLDevice::Texture2D, targLevel.GetTexture());
-					thruColor.SetValue(1.f, 1.f, 1.f, 1.f);
-					thruTexCoordRange.SetValue(0.f, 0.f, 1.f, 1.f);
-					dev->Enable(IGLDevice::Blend, false);
-					qr.Draw();
-					
-					float cx = 0.f, cy = 0.f;
-					switch(j){
-						case 0: cx = sx; break;
-						case 1: cx = -sx; break;
-						case 2: cy = sy; break;
-						case 3: cy = -sy; break;
-					}
-					
-					dev->BindTexture(IGLDevice::Texture2D, curLevel.GetTexture());
-					thruColor.SetValue(1.f, 1.f, 1.f, alpha);
-					thruTexCoordRange.SetValue(cx, cy, 1.f, 1.f);
-					dev->Enable(IGLDevice::Blend, true);
-					qr.Draw();
-					
-					dev->BindTexture(IGLDevice::Texture2D, 0);
-				}
-				
-			}
-			
-			static GLProgramAttribute dustPosition("positionAttribute");
-			static GLProgramUniform dustDustTexture("dustTexture");
-			static GLProgramUniform dustBlurTexture1("blurTexture1");
-			static GLProgramUniform dustBlurTexture2("blurTexture2");
-			static GLProgramUniform dustBlurTexture3("blurTexture3");
-			static GLProgramUniform dustBlurTexture4("blurTexture4");
-			static GLProgramUniform dustInputTexture("inputTexture");
-			static GLProgramUniform dustNoiseTexture("noiseTexture");
-			static GLProgramUniform dustNoiseTexCoordFactor("noiseTexCoordFactor");
-			
-			dustPosition(dust);
-			dustDustTexture(dust);
-			dustBlurTexture1(dust);
-			dustBlurTexture2(dust);
-			dustBlurTexture3(dust);
-			dustBlurTexture4(dust);
-			dustInputTexture(dust);
-			dustNoiseTexture(dust);
-			dustNoiseTexCoordFactor(dust);
-			
-			dust->Use();
-			
-			float facX = renderer->ScreenWidth() / 128.f;
-			float facY = renderer->ScreenHeight() / 128.f;
-			dustNoiseTexCoordFactor.SetValue(facX, facY,
-											 facX / 128.f,
-											 facY / 128.f);
-			
-			// composite to the final image
-			GLColorBuffer output = input.GetManager()->CreateBufferHandle();
-			GLColorBuffer topLevel1 = levels[0].retBuf[0];
-			GLColorBuffer topLevel2 = levels[0].retBuf[1];
-			GLColorBuffer topLevel3 = levels[0].retBuf[2];
-			GLColorBuffer topLevel4 = levels[0].retBuf[3];
-			
-			qr.SetCoordAttributeIndex(dustPosition());
-			dev->ActiveTexture(0);
-			dev->BindTexture(IGLDevice::Texture2D, input.GetTexture());
-			dev->ActiveTexture(1);
-			dev->BindTexture(IGLDevice::Texture2D, topLevel1.GetTexture());
-			dev->ActiveTexture(2);
-			dev->BindTexture(IGLDevice::Texture2D, topLevel2.GetTexture());
-			dev->ActiveTexture(3);
-			dev->BindTexture(IGLDevice::Texture2D, topLevel3.GetTexture());
-			dev->ActiveTexture(4);
-			dev->BindTexture(IGLDevice::Texture2D, topLevel4.GetTexture());
-			dev->ActiveTexture(5);
-			dustImg->Bind(IGLDevice::Texture2D);
-			dev->ActiveTexture(6);
-			dev->BindTexture(IGLDevice::Texture2D, noiseTex);
-			dev->BindFramebuffer(IGLDevice::Framebuffer, output.GetFramebuffer());
-			dev->Viewport(0, 0, output.GetWidth(), output.GetHeight());
-			dustBlurTexture1.SetValue(2);
-			dustBlurTexture2.SetValue(1);
-			dustBlurTexture3.SetValue(3);
-			dustBlurTexture4.SetValue(4);
-			dustDustTexture.SetValue(5);
-			dustNoiseTexture.SetValue(6);
-			dustInputTexture.SetValue(0);
-			qr.Draw();
-			dev->BindTexture(IGLDevice::Texture2D, 0);
-			
-			dev->ActiveTexture(0);
-			
-			return output;
-		}
-	}
+        
+        GLColorBuffer GLLensDustFilter::DownSample(GLColorBuffer tex,
+                                                   bool linearize) {
+            SPADES_MARK_FUNCTION();
+            GLProgram *program = thru;
+            IGLDevice *dev = renderer->GetGLDevice();
+            GLQuadRenderer qr(dev);
+            int w = tex.GetWidth();
+            int h = tex.GetHeight();
+            
+            static GLProgramAttribute blur_positionAttribute("positionAttribute");
+            static GLProgramUniform blur_textureUniform("texture");
+            static GLProgramUniform blur_colorUniform("colorUniform");
+            static GLProgramUniform blur_texCoordRangeUniform("texCoordRange");
+            program->Use();
+            blur_positionAttribute(program);
+            
+            blur_textureUniform(program);
+            blur_textureUniform.SetValue(0);
+            dev->ActiveTexture(0);
+            dev->BindTexture(IGLDevice::Texture2D, tex.GetTexture());
+            
+            blur_colorUniform(program);
+            blur_colorUniform.SetValue(1.f,1.f,1.f,1.f);
+            
+            blur_texCoordRangeUniform(program);
+            blur_texCoordRangeUniform.SetValue(0.f, 0.f, 1.f, 1.f);
+            
+            qr.SetCoordAttributeIndex(blur_positionAttribute());
+            if(linearize){
+                dev->Enable(IGLDevice::Blend, true);
+                dev->BlendFunc(IGLDevice::SrcColor,
+                               IGLDevice::Zero);
+            }else{
+                dev->Enable(IGLDevice::Blend, false);
+            }
+            
+            GLColorBuffer buf2 = renderer->GetFramebufferManager()->CreateBufferHandle((w+1)/2, (h+1)/2, false);
+            dev->Viewport(0, 0, buf2.GetWidth(), buf2.GetHeight());
+            dev->BindFramebuffer(IGLDevice::Framebuffer, buf2.GetFramebuffer());
+            qr.Draw();
+            return buf2;
+        }
+        
+        void GLLensDustFilter::UpdateNoise() {
+            SPADES_MARK_FUNCTION();
+            
+            noise.resize(128 * 128);
+            uint32_t rnd = (uint32_t)rand() ^ ((uint32_t)rand() << 16);
+            rnd ^= 0x7abd4513;
+            for(size_t i = 0; i < 128 * 128; i++) {
+                noise[i] = rnd;
+                
+                rnd = (rnd * 0x71931) + 0x981f311;
+                if(rnd == 0xffffffff) // mod 2^32-1
+                    rnd = 0;
+            }
+            
+            IGLDevice *dev = renderer->GetGLDevice();
+            dev->BindTexture(IGLDevice::Texture2D, noiseTex);
+            dev->TexSubImage2D(IGLDevice::Texture2D,
+                               0, 0, 0, 128, 128,
+                               IGLDevice::BGRA, IGLDevice::UnsignedByte,
+                               noise.data());
+        }
+        
+        struct Level {
+            int w, h;
+            GLColorBuffer buffer;
+            GLColorBuffer retBuf[4];
+        };
+        
+        GLColorBuffer GLLensDustFilter::Filter(GLColorBuffer input) {
+            SPADES_MARK_FUNCTION();
+            
+            UpdateNoise();
+            
+            std::vector<Level> levels;
+            
+            IGLDevice *dev = renderer->GetGLDevice();
+            GLQuadRenderer qr(dev);
+            
+            static GLProgramAttribute thruPosition("positionAttribute");
+            static GLProgramUniform thruColor("colorUniform");
+            static GLProgramUniform thruTexture("texture");
+            static GLProgramUniform thruTexCoordRange("texCoordRange");
+            
+            thruPosition(thru);
+            thruColor(thru);
+            thruTexture(thru);
+            thruTexCoordRange(thru);
+                        
+            GLColorBuffer downSampled = DownSample(input, r_hdr ? false : true);
+            downSampled = DownSample(downSampled);
+            downSampled = DownSample(downSampled);
+            
+            thru->Use();
+            thruColor.SetValue(1.f, 1.f, 1.f, 1.f);
+            thruTexture.SetValue(0);
+            dev->Enable(IGLDevice::Blend, false);
+            
+            levels.reserve(8);
+            
+            // create downsample levels
+            for(int i = 0; i < 8; i++){
+                GLColorBuffer prevLevel;
+                if(i == 0){
+                    prevLevel = downSampled;
+                }else{
+                    prevLevel = levels.back().buffer;
+                }
+                
+                int prevW = prevLevel.GetWidth();
+                int prevH = prevLevel.GetHeight();
+                int newW = (prevW + 1) / 2;
+                int newH = (prevH + 1) / 2;
+                if(newW <= 1 || newH <= 1)
+                    break;
+                GLColorBuffer newLevel = DownSample(prevLevel);
+                
+                Level lv;
+                lv.w = newW; lv.h = newH;
+                lv.buffer = newLevel;
+                levels.push_back(lv);
+            }
+            
+            dev->Enable(IGLDevice::Blend, true);
+            dev->BlendFunc(IGLDevice::SrcAlpha,
+                           IGLDevice::OneMinusSrcAlpha);
+            
+            // composite levels in the opposite direction
+            thru->Use();
+            qr.SetCoordAttributeIndex(thruPosition());
+            for(int i = (int)levels.size() - 1; i >= 1; i--){
+                int cnt = (int)levels.size() - i;
+                float alpha = (float)cnt / (float)(cnt + 1);
+                alpha = sqrtf(alpha);
+                
+                GLColorBuffer curLevel = levels[i].buffer;
+                
+                float sx = .7f / curLevel.GetWidth();
+                float sy = .7f / curLevel.GetHeight();
+                
+                for(int j = 0; j < 4; j++) {
+                    if(i < (int)levels.size() - 1) {
+                        curLevel = levels[i].retBuf[j];
+                    }
+                    GLColorBuffer targLevel = levels[i - 1].buffer;
+                    GLColorBuffer targRet = input.GetManager()->CreateBufferHandle(targLevel.GetWidth(),
+                                                                       targLevel.GetHeight(),
+                                                                       false);
+                    levels[i - 1].retBuf[j] = targRet;
+                    
+                    dev->BindFramebuffer(IGLDevice::Framebuffer, targRet.GetFramebuffer());
+                    dev->Viewport(0, 0, targRet.GetWidth(), targRet.GetHeight());
+                    
+                    dev->BindTexture(IGLDevice::Texture2D, targLevel.GetTexture());
+                    thruColor.SetValue(1.f, 1.f, 1.f, 1.f);
+                    thruTexCoordRange.SetValue(0.f, 0.f, 1.f, 1.f);
+                    dev->Enable(IGLDevice::Blend, false);
+                    qr.Draw();
+                    
+                    float cx = 0.f, cy = 0.f;
+                    switch(j){
+                        case 0: cx = sx; break;
+                        case 1: cx = -sx; break;
+                        case 2: cy = sy; break;
+                        case 3: cy = -sy; break;
+                    }
+                    
+                    dev->BindTexture(IGLDevice::Texture2D, curLevel.GetTexture());
+                    thruColor.SetValue(1.f, 1.f, 1.f, alpha);
+                    thruTexCoordRange.SetValue(cx, cy, 1.f, 1.f);
+                    dev->Enable(IGLDevice::Blend, true);
+                    qr.Draw();
+                    
+                    dev->BindTexture(IGLDevice::Texture2D, 0);
+                }
+                
+            }
+            
+            static GLProgramAttribute dustPosition("positionAttribute");
+            static GLProgramUniform dustDustTexture("dustTexture");
+            static GLProgramUniform dustBlurTexture1("blurTexture1");
+            static GLProgramUniform dustBlurTexture2("blurTexture2");
+            static GLProgramUniform dustBlurTexture3("blurTexture3");
+            static GLProgramUniform dustBlurTexture4("blurTexture4");
+            static GLProgramUniform dustInputTexture("inputTexture");
+            static GLProgramUniform dustNoiseTexture("noiseTexture");
+            static GLProgramUniform dustNoiseTexCoordFactor("noiseTexCoordFactor");
+            
+            dustPosition(dust);
+            dustDustTexture(dust);
+            dustBlurTexture1(dust);
+            dustBlurTexture2(dust);
+            dustBlurTexture3(dust);
+            dustBlurTexture4(dust);
+            dustInputTexture(dust);
+            dustNoiseTexture(dust);
+            dustNoiseTexCoordFactor(dust);
+            
+            dust->Use();
+            
+            float facX = renderer->ScreenWidth() / 128.f;
+            float facY = renderer->ScreenHeight() / 128.f;
+            dustNoiseTexCoordFactor.SetValue(facX, facY,
+                                             facX / 128.f,
+                                             facY / 128.f);
+            
+            // composite to the final image
+            GLColorBuffer output = input.GetManager()->CreateBufferHandle();
+            GLColorBuffer topLevel1 = levels[0].retBuf[0];
+            GLColorBuffer topLevel2 = levels[0].retBuf[1];
+            GLColorBuffer topLevel3 = levels[0].retBuf[2];
+            GLColorBuffer topLevel4 = levels[0].retBuf[3];
+            
+            qr.SetCoordAttributeIndex(dustPosition());
+            dev->ActiveTexture(0);
+            dev->BindTexture(IGLDevice::Texture2D, input.GetTexture());
+            dev->ActiveTexture(1);
+            dev->BindTexture(IGLDevice::Texture2D, topLevel1.GetTexture());
+            dev->ActiveTexture(2);
+            dev->BindTexture(IGLDevice::Texture2D, topLevel2.GetTexture());
+            dev->ActiveTexture(3);
+            dev->BindTexture(IGLDevice::Texture2D, topLevel3.GetTexture());
+            dev->ActiveTexture(4);
+            dev->BindTexture(IGLDevice::Texture2D, topLevel4.GetTexture());
+            dev->ActiveTexture(5);
+            dustImg->Bind(IGLDevice::Texture2D);
+            dev->ActiveTexture(6);
+            dev->BindTexture(IGLDevice::Texture2D, noiseTex);
+            dev->BindFramebuffer(IGLDevice::Framebuffer, output.GetFramebuffer());
+            dev->Viewport(0, 0, output.GetWidth(), output.GetHeight());
+            dustBlurTexture1.SetValue(2);
+            dustBlurTexture2.SetValue(1);
+            dustBlurTexture3.SetValue(3);
+            dustBlurTexture4.SetValue(4);
+            dustDustTexture.SetValue(5);
+            dustNoiseTexture.SetValue(6);
+            dustInputTexture.SetValue(0);
+            qr.Draw();
+            dev->BindTexture(IGLDevice::Texture2D, 0);
+            
+            dev->ActiveTexture(0);
+            
+            return output;
+        }
+    }
 }
 
 

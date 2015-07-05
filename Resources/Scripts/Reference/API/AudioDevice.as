@@ -19,46 +19,46 @@
  */
  
 namespace spades {
-	
-	/** AudioDevice is an interface to the audio device. */
-	class AudioDevice {
-		
-		/** Loads an audio data from the specified path or load one from
-		 * the cache, if exists.
-		 * @param path file-system path. */
-		AudioChunk@ RegisterSound(const string@ path) {}
-		
-		/** Sets a game world map. */
-		GameMap@ GameMap {
-			set {}
-		}
-		
-		/** Plays a sound. */
-		void Play(AudioChunk@, const Vector3@ origin, const AudioParam@ params);
-		
-		/** Plays a sound, with the source position specified in the view
-		 * coordinate space. */
-		void PlayLocal(AudioChunk@, const Vector3@ origin, const AudioParam@ params);
-		
-		/** Plays a non-spatialized sound. */
-		void PlayLocal(AudioChunk@, const AudioParam@ params);
-		
-		/** Updates the position of the listener. */
-		void Respatialize(const Vector3@ eye,
-		                  const Vector3@ frontVector,
-		                  const Vector3@ upVector);
-		
-	}
-	
-	class AudioParam {
-		/** Linear gain of the sound. */
-		float volume;
-		
-		/** Playback speed of the sound. Doubling this value makes the sound
-		 * played twice faster. */
-		float pitch;
-		
-		float referenceDistance;
-	}
-	
+    
+    /** AudioDevice is an interface to the audio device. */
+    class AudioDevice {
+        
+        /** Loads an audio data from the specified path or load one from
+         * the cache, if exists.
+         * @param path file-system path. */
+        AudioChunk@ RegisterSound(const string@ path) {}
+        
+        /** Sets a game world map. */
+        GameMap@ GameMap {
+            set {}
+        }
+        
+        /** Plays a sound. */
+        void Play(AudioChunk@, const Vector3@ origin, const AudioParam@ params);
+        
+        /** Plays a sound, with the source position specified in the view
+         * coordinate space. */
+        void PlayLocal(AudioChunk@, const Vector3@ origin, const AudioParam@ params);
+        
+        /** Plays a non-spatialized sound. */
+        void PlayLocal(AudioChunk@, const AudioParam@ params);
+        
+        /** Updates the position of the listener. */
+        void Respatialize(const Vector3@ eye,
+                          const Vector3@ frontVector,
+                          const Vector3@ upVector);
+        
+    }
+    
+    class AudioParam {
+        /** Linear gain of the sound. */
+        float volume;
+        
+        /** Playback speed of the sound. Doubling this value makes the sound
+         * played twice faster. */
+        float pitch;
+        
+        float referenceDistance;
+    }
+    
 }

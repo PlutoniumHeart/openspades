@@ -19,11 +19,11 @@
  */
  
 namespace spades {
-	
-	/** Model is an opaque type which can be passed to rendering methods to 
-	 *  draw an three-dimensional model. */
-	class Model {
-		
-	}
-	
+    
+    /** Model is an opaque type which can be passed to rendering methods to 
+     *  draw an three-dimensional model. */
+    class Model {
+        
+    }
+    
 }

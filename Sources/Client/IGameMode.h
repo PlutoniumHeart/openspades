@@ -21,20 +21,20 @@
 #pragma once
 
 namespace spades {
-	namespace client {
-		class IGameMode {
-		public:
-			enum Mode {
-				m_CTF = 0,
-				m_TC = 1
-			};
-		private:
-			Mode mMode;
-		public:
+    namespace client {
+        class IGameMode {
+        public:
+            enum Mode {
+                m_CTF = 0,
+                m_TC = 1
+            };
+        private:
+            Mode mMode;
+        public:
 
-			IGameMode( Mode mode ) : mMode(mode) {;}
-			virtual ~IGameMode() {}
-			Mode ModeType() const { return mMode; }
-		};
-	}
+            IGameMode( Mode mode ) : mMode(mode) {;}
+            virtual ~IGameMode() {}
+            Mode ModeType() const { return mMode; }
+        };
+    }
 }

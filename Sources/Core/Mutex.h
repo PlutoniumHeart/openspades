@@ -22,14 +22,14 @@
 #include "ILockable.h"
 
 namespace spades {
-	/** Recursive mutex. */
-	class Mutex: public ILockable {
-		void *priv;
-	public:
-		Mutex();
-		~Mutex();
-		
-		virtual void Lock();
-		virtual void Unlock();
-	};
+    /** Recursive mutex. */
+    class Mutex: public ILockable {
+        void *priv;
+    public:
+        Mutex();
+        ~Mutex();
+        
+        virtual void Lock();
+        virtual void Unlock();
+    };
 }

@@ -23,28 +23,28 @@
 #include "ParticleSpriteEntity.h"
 
 namespace spades{
-	namespace client{
-		class IImage;
-		class IRenderer;
-		class SmokeSpriteEntity: public ParticleSpriteEntity{
-		public:
-			enum class Type {
-				Steady,
-				Explosion
-			};
-		private:
-			float frame;
-			float fps;
-			Type type;
-			static IImage *GetSequence(int i, IRenderer *r, Type);
-		public:
-			
-			SmokeSpriteEntity(Client *cli, Vector4 color,
-							  float fps, Type type = Type::Steady);
-			
-			static void Preload(IRenderer *);
-			
-			virtual bool Update(float dt);
-		};
-	}
+    namespace client{
+        class IImage;
+        class IRenderer;
+        class SmokeSpriteEntity: public ParticleSpriteEntity{
+        public:
+            enum class Type {
+                Steady,
+                Explosion
+            };
+        private:
+            float frame;
+            float fps;
+            Type type;
+            static IImage *GetSequence(int i, IRenderer *r, Type);
+        public:
+            
+            SmokeSpriteEntity(Client *cli, Vector4 color,
+                              float fps, Type type = Type::Steady);
+            
+            static void Preload(IRenderer *);
+            
+            virtual bool Update(float dt);
+        };
+    }
 }

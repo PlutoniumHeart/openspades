@@ -27,18 +27,18 @@ namespace spades
 // unsigned long version of atol, cross-platform (including MSVC)
 uint32_t ServerAddress::ParseIntegerAddress( const std::string& str )
 {
-	uint32_t vl = 0;
-	for( size_t i = 0; i < str.size(); i++ ) {
-		char c = str[i];
-		if( c >= '0' && c<= '9' ){
-			vl *= 10;
-			vl += (uint32_t)(c - '0');
-		} else {
-			break;
-		}
-	}
-	
-	return vl;
+    uint32_t vl = 0;
+    for( size_t i = 0; i < str.size(); i++ ) {
+        char c = str[i];
+        if( c >= '0' && c<= '9' ){
+            vl *= 10;
+            vl += (uint32_t)(c - '0');
+        } else {
+            break;
+        }
+    }
+    
+    return vl;
 }
 
 
@@ -49,42 +49,42 @@ ServerAddress::ServerAddress( std::string address, ProtocolVersion::Version vers
 
 std::string ServerAddress::stripProtocol( const std::string& address ) const
 {
-	if(address.find("aos:///") == 0) {
-		return address.substr(7);
-	} else if(address.find("aos://") == 0) {
-		return address.substr(6);
-	}
-	return address;
+    if(address.find("aos:///") == 0) {
+        return address.substr(7);
+    } else if(address.find("aos://") == 0) {
+        return address.substr(6);
+    }
+    return address;
 }
 
 ENetAddress ServerAddress::asAddress() const
 {
-	std::string address = stripProtocol( mAddress );
+    std::string address = stripProtocol( mAddress );
 
-	ENetAddress addr;
-	size_t pos = address.find(':');
-	if(pos == std::string::npos){
-		//addr = address;
-		addr.port = 32887;
-	}else{
-		addr.port = atoi(address.substr(pos+1).c_str());
-		address = address.substr(0, pos);
-	}
-	
-	if(address.find('.') != std::string::npos){
-		enet_address_set_host( &addr, address.c_str() );
-	}else{
-		addr.host = ParseIntegerAddress( address );
-	}
-	return addr;
+    ENetAddress addr;
+    size_t pos = address.find(':');
+    if(pos == std::string::npos){
+        //addr = address;
+        addr.port = 32887;
+    }else{
+        addr.port = atoi(address.substr(pos+1).c_str());
+        address = address.substr(0, pos);
+    }
+    
+    if(address.find('.') != std::string::npos){
+        enet_address_set_host( &addr, address.c_str() );
+    }else{
+        addr.host = ParseIntegerAddress( address );
+    }
+    return addr;
 }
 
 std::string ServerAddress::asString( bool includeProtocol ) const
 {
-	if( !includeProtocol ) {
-		return stripProtocol( mAddress );
-	}
-	return mAddress;
+    if( !includeProtocol ) {
+        return stripProtocol( mAddress );
+    }
+    return mAddress;
 }
 
 

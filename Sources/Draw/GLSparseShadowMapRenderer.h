@@ -23,48 +23,48 @@
 #include "IGLDevice.h"
 
 namespace spades {
-	namespace draw {
-		class GLRenderer;
-		class GLShadowShader;
-		class GLSparseShadowMapRenderer: public IGLShadowMapRenderer {
-			friend class GLShadowMapShader;
-			friend class GLShadowShader;
-			
-			struct ModelRenderer;
-			struct Internal;
-			
-			enum {Tiles = 64};
-			
-			IGLDevice *device;
-			
-			int textureSize;
-			int minLod;
-			int maxLod;
-			
-			uint32_t pagetable[Tiles][Tiles];
-			
-			IGLDevice::UInteger framebuffer;
-			IGLDevice::UInteger texture;
-			IGLDevice::UInteger pagetableTexture;
-			
-			// not used, but required
-			IGLDevice::UInteger colorTexture;
-			
-			Matrix4 matrix;
-			OBB3 obb;
-			float vpWidth, vpHeight; // used for culling
-			
-			void BuildMatrix(float near, float far);
-		protected:
-			virtual void RenderShadowMapPass();
-		public:
-			
-			GLSparseShadowMapRenderer(GLRenderer *);
-			virtual ~GLSparseShadowMapRenderer();
-			virtual void Render();
-			
-			virtual bool Cull(const AABB3&);
-			virtual bool SphereCull(const Vector3& center, float rad);
-		};
-	}
+    namespace draw {
+        class GLRenderer;
+        class GLShadowShader;
+        class GLSparseShadowMapRenderer: public IGLShadowMapRenderer {
+            friend class GLShadowMapShader;
+            friend class GLShadowShader;
+            
+            struct ModelRenderer;
+            struct Internal;
+            
+            enum {Tiles = 64};
+            
+            IGLDevice *device;
+            
+            int textureSize;
+            int minLod;
+            int maxLod;
+            
+            uint32_t pagetable[Tiles][Tiles];
+            
+            IGLDevice::UInteger framebuffer;
+            IGLDevice::UInteger texture;
+            IGLDevice::UInteger pagetableTexture;
+            
+            // not used, but required
+            IGLDevice::UInteger colorTexture;
+            
+            Matrix4 matrix;
+            OBB3 obb;
+            float vpWidth, vpHeight; // used for culling
+            
+            void BuildMatrix(float near, float far);
+        protected:
+            virtual void RenderShadowMapPass();
+        public:
+            
+            GLSparseShadowMapRenderer(GLRenderer *);
+            virtual ~GLSparseShadowMapRenderer();
+            virtual void Render();
+            
+            virtual bool Cull(const AABB3&);
+            virtual bool SphereCull(const Vector3& center, float rad);
+        };
+    }
 }

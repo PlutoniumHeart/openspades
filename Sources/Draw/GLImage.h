@@ -24,34 +24,34 @@
 #include "IGLDevice.h"
 
 namespace spades {
-	class Bitmap;
-	namespace draw {
-		class IGLDevice;
-		class GLImage: public client::IImage {
-			IGLDevice *device;
-			IGLDevice::UInteger tex;
-			float width, height;
-			float invWidth, invHeight;
-			bool autoDelete;
-			bool valid;
-			void MakeSureValid();
-		protected:
-			virtual ~GLImage();
-		public:
-			GLImage(IGLDevice::UInteger textureObject,
-					IGLDevice *device, float w, float h,
-					bool autoDelete = true);
-			static GLImage *FromBitmap(Bitmap *, IGLDevice *);
-			void Bind(IGLDevice::Enum target);
-			
-			virtual float GetWidth() { return width; }
-			virtual float GetHeight() { return height; }
-			
-			float GetInvWidth() { return invWidth; }
-			float GetInvHeight() { return invHeight; }
-			
-			void SubImage(Bitmap *bmp, int x, int y);
-			void Invalidate();
-		};
-	}
+    class Bitmap;
+    namespace draw {
+        class IGLDevice;
+        class GLImage: public client::IImage {
+            IGLDevice *device;
+            IGLDevice::UInteger tex;
+            float width, height;
+            float invWidth, invHeight;
+            bool autoDelete;
+            bool valid;
+            void MakeSureValid();
+        protected:
+            virtual ~GLImage();
+        public:
+            GLImage(IGLDevice::UInteger textureObject,
+                    IGLDevice *device, float w, float h,
+                    bool autoDelete = true);
+            static GLImage *FromBitmap(Bitmap *, IGLDevice *);
+            void Bind(IGLDevice::Enum target);
+            
+            virtual float GetWidth() { return width; }
+            virtual float GetHeight() { return height; }
+            
+            float GetInvWidth() { return invWidth; }
+            float GetInvHeight() { return invHeight; }
+            
+            void SubImage(Bitmap *bmp, int x, int y);
+            void Invalidate();
+        };
+    }
 }

@@ -46,31 +46,31 @@ void PrepareForDynamicLightNoBump(vec3 vertexCoord, vec3 normal);
 vec4 FogDensity(float poweredLength);
 
 void main() {
-	
-	vec4 vertexPos = vec4(positionAttribute.xyz, 1.);
-	
-	vertexPos.xyz += modelOrigin;
-	
-	gl_Position = projectionViewModelMatrix * vertexPos;
-	
-	color = colorAttribute;
-	
-	if(dot(color.xyz, vec3(1.)) < 0.0001){
-		color.xyz = customColor;
-	}
-	
-	// linearize
-	color.xyz *= color.xyz;
-	
-	// calculate normal
-	vec3 normal = normalAttribute;
-	normal = (modelNormalMatrix * vec4(normal, 1.)).xyz;
-	normal = normalize(normal);
-	
-	vec4 viewPos = viewModelMatrix * vertexPos;
-	float distance = dot(viewPos.xyz, viewPos.xyz);
-	fogDensity = FogDensity(distance).xyz;
-	
-	PrepareForDynamicLightNoBump((modelMatrix * vertexPos).xyz, normal);
+    
+    vec4 vertexPos = vec4(positionAttribute.xyz, 1.);
+    
+    vertexPos.xyz += modelOrigin;
+    
+    gl_Position = projectionViewModelMatrix * vertexPos;
+    
+    color = colorAttribute;
+    
+    if(dot(color.xyz, vec3(1.)) < 0.0001){
+        color.xyz = customColor;
+    }
+    
+    // linearize
+    color.xyz *= color.xyz;
+    
+    // calculate normal
+    vec3 normal = normalAttribute;
+    normal = (modelNormalMatrix * vec4(normal, 1.)).xyz;
+    normal = normalize(normal);
+    
+    vec4 viewPos = viewModelMatrix * vertexPos;
+    float distance = dot(viewPos.xyz, viewPos.xyz);
+    fogDensity = FogDensity(distance).xyz;
+    
+    PrepareForDynamicLightNoBump((modelMatrix * vertexPos).xyz, normal);
 }
 

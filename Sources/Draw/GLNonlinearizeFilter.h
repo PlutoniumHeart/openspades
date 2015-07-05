@@ -24,15 +24,15 @@
 #include "GLFramebufferManager.h"
 
 namespace spades {
-	namespace draw {
-		class GLRenderer;
-		class GLProgram;
-		class GLNonlinearlizeFilter {
-			GLRenderer *renderer;
-			GLProgram *lens;
-		public:
-			GLNonlinearlizeFilter(GLRenderer *);
-			GLColorBuffer Filter(GLColorBuffer);
-		};
-	}
+    namespace draw {
+        class GLRenderer;
+        class GLProgram;
+        class GLNonlinearlizeFilter {
+            GLRenderer *renderer;
+            GLProgram *lens;
+        public:
+            GLNonlinearlizeFilter(GLRenderer *);
+            GLColorBuffer Filter(GLColorBuffer);
+        };
+    }
 }

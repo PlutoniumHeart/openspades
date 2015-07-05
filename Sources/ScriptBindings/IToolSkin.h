@@ -24,18 +24,18 @@
 #include <Core/Math.h>
 
 namespace spades {
-	namespace client {
-		
-		class ScriptIToolSkin {
-			asIScriptObject *obj;
-		public:
-			ScriptIToolSkin(asIScriptObject *obj);
-			void SetSprintState(float);
-			void SetRaiseState(float);
-			void SetTeamColor(Vector3);
-			void SetMuted(bool);
-			void Update(float);
-			void AddToScene();
-		};
-	}
+    namespace client {
+        
+        class ScriptIToolSkin {
+            asIScriptObject *obj;
+        public:
+            ScriptIToolSkin(asIScriptObject *obj);
+            void SetSprintState(float);
+            void SetRaiseState(float);
+            void SetTeamColor(Vector3);
+            void SetMuted(bool);
+            void Update(float);
+            void AddToScene();
+        };
+    }
 }

@@ -33,26 +33,26 @@ vec3 EvaluateSunLight();
 vec3 EvaluateAmbientLight(float detailAmbientOcclusion);
 
 void main() {
-	// color is linearized
-	gl_FragColor = color;
-	gl_FragColor.w = 1.;
-	
-	vec3 shading = vec3(color.w);
-	
-	// FIXME: prepare for shadow?
-	shading *= EvaluateSunLight();
-	
-	vec3 ao = texture2D(ambientOcclusionTexture, ambientOcclusionCoord).xyz;
-	shading += EvaluateAmbientLight(ao.x);
-	
-	gl_FragColor.xyz *= shading;
-	
-	//gl_FragColor.xyz *= texture2D(detailTexture, detailCoord).xyz * 2.;
-	
-	gl_FragColor.xyz = mix(gl_FragColor.xyz, fogColor, fogDensity);
-	
+    // color is linearized
+    gl_FragColor = color;
+    gl_FragColor.w = 1.;
+    
+    vec3 shading = vec3(color.w);
+    
+    // FIXME: prepare for shadow?
+    shading *= EvaluateSunLight();
+    
+    vec3 ao = texture2D(ambientOcclusionTexture, ambientOcclusionCoord).xyz;
+    shading += EvaluateAmbientLight(ao.x);
+    
+    gl_FragColor.xyz *= shading;
+    
+    //gl_FragColor.xyz *= texture2D(detailTexture, detailCoord).xyz * 2.;
+    
+    gl_FragColor.xyz = mix(gl_FragColor.xyz, fogColor, fogDensity);
+    
 #if !LINEAR_FRAMEBUFFER
-	gl_FragColor.xyz = sqrt(gl_FragColor.xyz);
+    gl_FragColor.xyz = sqrt(gl_FragColor.xyz);
 #endif
 }
 

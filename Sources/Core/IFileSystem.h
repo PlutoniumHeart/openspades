@@ -24,13 +24,13 @@
 #include <vector>
 
 namespace spades {
-	class IStream;
-	class IFileSystem {
-	public:
-		virtual std::vector<std::string> EnumFiles(const char *) = 0;
-		virtual IStream *OpenForReading(const char *) = 0;
-		virtual IStream *OpenForWriting(const char *) = 0;
-		virtual bool FileExists(const char *) = 0;
-		
-	};
+    class IStream;
+    class IFileSystem {
+    public:
+        virtual std::vector<std::string> EnumFiles(const char *) = 0;
+        virtual IStream *OpenForReading(const char *) = 0;
+        virtual IStream *OpenForWriting(const char *) = 0;
+        virtual bool FileExists(const char *) = 0;
+        
+    };
 }

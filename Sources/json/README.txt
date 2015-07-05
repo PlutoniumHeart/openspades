@@ -28,20 +28,20 @@ at the same level as README.
 
 python scons.py platform=PLTFRM [TARGET]
 where PLTFRM may be one of:
-	suncc Sun C++ (Solaris)
-	vacpp Visual Age C++ (AIX)
-	mingw 
-	msvc6 Microsoft Visual Studio 6 service pack 5-6
-	msvc70 Microsoft Visual Studio 2002
-	msvc71 Microsoft Visual Studio 2003
-	msvc80 Microsoft Visual Studio 2005
-	linux-gcc Gnu C++ (linux, also reported to work for Mac OS X)
-	
+    suncc Sun C++ (Solaris)
+    vacpp Visual Age C++ (AIX)
+    mingw 
+    msvc6 Microsoft Visual Studio 6 service pack 5-6
+    msvc70 Microsoft Visual Studio 2002
+    msvc71 Microsoft Visual Studio 2003
+    msvc80 Microsoft Visual Studio 2005
+    linux-gcc Gnu C++ (linux, also reported to work for Mac OS X)
+    
 adding platform is fairly simple. You need to change the Sconstruct file 
 to do so.
-	
+    
 and TARGET may be:
-	check: build library and run unit tests.
+    check: build library and run unit tests.
 
     
 * Running the test manually:

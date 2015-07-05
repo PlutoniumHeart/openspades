@@ -19,23 +19,23 @@
  */
  
 namespace spades {
-	
-	/** A skin of all tools for first-person view. A class that implements 
-	 * this might also have to implement IToolSkin. */
-	interface IViewToolSkin {
-	
-		/** Receives a transform matrix from view coordinate to world one. */
-		Matrix4 EyeMatrix { set; }
-		
-		/** Receives a swing offset that varies with a player movement. */
-		Vector3 Swing { set; }
-		
-		/** Returns positions for player hands in view coordinate. */
-		Vector3 LeftHandPosition { get; }
-		Vector3 RightHandPosition { get; }
-		
-		/** Issues draw commands to draw 2d images, such as HUD and crosshair. */
-		void Draw2D();
-	}
-	
+    
+    /** A skin of all tools for first-person view. A class that implements 
+     * this might also have to implement IToolSkin. */
+    interface IViewToolSkin {
+    
+        /** Receives a transform matrix from view coordinate to world one. */
+        Matrix4 EyeMatrix { set; }
+        
+        /** Receives a swing offset that varies with a player movement. */
+        Vector3 Swing { set; }
+        
+        /** Returns positions for player hands in view coordinate. */
+        Vector3 LeftHandPosition { get; }
+        Vector3 RightHandPosition { get; }
+        
+        /** Issues draw commands to draw 2d images, such as HUD and crosshair. */
+        void Draw2D();
+    }
+    
 }

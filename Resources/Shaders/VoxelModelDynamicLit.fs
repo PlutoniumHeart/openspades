@@ -29,20 +29,20 @@ varying vec3 fogDensity;
 vec3 EvaluateDynamicLightNoBump();
 
 void main() {
-	// color is normalized
-	gl_FragColor = color;
-	gl_FragColor.w = 1.;
-	
-	vec3 shading = EvaluateDynamicLightNoBump();
-	
-	gl_FragColor.xyz *= shading;
-	
-	//gl_FragColor.xyz *= texture2D(detailTexture, detailCoord).xyz * 2.;
+    // color is normalized
+    gl_FragColor = color;
+    gl_FragColor.w = 1.;
+    
+    vec3 shading = EvaluateDynamicLightNoBump();
+    
+    gl_FragColor.xyz *= shading;
+    
+    //gl_FragColor.xyz *= texture2D(detailTexture, detailCoord).xyz * 2.;
 
-	gl_FragColor.xyz = mix(gl_FragColor.xyz, vec3(0.), fogDensity);
-	
+    gl_FragColor.xyz = mix(gl_FragColor.xyz, vec3(0.), fogDensity);
+    
 #if !LINEAR_FRAMEBUFFER
-	gl_FragColor.xyz = sqrt(gl_FragColor.xyz);
+    gl_FragColor.xyz = sqrt(gl_FragColor.xyz);
 #endif
 }
 

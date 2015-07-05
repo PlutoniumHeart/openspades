@@ -23,23 +23,23 @@
 #include "GLFramebufferManager.h"
 
 namespace spades {
-	namespace draw {
+    namespace draw {
         class GLImage;
-		class GLRenderer;
-		class GLProgram;
-		class GLLensFlareFilter {
-			GLRenderer *renderer;
-			GLProgram *blurProgram, *scannerProgram, *drawProgram;
-			GLImage *flare1, *flare2, *flare3, *flare4, *white;
-			GLImage *mask1, *mask2, *mask3;
+        class GLRenderer;
+        class GLProgram;
+        class GLLensFlareFilter {
+            GLRenderer *renderer;
+            GLProgram *blurProgram, *scannerProgram, *drawProgram;
+            GLImage *flare1, *flare2, *flare3, *flare4, *white;
+            GLImage *mask1, *mask2, *mask3;
             GLImage *dustImg;
-			GLColorBuffer Blur(GLColorBuffer, float spread = 1.f);
-		public:
-			GLLensFlareFilter(GLRenderer *);
-			void Draw();
-			void Draw(Vector3 direction, bool reflections,
-					  Vector3 color, bool infinityDistance);
-		};
-	}
+            GLColorBuffer Blur(GLColorBuffer, float spread = 1.f);
+        public:
+            GLLensFlareFilter(GLRenderer *);
+            void Draw();
+            void Draw(Vector3 direction, bool reflections,
+                      Vector3 color, bool infinityDistance);
+        };
+    }
 }
 

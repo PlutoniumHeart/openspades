@@ -23,14 +23,14 @@
 #include <string>
 
 namespace spades {
-	class DynamicLibrary {
-		std::string name;
-		void *handle;
-	public:
-		DynamicLibrary(const char *fn);
-		~DynamicLibrary();
+    class DynamicLibrary {
+        std::string name;
+        void *handle;
+    public:
+        DynamicLibrary(const char *fn);
+        ~DynamicLibrary();
 
-		void *GetSymbol(const char *);
-		void *GetSymbolOrNull(const char *);
-	};
+        void *GetSymbol(const char *);
+        void *GetSymbolOrNull(const char *);
+    };
 }

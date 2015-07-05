@@ -19,11 +19,11 @@
  */
  
 namespace spades {
-	
-	/** AudioChunk is an opaque type which can be passed to an audio device to 
-	 *  play sounds. */
-	class AudioChunk {
-		
-	}
-	
+    
+    /** AudioChunk is an opaque type which can be passed to an audio device to 
+     *  play sounds. */
+    class AudioChunk {
+        
+    }
+    
 }

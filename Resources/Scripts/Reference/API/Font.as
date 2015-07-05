@@ -19,18 +19,18 @@
  */
  
 namespace spades {
-	
-	/** Represents a bitmap-based font. */
-	class Font {
-		
-		/** Measures the size of the given string.  */
-		Vector2 Measure(const string@ text);
-		
-		/** Renders the string. */
-		void Draw(const string@ text, Vector2 origin, float scale, Vector4 color);
-		
-		/** Renders the string with a shadow. */
-		void DrawShadow(const string@ text, Vector2 origin, float scale, Vector4 color);
-		
-	}
+    
+    /** Represents a bitmap-based font. */
+    class Font {
+        
+        /** Measures the size of the given string.  */
+        Vector2 Measure(const string@ text);
+        
+        /** Renders the string. */
+        void Draw(const string@ text, Vector2 origin, float scale, Vector4 color);
+        
+        /** Renders the string with a shadow. */
+        void DrawShadow(const string@ text, Vector2 origin, float scale, Vector4 color);
+        
+    }
 }

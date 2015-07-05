@@ -22,30 +22,30 @@
 #include <Core/CpuID.h>
 
 namespace spades {
-	namespace draw {
-		
-		// TODO: correct detection
-		
+    namespace draw {
+        
+        // TODO: correct detection
+        
 #if ENABLE_SSE2
-		SWFeatureLevel DetectFeatureLevel() {
-			CpuID cpuid;
-			if(cpuid.Supports(CpuFeature::SSE2))
-				return SWFeatureLevel::SSE2;
-			
-			// at least sse should be supported
-			return SWFeatureLevel::SSE;
-		}
+        SWFeatureLevel DetectFeatureLevel() {
+            CpuID cpuid;
+            if(cpuid.Supports(CpuFeature::SSE2))
+                return SWFeatureLevel::SSE2;
+            
+            // at least sse should be supported
+            return SWFeatureLevel::SSE;
+        }
 #elif ENABLE_SSE
-		SWFeatureLevel DetectFeatureLevel() {
-			return SWFeatureLevel::SSE;
-		}
+        SWFeatureLevel DetectFeatureLevel() {
+            return SWFeatureLevel::SSE;
+        }
 #else
-		SWFeatureLevel DetectFeatureLevel() {
-			return SWFeatureLevel::None;
-		}
+        SWFeatureLevel DetectFeatureLevel() {
+            return SWFeatureLevel::None;
+        }
 #endif
-		
-	}
+        
+    }
 }
 
 

@@ -83,139 +83,139 @@ BEGIN_AS_NAMESPACE
 
 struct TimeCount
 {
-	double time;
-	int    count;
-	double max;
-	double min;
+    double time;
+    int    count;
+    double max;
+    double min;
 };
 
 class CProfiler
 {
 public:
-	CProfiler()
-	{
-		// We need to know how often the clock is updated
-		__int64 tps;
-		if( !QueryPerformanceFrequency((LARGE_INTEGER *)&tps) )
-			usePerformance = false;
-		else
-		{
-			usePerformance = true;
-			ticksPerSecond = double(tps);
-		}
+    CProfiler()
+    {
+        // We need to know how often the clock is updated
+        __int64 tps;
+        if( !QueryPerformanceFrequency((LARGE_INTEGER *)&tps) )
+            usePerformance = false;
+        else
+        {
+            usePerformance = true;
+            ticksPerSecond = double(tps);
+        }
 
-		timeOffset = GetTime();
-	}
+        timeOffset = GetTime();
+    }
 
-	~CProfiler()
-	{
-		WriteSummary();
-	}
+    ~CProfiler()
+    {
+        WriteSummary();
+    }
 
-	double GetTime()
-	{
-		if( usePerformance )
-		{
-			__int64 ticks;
-			QueryPerformanceCounter((LARGE_INTEGER *)&ticks);
+    double GetTime()
+    {
+        if( usePerformance )
+        {
+            __int64 ticks;
+            QueryPerformanceCounter((LARGE_INTEGER *)&ticks);
 
-			return double(ticks)/ticksPerSecond - timeOffset;
-		}
-		
-		return double(timeGetTime())/1000.0 - timeOffset;
-	}
+            return double(ticks)/ticksPerSecond - timeOffset;
+        }
+        
+        return double(timeGetTime())/1000.0 - timeOffset;
+    }
 
-	double Begin(const char *name)
-	{
-		double time = GetTime();
+    double Begin(const char *name)
+    {
+        double time = GetTime();
 
-		// Add the scope to the key
-		if( key.GetLength() )
-			key += "|";
-		key += name;
+        // Add the scope to the key
+        if( key.GetLength() )
+            key += "|";
+        key += name;
 
-		// Compensate for the time spent writing to the file
-		timeOffset += GetTime() - time;
+        // Compensate for the time spent writing to the file
+        timeOffset += GetTime() - time;
 
-		return time;
-	}
+        return time;
+    }
 
-	void End(const char *name, double beginTime)
-	{
-		double time = GetTime();
+    void End(const char *name, double beginTime)
+    {
+        double time = GetTime();
 
-		double elapsed = time - beginTime;
+        double elapsed = time - beginTime;
 
-		// Update the profile info for this scope
-		asSMapNode<asCString, TimeCount> *cursor;
-		if( map.MoveTo(&cursor, key) )
-		{
-			cursor->value.time += elapsed;
-			cursor->value.count++;
-			if( cursor->value.max < elapsed ) 
-				cursor->value.max = elapsed;
-			if( cursor->value.min > elapsed ) 
-				cursor->value.min = elapsed;
-		}
-		else
-		{
-			TimeCount tc = {elapsed, 1, elapsed, elapsed};
-			map.Insert(key, tc);
-		}
+        // Update the profile info for this scope
+        asSMapNode<asCString, TimeCount> *cursor;
+        if( map.MoveTo(&cursor, key) )
+        {
+            cursor->value.time += elapsed;
+            cursor->value.count++;
+            if( cursor->value.max < elapsed ) 
+                cursor->value.max = elapsed;
+            if( cursor->value.min > elapsed ) 
+                cursor->value.min = elapsed;
+        }
+        else
+        {
+            TimeCount tc = {elapsed, 1, elapsed, elapsed};
+            map.Insert(key, tc);
+        }
 
-		// Remove the inner most scope from the key
-		int n = key.FindLast("|");
-		if( n > 0 )
-			key.SetLength(n);
-		else
-			key.SetLength(0);
+        // Remove the inner most scope from the key
+        int n = key.FindLast("|");
+        if( n > 0 )
+            key.SetLength(n);
+        else
+            key.SetLength(0);
 
-		// Compensate for the time spent writing to the file
-		timeOffset += GetTime() - time;
-	}
-	
+        // Compensate for the time spent writing to the file
+        timeOffset += GetTime() - time;
+    }
+    
 protected:
-	void WriteSummary()
-	{
-		// Write the analyzed info into a file for inspection
-		_mkdir("AS_DEBUG");
-		FILE *fp;
-		#if _MSC_VER >= 1500 && !defined(AS_MARMALADE)
-			fopen_s(&fp, "AS_DEBUG/profiling_summary.txt", "wt");
-		#else
-			fp = fopen("AS_DEBUG/profiling_summary.txt", "wt");
-		#endif
-		if( fp == 0 )
-			return;
+    void WriteSummary()
+    {
+        // Write the analyzed info into a file for inspection
+        _mkdir("AS_DEBUG");
+        FILE *fp;
+        #if _MSC_VER >= 1500 && !defined(AS_MARMALADE)
+            fopen_s(&fp, "AS_DEBUG/profiling_summary.txt", "wt");
+        #else
+            fp = fopen("AS_DEBUG/profiling_summary.txt", "wt");
+        #endif
+        if( fp == 0 )
+            return;
 
-		fprintf(fp, "%-60s %10s %15s %15s %15s %15s\n\n", "Scope", "Count", "Tot time", "Avg time", "Max time", "Min time");
+        fprintf(fp, "%-60s %10s %15s %15s %15s %15s\n\n", "Scope", "Count", "Tot time", "Avg time", "Max time", "Min time");
 
-		asSMapNode<asCString, TimeCount> *cursor;
-		map.MoveLast(&cursor);
-		while( cursor )
-		{
-			asCString key = cursor->key;
-			int count;
-			int n = key.FindLast("|", &count);
-			if( count )
-			{
-				key = asCString("                                               ", count) + key.SubString(n+1);
-			}
+        asSMapNode<asCString, TimeCount> *cursor;
+        map.MoveLast(&cursor);
+        while( cursor )
+        {
+            asCString key = cursor->key;
+            int count;
+            int n = key.FindLast("|", &count);
+            if( count )
+            {
+                key = asCString("                                               ", count) + key.SubString(n+1);
+            }
 
-			fprintf(fp, "%-60s %10d %15.6f %15.6f %15.6f %15.6f\n", key.AddressOf(), cursor->value.count, cursor->value.time, cursor->value.time / cursor->value.count, cursor->value.max, cursor->value.min);
+            fprintf(fp, "%-60s %10d %15.6f %15.6f %15.6f %15.6f\n", key.AddressOf(), cursor->value.count, cursor->value.time, cursor->value.time / cursor->value.count, cursor->value.max, cursor->value.min);
 
-			map.MovePrev(&cursor, cursor);
-		}
+            map.MovePrev(&cursor, cursor);
+        }
 
-		fclose(fp);
-	}
+        fclose(fp);
+    }
 
-	double  timeOffset;
-	double  ticksPerSecond;
-	bool    usePerformance;
+    double  timeOffset;
+    double  ticksPerSecond;
+    bool    usePerformance;
 
-	asCString                    key;
-	asCMap<asCString, TimeCount> map;
+    asCString                    key;
+    asCMap<asCString, TimeCount> map;
 };
 
 extern CProfiler g_profiler;
@@ -223,20 +223,20 @@ extern CProfiler g_profiler;
 class CProfilerScope
 {
 public:
-	CProfilerScope(const char *name)
-	{
-		this->name = name;
-		beginTime = g_profiler.Begin(name);
-	}
+    CProfilerScope(const char *name)
+    {
+        this->name = name;
+        beginTime = g_profiler.Begin(name);
+    }
 
-	~CProfilerScope()
-	{
-		g_profiler.End(name, beginTime);
-	}
+    ~CProfilerScope()
+    {
+        g_profiler.End(name, beginTime);
+    }
 
 protected:
-	const char *name;
-	double      beginTime;
+    const char *name;
+    double      beginTime;
 };
 
 #define TimeIt(x) CProfilerScope profilescope(x)

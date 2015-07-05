@@ -242,7 +242,7 @@
 
 // Global variable initialization
 
-#define TXT_FAILED_TO_INITIALIZE_s		"Failed to initialize global variable '%s'"
+#define TXT_FAILED_TO_INITIALIZE_s        "Failed to initialize global variable '%s'"
 #define TXT_EXCEPTION_s_IN_s            "Exception '%s' in '%s'"
 
 // Engine message

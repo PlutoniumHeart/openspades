@@ -24,63 +24,63 @@
 #include "Exception.h"
 
 namespace spades {
-	namespace reflection {
-		class Function{
-			const char *name;
-			const char *file;
-			int line;
-		public:
-			Function(const char *name, const char *File,
-					 int line);
-			
-			const char *GetName() const { return name; }
-			const char *GetFileName() const { return file; }
-			int GetLineNumber() const { return line; }
-		};
-		
-		class Backtrace;
-		
-		class BacktraceEntry {
-			Function *function;
-		public:
-			BacktraceEntry() {}
-			BacktraceEntry(Function *f):
-			function(f) {}
-			
-			const Function& GetFunction() const { return *function; }
-		};
-		
-		class BacktraceEntryAdder {
-			Backtrace *bt;
-		public:
-			BacktraceEntryAdder(const BacktraceEntry&);
-			~BacktraceEntryAdder();
-			
-		};
-		
-		typedef std::vector<BacktraceEntry> BacktraceRecord;
-		
-		class Backtrace {
-			std::vector<BacktraceEntry> entries;
-		public:
-			static Backtrace *GetGlobalBacktrace();
-			static void ThreadExiting();
-			static void StartBacktrace();
-			
-			void Push(const BacktraceEntry&);
-			void Pop();
-			
-			BacktraceRecord GetAllEntries();
-			BacktraceRecord GetRecord() { return GetAllEntries(); }
-			
-			std::string ToString() const;
-		};
-		
-		std::string BacktraceRecordToString(const BacktraceRecord&);
-	}
-	void StartLog();
-	void LogMessage(const char *file, int line,
-						   const char *format, ...);
+    namespace reflection {
+        class Function{
+            const char *name;
+            const char *file;
+            int line;
+        public:
+            Function(const char *name, const char *File,
+                     int line);
+            
+            const char *GetName() const { return name; }
+            const char *GetFileName() const { return file; }
+            int GetLineNumber() const { return line; }
+        };
+        
+        class Backtrace;
+        
+        class BacktraceEntry {
+            Function *function;
+        public:
+            BacktraceEntry() {}
+            BacktraceEntry(Function *f):
+            function(f) {}
+            
+            const Function& GetFunction() const { return *function; }
+        };
+        
+        class BacktraceEntryAdder {
+            Backtrace *bt;
+        public:
+            BacktraceEntryAdder(const BacktraceEntry&);
+            ~BacktraceEntryAdder();
+            
+        };
+        
+        typedef std::vector<BacktraceEntry> BacktraceRecord;
+        
+        class Backtrace {
+            std::vector<BacktraceEntry> entries;
+        public:
+            static Backtrace *GetGlobalBacktrace();
+            static void ThreadExiting();
+            static void StartBacktrace();
+            
+            void Push(const BacktraceEntry&);
+            void Pop();
+            
+            BacktraceRecord GetAllEntries();
+            BacktraceRecord GetRecord() { return GetAllEntries(); }
+            
+            std::string ToString() const;
+        };
+        
+        std::string BacktraceRecordToString(const BacktraceRecord&);
+    }
+    void StartLog();
+    void LogMessage(const char *file, int line,
+                           const char *format, ...);
 }
 
 #ifdef _MSC_VER

@@ -39,8 +39,8 @@ http://yvt.jp/files/programs/osppaks/font-mplus-ja-12.pak
 
 This was converted from the M+ BDF font like this:
 
-	./BdfToOSFont ../../Resources/Gfx/Fonts/MPlus10Font double < \
-	~/Downloads/mplus_bitmap_fonts-2.2.4/fonts_j/mplus_j10r.bdf
+    ./BdfToOSFont ../../Resources/Gfx/Fonts/MPlus10Font double < \
+    ~/Downloads/mplus_bitmap_fonts-2.2.4/fonts_j/mplus_j10r.bdf
 
 Note that you need to install a input method editor, or use Google Translator 
 or whatever to type Japanese characters.

@@ -44,108 +44,108 @@ BEGIN_AS_NAMESPACE
 
 asCScriptCode::asCScriptCode()
 {
-	lineOffset = 0;
-	code = 0;
-	codeLength = 0;
-	sharedCode = false;
+    lineOffset = 0;
+    code = 0;
+    codeLength = 0;
+    sharedCode = false;
 }
 
 asCScriptCode::~asCScriptCode()
 {
-	if( !sharedCode && code ) 
-	{
-		asDELETEARRAY(code);
-	}
+    if( !sharedCode && code ) 
+    {
+        asDELETEARRAY(code);
+    }
 }
 
 int asCScriptCode::SetCode(const char *name, const char *code, bool makeCopy)
 {
-	return SetCode(name, code, 0, makeCopy);
+    return SetCode(name, code, 0, makeCopy);
 }
 
 int asCScriptCode::SetCode(const char *name, const char *code, size_t length, bool makeCopy)
 {
-	if( !code ) return asINVALID_ARG;
-	this->name = name ? name : "";
-	if( !sharedCode && this->code ) 
-		asDELETEARRAY(this->code);
+    if( !code ) return asINVALID_ARG;
+    this->name = name ? name : "";
+    if( !sharedCode && this->code ) 
+        asDELETEARRAY(this->code);
 
-	if( length == 0 )
-		length = strlen(code);
-	if( makeCopy )
-	{
-		codeLength = length;
-		sharedCode = false;
-		this->code = asNEWARRAY(char,length);
-		if( this->code == 0 )
-			return asOUT_OF_MEMORY;
-		memcpy((char*)this->code, code, length);
-	}
-	else
-	{
-		codeLength = length;
-		this->code = const_cast<char*>(code);
-		sharedCode = true;
-	}
+    if( length == 0 )
+        length = strlen(code);
+    if( makeCopy )
+    {
+        codeLength = length;
+        sharedCode = false;
+        this->code = asNEWARRAY(char,length);
+        if( this->code == 0 )
+            return asOUT_OF_MEMORY;
+        memcpy((char*)this->code, code, length);
+    }
+    else
+    {
+        codeLength = length;
+        this->code = const_cast<char*>(code);
+        sharedCode = true;
+    }
 
-	// Find the positions of each line
-	linePositions.PushLast(0);
-	for( size_t n = 0; n < length; n++ )
-		if( code[n] == '\n' ) linePositions.PushLast(n+1);
-	linePositions.PushLast(length);
+    // Find the positions of each line
+    linePositions.PushLast(0);
+    for( size_t n = 0; n < length; n++ )
+        if( code[n] == '\n' ) linePositions.PushLast(n+1);
+    linePositions.PushLast(length);
 
-	return asSUCCESS;
+    return asSUCCESS;
 }
 
 void asCScriptCode::ConvertPosToRowCol(size_t pos, int *row, int *col)
 {
-	if( linePositions.GetLength() == 0 ) 
-	{
-		if( row ) *row = lineOffset;
-		if( col ) *col = 1;
-		return;
-	}
+    if( linePositions.GetLength() == 0 ) 
+    {
+        if( row ) *row = lineOffset;
+        if( col ) *col = 1;
+        return;
+    }
 
-	// Do a binary search in the buffer
-	int max = (int)linePositions.GetLength() - 1;
-	int min = 0;
-	int i = max/2;
+    // Do a binary search in the buffer
+    int max = (int)linePositions.GetLength() - 1;
+    int min = 0;
+    int i = max/2;
 
-	for(;;)
-	{
-		if( linePositions[i] < pos )
-		{
-			// Have we found the largest number < programPosition?
-			if( min == i ) break;
+    for(;;)
+    {
+        if( linePositions[i] < pos )
+        {
+            // Have we found the largest number < programPosition?
+            if( min == i ) break;
 
-			min = i;
-			i = (max + min)/2;
-		}
-		else if( linePositions[i] > pos )
-		{
-			// Have we found the smallest number > programPoisition?
-			if( max == i ) break;
+            min = i;
+            i = (max + min)/2;
+        }
+        else if( linePositions[i] > pos )
+        {
+            // Have we found the smallest number > programPoisition?
+            if( max == i ) break;
 
-			max = i;
-			i = (max + min)/2;
-		}
-		else
-		{
-			// We found the exact position
-			break;
-		}
-	}
+            max = i;
+            i = (max + min)/2;
+        }
+        else
+        {
+            // We found the exact position
+            break;
+        }
+    }
 
-	if( row ) *row = i + 1 + lineOffset;
-	if( col ) *col = (int)(pos - linePositions[i]) + 1;
+    if( row ) *row = i + 1 + lineOffset;
+    if( col ) *col = (int)(pos - linePositions[i]) + 1;
 }
 
 bool asCScriptCode::TokenEquals(size_t pos, size_t len, const char *str)
 {
-	if( pos + len > codeLength ) return false;
-	if( strncmp(code + pos, str, len) == 0 && strlen(str) == len )
-		return true;
-	return false;
+    if( pos + len > codeLength ) return false;
+    if( strncmp(code + pos, str, len) == 0 && strlen(str) == len )
+        return true;
+    return false;
 }
 
 END_AS_NAMESPACE

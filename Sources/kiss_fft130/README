@@ -69,18 +69,18 @@ last bit of performance.
     Sometimes simpler is better, even if it's not better.
 
 FREQUENTLY ASKED QUESTIONS:
-	Q: Can I use kissfft in a project with a ___ license?
-	A: Yes.  See LICENSE below.
+    Q: Can I use kissfft in a project with a ___ license?
+    A: Yes.  See LICENSE below.
 
-	Q: Why don't I get the output I expect?
-	A: The two most common causes of this are 
-		1) scaling : is there a constant multiplier between what you got and what you want?
-		2) mixed build environment -- all code must be compiled with same preprocessor 
-		definitions for FIXED_POINT and kiss_fft_scalar
+    Q: Why don't I get the output I expect?
+    A: The two most common causes of this are 
+        1) scaling : is there a constant multiplier between what you got and what you want?
+        2) mixed build environment -- all code must be compiled with same preprocessor 
+        definitions for FIXED_POINT and kiss_fft_scalar
 
-	Q: Will you write/debug my code for me?
-	A: Probably not unless you pay me.  I am happy to answer pointed and topical questions, but 
-	I may refer you to a book, a forum, or some other resource.
+    Q: Will you write/debug my code for me?
+    A: Probably not unless you pay me.  I am happy to answer pointed and topical questions, but 
+    I may refer you to a book, a forum, or some other resource.
 
 
 PERFORMANCE:

@@ -28,14 +28,14 @@ varying vec2 circlePos;
 uniform float radius;
 
 void main() {
-	float val = shadow2D(depthTexture, scanPos).x;
-	
-	// circle trim
-	float rad = length(circlePos);
-	rad *= radius;
-	rad = clamp(radius - 1. - rad, 0., 1.);
-	val *= rad;
-	
-	gl_FragColor = vec4(vec3(val), 1.);
+    float val = shadow2D(depthTexture, scanPos).x;
+    
+    // circle trim
+    float rad = length(circlePos);
+    rad *= radius;
+    rad = clamp(radius - 1. - rad, 0., 1.);
+    val *= rad;
+    
+    gl_FragColor = vec4(vec3(val), 1.);
 }
 

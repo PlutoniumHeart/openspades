@@ -24,14 +24,14 @@
 #include <Core/Math.h>
 
 namespace spades {
-	namespace client {
-		
-		class ScriptIBlockSkin {
-			asIScriptObject *obj;
-		public:
-			ScriptIBlockSkin(asIScriptObject *obj);
-			void SetReadyState(float);
-			void SetBlockColor(Vector3);
-		};
-	}
+    namespace client {
+        
+        class ScriptIBlockSkin {
+            asIScriptObject *obj;
+        public:
+            ScriptIBlockSkin(asIScriptObject *obj);
+            void SetReadyState(float);
+            void SetBlockColor(Vector3);
+        };
+    }
 }

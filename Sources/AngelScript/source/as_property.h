@@ -53,80 +53,80 @@ struct asSNameSpace;
 class asCObjectProperty
 {
 public:
-	asCObjectProperty() {accessMask = 0xFFFFFFFF;}
-	asCString   name;
-	asCDataType type;
-	int         byteOffset;
-	bool		isPrivate;
-	asDWORD     accessMask;
+    asCObjectProperty() {accessMask = 0xFFFFFFFF;}
+    asCString   name;
+    asCDataType type;
+    int         byteOffset;
+    bool        isPrivate;
+    asDWORD     accessMask;
 };
 
 class asCGlobalProperty
 {
 public:
-	asCGlobalProperty();
-	~asCGlobalProperty();
+    asCGlobalProperty();
+    ~asCGlobalProperty();
 
-	void AddRef();
-	void Release();
-	int  GetRefCount();
+    void AddRef();
+    void Release();
+    int  GetRefCount();
 
-	void *GetAddressOfValue();
-	void  AllocateMemory();
-	void  SetRegisteredAddress(void *p);
-	void *GetRegisteredAddress() const;
+    void *GetAddressOfValue();
+    void  AllocateMemory();
+    void  SetRegisteredAddress(void *p);
+    void *GetRegisteredAddress() const;
 
-	asCString          name;
-	asCDataType        type;
-	asUINT             id;
-	asSNameSpace      *nameSpace;
+    asCString          name;
+    asCDataType        type;
+    asUINT             id;
+    asSNameSpace      *nameSpace;
 
-	void SetInitFunc(asCScriptFunction *initFunc);
-	asCScriptFunction *GetInitFunc();
+    void SetInitFunc(asCScriptFunction *initFunc);
+    asCScriptFunction *GetInitFunc();
 
-	static void RegisterGCBehaviours(asCScriptEngine *engine);
+    static void RegisterGCBehaviours(asCScriptEngine *engine);
 
 //protected:
-	void SetGCFlag();
-	bool GetGCFlag();
-	void EnumReferences(asIScriptEngine *);
-	void ReleaseAllHandles(asIScriptEngine *);
+    void SetGCFlag();
+    bool GetGCFlag();
+    void EnumReferences(asIScriptEngine *);
+    void ReleaseAllHandles(asIScriptEngine *);
 
-	void Orphan(asCModule *module);
+    void Orphan(asCModule *module);
 
-	// This is only stored for registered properties, and keeps the pointer given by the application
-	void       *realAddress;
+    // This is only stored for registered properties, and keeps the pointer given by the application
+    void       *realAddress;
 
-	bool        memoryAllocated;
-	void       *memory;
-	asQWORD     storage;
+    bool        memoryAllocated;
+    void       *memory;
+    asQWORD     storage;
 
-	asCScriptFunction *initFunc;
+    asCScriptFunction *initFunc;
 
-	asDWORD accessMask;
+    asDWORD accessMask;
 
-	// The global property structure is reference counted, so that the
-	// engine can keep track of how many references to the property there are.
-	asCAtomic refCount;
-	bool      gcFlag;
+    // The global property structure is reference counted, so that the
+    // engine can keep track of how many references to the property there are.
+    asCAtomic refCount;
+    bool      gcFlag;
 };
 
 class asCCompGlobPropType : public asIFilter
 {
 public:
-	const asCDataType &m_type;
+    const asCDataType &m_type;
 
-	asCCompGlobPropType(const asCDataType &type) : m_type(type) {}
+    asCCompGlobPropType(const asCDataType &type) : m_type(type) {}
 
-	bool operator()(const void *p) const
-	{
-		const asCGlobalProperty* prop = reinterpret_cast<const asCGlobalProperty*>(p);
-		return prop->type == m_type;
-	}
+    bool operator()(const void *p) const
+    {
+        const asCGlobalProperty* prop = reinterpret_cast<const asCGlobalProperty*>(p);
+        return prop->type == m_type;
+    }
 
 private:
-	// The assignment operator is required for MSVC9, otherwise it will complain that it is not possible to auto generate the operator
-	asCCompGlobPropType &operator=(const asCCompGlobPropType &) {return *this;}
+    // The assignment operator is required for MSVC9, otherwise it will complain that it is not possible to auto generate the operator
+    asCCompGlobPropType &operator=(const asCCompGlobPropType &) {return *this;}
 };
 
 END_AS_NAMESPACE

@@ -31,31 +31,31 @@ varying vec4 shadowMapCoord;
 
 
 float VisibilityOfSunLight_Model() {
-	vec4 scoord = shadowMapCoord.xyzw;
-	
-	vec2 pagetableFract = fract(scoord.xy * pagetableSize);
-	vec2 pagetableInt = floor(scoord.xy * pagetableSize);
-	vec4 mapData = texture2D(shadowMapTexture2, pagetableInt * pagetableSizeInv);
-	
-	// decode map size
-	if(mapData.w > .99) return 1.; // no shadow map
-	mapData *= 255.01;
-	
-	vec2 physCoord = mapData.xy;
-	physCoord = floor(physCoord);
-	
-	physCoord.x += floor(mod(mapData.z, 16.)) * 256.;
-	physCoord.y += floor(mapData.z / 16.) * 256.;
-	
-	//float lod = mapData.w * minLod;
-	float lod = exp2(floor(mapData.w));
-	physCoord.xy += lod * pagetableFract;
-	
-	physCoord.xy *= shadowMapSizeInv;
-	
-	vec3 physCoord2 = vec3(physCoord, scoord.z);
-	
-	float v = shadow2D(shadowMapTexture1, physCoord2).x;
-	return v;
+    vec4 scoord = shadowMapCoord.xyzw;
+    
+    vec2 pagetableFract = fract(scoord.xy * pagetableSize);
+    vec2 pagetableInt = floor(scoord.xy * pagetableSize);
+    vec4 mapData = texture2D(shadowMapTexture2, pagetableInt * pagetableSizeInv);
+    
+    // decode map size
+    if(mapData.w > .99) return 1.; // no shadow map
+    mapData *= 255.01;
+    
+    vec2 physCoord = mapData.xy;
+    physCoord = floor(physCoord);
+    
+    physCoord.x += floor(mod(mapData.z, 16.)) * 256.;
+    physCoord.y += floor(mapData.z / 16.) * 256.;
+    
+    //float lod = mapData.w * minLod;
+    float lod = exp2(floor(mapData.w));
+    physCoord.xy += lod * pagetableFract;
+    
+    physCoord.xy *= shadowMapSizeInv;
+    
+    vec3 physCoord2 = vec3(physCoord, scoord.z);
+    
+    float v = shadow2D(shadowMapTexture1, physCoord2).x;
+    return v;
 }
 

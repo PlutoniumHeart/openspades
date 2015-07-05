@@ -24,15 +24,15 @@
 #include "GLFramebufferManager.h"
 
 namespace spades {
-	namespace draw {
-		class GLRenderer;
-		class GLProgram;
-		class GLColorCorrectionFilter {
-			GLRenderer *renderer;
-			GLProgram *lens;
-		public:
-			GLColorCorrectionFilter(GLRenderer *);
-			GLColorBuffer Filter(GLColorBuffer, Vector3 tint);
-		};
-	}
+    namespace draw {
+        class GLRenderer;
+        class GLProgram;
+        class GLColorCorrectionFilter {
+            GLRenderer *renderer;
+            GLProgram *lens;
+        public:
+            GLColorCorrectionFilter(GLRenderer *);
+            GLColorBuffer Filter(GLColorBuffer, Vector3 tint);
+        };
+    }
 }

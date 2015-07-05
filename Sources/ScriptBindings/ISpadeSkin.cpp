@@ -23,79 +23,79 @@
 #include <Core/Debug.h>
 
 namespace spades{
-	namespace client {
-		ScriptISpadeSkin::ScriptISpadeSkin(asIScriptObject *obj):
-		obj(obj){}
-		
-		void ScriptISpadeSkin::SetActionType(SpadeActionType act) {
-			SPADES_MARK_FUNCTION_DEBUG();
-			static ScriptFunction func("ISpadeSkin",
-									   "void set_ActionType(SpadeActionType)");
-			ScriptContextHandle ctx = func.Prepare();
-			int r;
-			r = ctx->SetObject((void *)obj);
-			ScriptManager::CheckError(r);
-			r = ctx->SetArgDWord(0, (asDWORD)act);
-			ScriptManager::CheckError(r);
-			ctx.ExecuteChecked();
-		}
-		
-		void ScriptISpadeSkin::SetActionProgress(float v) {
-			SPADES_MARK_FUNCTION_DEBUG();
-			static ScriptFunction func("ISpadeSkin",
-									   "void set_ActionProgress(float)");
-			ScriptContextHandle ctx = func.Prepare();
-			int r;
-			r = ctx->SetObject((void *)obj);
-			ScriptManager::CheckError(r);
-			r = ctx->SetArgFloat(0, v);
-			ScriptManager::CheckError(r);
-			ctx.ExecuteChecked();
-		}
-		
-		class ISpadeSkinRegistrar: public ScriptObjectRegistrar {
-		public:
-			ISpadeSkinRegistrar():
-			ScriptObjectRegistrar("ISpadeSkin"){
-				
-			}
-			virtual void Register(ScriptManager *manager, Phase phase) {
-				asIScriptEngine *eng = manager->GetEngine();
-				int r;
-				eng->SetDefaultNamespace("spades");
-				switch(phase){
-					case PhaseObjectType:
-						r = eng->RegisterInterface("ISpadeSkin");
-						manager->CheckError(r);
-						
-						r = eng->RegisterEnum("SpadeActionType");
-						manager->CheckError(r);
-						
-						r = eng->RegisterEnumValue("SpadeActionType", "Idle", SpadeActionTypeIdle);
-						manager->CheckError(r);
-						r = eng->RegisterEnumValue("SpadeActionType", "Bash", SpadeActionTypeBash);
-						manager->CheckError(r);
-						r = eng->RegisterEnumValue("SpadeActionType", "Dig", SpadeActionTypeDig);
-						manager->CheckError(r);
-						r = eng->RegisterEnumValue("SpadeActionType", "DigStart", SpadeActionTypeDigStart);
-						manager->CheckError(r);
-						break;
-					case PhaseObjectMember:
-						r = eng->RegisterInterfaceMethod("ISpadeSkin",
-														 "void set_ActionType(SpadeActionType)");
-						manager->CheckError(r);
-						r = eng->RegisterInterfaceMethod("ISpadeSkin",
-														 "void set_ActionProgress(float)");
-						manager->CheckError(r);
-						break;
-					default:
-						
-						break;
-				}
-			}
-		};
-		
-		static ISpadeSkinRegistrar registrar;
-	}
+    namespace client {
+        ScriptISpadeSkin::ScriptISpadeSkin(asIScriptObject *obj):
+        obj(obj){}
+        
+        void ScriptISpadeSkin::SetActionType(SpadeActionType act) {
+            SPADES_MARK_FUNCTION_DEBUG();
+            static ScriptFunction func("ISpadeSkin",
+                                       "void set_ActionType(SpadeActionType)");
+            ScriptContextHandle ctx = func.Prepare();
+            int r;
+            r = ctx->SetObject((void *)obj);
+            ScriptManager::CheckError(r);
+            r = ctx->SetArgDWord(0, (asDWORD)act);
+            ScriptManager::CheckError(r);
+            ctx.ExecuteChecked();
+        }
+        
+        void ScriptISpadeSkin::SetActionProgress(float v) {
+            SPADES_MARK_FUNCTION_DEBUG();
+            static ScriptFunction func("ISpadeSkin",
+                                       "void set_ActionProgress(float)");
+            ScriptContextHandle ctx = func.Prepare();
+            int r;
+            r = ctx->SetObject((void *)obj);
+            ScriptManager::CheckError(r);
+            r = ctx->SetArgFloat(0, v);
+            ScriptManager::CheckError(r);
+            ctx.ExecuteChecked();
+        }
+        
+        class ISpadeSkinRegistrar: public ScriptObjectRegistrar {
+        public:
+            ISpadeSkinRegistrar():
+            ScriptObjectRegistrar("ISpadeSkin"){
+                
+            }
+            virtual void Register(ScriptManager *manager, Phase phase) {
+                asIScriptEngine *eng = manager->GetEngine();
+                int r;
+                eng->SetDefaultNamespace("spades");
+                switch(phase){
+                    case PhaseObjectType:
+                        r = eng->RegisterInterface("ISpadeSkin");
+                        manager->CheckError(r);
+                        
+                        r = eng->RegisterEnum("SpadeActionType");
+                        manager->CheckError(r);
+                        
+                        r = eng->RegisterEnumValue("SpadeActionType", "Idle", SpadeActionTypeIdle);
+                        manager->CheckError(r);
+                        r = eng->RegisterEnumValue("SpadeActionType", "Bash", SpadeActionTypeBash);
+                        manager->CheckError(r);
+                        r = eng->RegisterEnumValue("SpadeActionType", "Dig", SpadeActionTypeDig);
+                        manager->CheckError(r);
+                        r = eng->RegisterEnumValue("SpadeActionType", "DigStart", SpadeActionTypeDigStart);
+                        manager->CheckError(r);
+                        break;
+                    case PhaseObjectMember:
+                        r = eng->RegisterInterfaceMethod("ISpadeSkin",
+                                                         "void set_ActionType(SpadeActionType)");
+                        manager->CheckError(r);
+                        r = eng->RegisterInterfaceMethod("ISpadeSkin",
+                                                         "void set_ActionProgress(float)");
+                        manager->CheckError(r);
+                        break;
+                    default:
+                        
+                        break;
+                }
+            }
+        };
+        
+        static ISpadeSkinRegistrar registrar;
+    }
 }
 

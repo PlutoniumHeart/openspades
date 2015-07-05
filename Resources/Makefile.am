@@ -98,17 +98,17 @@ Shaders/DynamicLight/MapNull.fs \
 Shaders/DynamicLight/MapNull.vs 
 
 install-data-local:
-	echo '-- Installing Shaders'
-	$(mkinstalldirs) $(Resourcesdir)
-	$(mkinstalldirs) $(Resourcesdir)/Shaders
-	$(mkinstalldirs) $(Resourcesdir)/Shaders/PostFilters
-	$(mkinstalldirs) $(Resourcesdir)/Shaders/Shadow
-	$(mkinstalldirs) $(Resourcesdir)/Shaders/ShadowMap
-	$(mkinstalldirs) $(Resourcesdir)/Shaders/DynamicLight
-	$(mkinstalldirs) $(Resourcesdir)/Shaders/LensFlare
-	for i in $(SHADERS); do \
-	$(INSTALL_DATA) $(srcdir)/$$i $(Resourcesdir)/$$i; \
-	done
+    echo '-- Installing Shaders'
+    $(mkinstalldirs) $(Resourcesdir)
+    $(mkinstalldirs) $(Resourcesdir)/Shaders
+    $(mkinstalldirs) $(Resourcesdir)/Shaders/PostFilters
+    $(mkinstalldirs) $(Resourcesdir)/Shaders/Shadow
+    $(mkinstalldirs) $(Resourcesdir)/Shaders/ShadowMap
+    $(mkinstalldirs) $(Resourcesdir)/Shaders/DynamicLight
+    $(mkinstalldirs) $(Resourcesdir)/Shaders/LensFlare
+    for i in $(SHADERS); do \
+    $(INSTALL_DATA) $(srcdir)/$$i $(Resourcesdir)/$$i; \
+    done
 
 EXTRA_DIST = $(SHADERS)
 

@@ -23,68 +23,68 @@
 #include <Core/Debug.h>
 
 namespace spades{
-	namespace client {
-		ScriptIThirdPersonToolSkin::ScriptIThirdPersonToolSkin(asIScriptObject *obj):
-		obj(obj){}
-		
-		void ScriptIThirdPersonToolSkin::SetOriginMatrix(Matrix4 m) {
-			SPADES_MARK_FUNCTION_DEBUG();
-			static ScriptFunction func("IThirdPersonToolSkin",
-									   "void set_OriginMatrix(Matrix4)");
-			ScriptContextHandle ctx = func.Prepare();
-			int r;
-			r = ctx->SetObject((void *)obj);
-			ScriptManager::CheckError(r);
-			r = ctx->SetArgObject(0, &m);
-			ScriptManager::CheckError(r);
-			ctx.ExecuteChecked();
-		}
-		
-		float ScriptIThirdPersonToolSkin::GetPitchBias() {
-			SPADES_MARK_FUNCTION_DEBUG();
-			static ScriptFunction func("IThirdPersonToolSkin",
-									   "float get_PitchBias()");
-			ScriptContextHandle ctx = func.Prepare();
-			int r;
-			r = ctx->SetObject((void *)obj);
-			ScriptManager::CheckError(r);
-			ctx.ExecuteChecked();
-			return ctx->GetReturnFloat();
-		}
-		
-		class IThirdPersonToolSkinRegistrar: public ScriptObjectRegistrar {
-		public:
-			IThirdPersonToolSkinRegistrar():
-			ScriptObjectRegistrar("IThirdPersonToolSkin"){
-				
-			}
-			virtual void Register(ScriptManager *manager, Phase phase) {
-				asIScriptEngine *eng = manager->GetEngine();
-				int r;
-				eng->SetDefaultNamespace("spades");
-				switch(phase){
-					case PhaseObjectType:
-						r = eng->RegisterInterface("IThirdPersonToolSkin");
-						manager->CheckError(r);
-						
-						
-						break;
-					case PhaseObjectMember:
-						r = eng->RegisterInterfaceMethod("IThirdPersonToolSkin",
-														 "void set_OriginMatrix(Matrix4)");
-						manager->CheckError(r);
-						r = eng->RegisterInterfaceMethod("IThirdPersonToolSkin",
-														 "float get_PitchBias()");
-						manager->CheckError(r);
-						break;
-					default:
-						
-						break;
-				}
-			}
-		};
-		
-		static IThirdPersonToolSkinRegistrar registrar;
-	}
+    namespace client {
+        ScriptIThirdPersonToolSkin::ScriptIThirdPersonToolSkin(asIScriptObject *obj):
+        obj(obj){}
+        
+        void ScriptIThirdPersonToolSkin::SetOriginMatrix(Matrix4 m) {
+            SPADES_MARK_FUNCTION_DEBUG();
+            static ScriptFunction func("IThirdPersonToolSkin",
+                                       "void set_OriginMatrix(Matrix4)");
+            ScriptContextHandle ctx = func.Prepare();
+            int r;
+            r = ctx->SetObject((void *)obj);
+            ScriptManager::CheckError(r);
+            r = ctx->SetArgObject(0, &m);
+            ScriptManager::CheckError(r);
+            ctx.ExecuteChecked();
+        }
+        
+        float ScriptIThirdPersonToolSkin::GetPitchBias() {
+            SPADES_MARK_FUNCTION_DEBUG();
+            static ScriptFunction func("IThirdPersonToolSkin",
+                                       "float get_PitchBias()");
+            ScriptContextHandle ctx = func.Prepare();
+            int r;
+            r = ctx->SetObject((void *)obj);
+            ScriptManager::CheckError(r);
+            ctx.ExecuteChecked();
+            return ctx->GetReturnFloat();
+        }
+        
+        class IThirdPersonToolSkinRegistrar: public ScriptObjectRegistrar {
+        public:
+            IThirdPersonToolSkinRegistrar():
+            ScriptObjectRegistrar("IThirdPersonToolSkin"){
+                
+            }
+            virtual void Register(ScriptManager *manager, Phase phase) {
+                asIScriptEngine *eng = manager->GetEngine();
+                int r;
+                eng->SetDefaultNamespace("spades");
+                switch(phase){
+                    case PhaseObjectType:
+                        r = eng->RegisterInterface("IThirdPersonToolSkin");
+                        manager->CheckError(r);
+                        
+                        
+                        break;
+                    case PhaseObjectMember:
+                        r = eng->RegisterInterfaceMethod("IThirdPersonToolSkin",
+                                                         "void set_OriginMatrix(Matrix4)");
+                        manager->CheckError(r);
+                        r = eng->RegisterInterfaceMethod("IThirdPersonToolSkin",
+                                                         "float get_PitchBias()");
+                        manager->CheckError(r);
+                        break;
+                    default:
+                        
+                        break;
+                }
+            }
+        };
+        
+        static IThirdPersonToolSkinRegistrar registrar;
+    }
 }
 

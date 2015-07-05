@@ -21,7 +21,7 @@
 #include "IRenderer.h"
 
 namespace spades {
-	namespace client{
-	
-	}
+    namespace client{
+    
+    }
 }

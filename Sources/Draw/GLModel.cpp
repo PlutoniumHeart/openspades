@@ -21,9 +21,9 @@
 #include "GLModel.h"
 
 namespace spades {
-	namespace draw {
-		GLModel::GLModel(){
-			renderId = -1;
-		}
-	}
+    namespace draw {
+        GLModel::GLModel(){
+            renderId = -1;
+        }
+    }
 }

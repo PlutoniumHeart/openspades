@@ -23,24 +23,24 @@
 #include <Core/RefCountedObject.h>
 
 namespace spades {
-	namespace client {
-		class ClientUI;
-		class ClientUIHelper: public RefCountedObject {
-			
-			friend class ClientUI;
-			
-			ClientUI *ui;
-			
-		public:
-			ClientUIHelper(ClientUI *);
-			void ClientUIDestroyed();
-			
-			void SayGlobal(const std::string&);
-			void SayTeam(const std::string&);
-			
-			void AlertNotice(const std::string&);
-			void AlertWarning(const std::string&);
-			void AlertError(const std::string&);
-		};
-	}
+    namespace client {
+        class ClientUI;
+        class ClientUIHelper: public RefCountedObject {
+            
+            friend class ClientUI;
+            
+            ClientUI *ui;
+            
+        public:
+            ClientUIHelper(ClientUI *);
+            void ClientUIDestroyed();
+            
+            void SayGlobal(const std::string&);
+            void SayTeam(const std::string&);
+            
+            void AlertNotice(const std::string&);
+            void AlertWarning(const std::string&);
+            void AlertError(const std::string&);
+        };
+    }
 }

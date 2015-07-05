@@ -50,45 +50,45 @@ void PrepareForShadow(vec3 worldOrigin, vec3 normal);
 vec4 FogDensity(float poweredLength);
 
 void main() {
-	
-	vec4 vertexPos = vec4(positionAttribute.xyz, 1.);
-	
-	vertexPos.xyz += modelOrigin;
-	
-	gl_Position = projectionViewModelMatrix * vertexPos;
-	
-	color = colorAttribute;
-	
-	if(dot(color.xyz, vec3(1.)) < 0.0001){
-		color.xyz = customColor;
-	}
-	
-	// linearize
-	color.xyz *= color.xyz;
-	
-	// direct sunlight
-	vec3 normal = normalAttribute;
-	normal = (modelNormalMatrix * vec4(normal, 1.)).xyz;
-	normal = normalize(normal);
-	float sunlight = dot(normal, sunLightDirection);
-	sunlight = max(sunlight, 0.);
-	color.w *= sunlight;
-	
-	// ambient occlusion
-	float aoID = positionAttribute.w / 256.;
-	
-	float aoY = aoID * 16.;
-	float aoX = fract(aoY);
-	aoY = floor(aoY) / 16.;
-	
-	ambientOcclusionCoord = vec2(aoX, aoY);
-	ambientOcclusionCoord += textureCoordAttribute.xy * (15. / 256.);
-	ambientOcclusionCoord += .5 / 256.;
-	
-	vec4 viewPos = viewModelMatrix * vertexPos;
-	float distance = dot(viewPos.xyz, viewPos.xyz);
-	fogDensity = FogDensity(distance).xyz;
-	
-	PrepareForShadow((modelMatrix * vertexPos).xyz, normal);
+    
+    vec4 vertexPos = vec4(positionAttribute.xyz, 1.);
+    
+    vertexPos.xyz += modelOrigin;
+    
+    gl_Position = projectionViewModelMatrix * vertexPos;
+    
+    color = colorAttribute;
+    
+    if(dot(color.xyz, vec3(1.)) < 0.0001){
+        color.xyz = customColor;
+    }
+    
+    // linearize
+    color.xyz *= color.xyz;
+    
+    // direct sunlight
+    vec3 normal = normalAttribute;
+    normal = (modelNormalMatrix * vec4(normal, 1.)).xyz;
+    normal = normalize(normal);
+    float sunlight = dot(normal, sunLightDirection);
+    sunlight = max(sunlight, 0.);
+    color.w *= sunlight;
+    
+    // ambient occlusion
+    float aoID = positionAttribute.w / 256.;
+    
+    float aoY = aoID * 16.;
+    float aoX = fract(aoY);
+    aoY = floor(aoY) / 16.;
+    
+    ambientOcclusionCoord = vec2(aoX, aoY);
+    ambientOcclusionCoord += textureCoordAttribute.xy * (15. / 256.);
+    ambientOcclusionCoord += .5 / 256.;
+    
+    vec4 viewPos = viewModelMatrix * vertexPos;
+    float distance = dot(viewPos.xyz, viewPos.xyz);
+    fogDensity = FogDensity(distance).xyz;
+    
+    PrepareForShadow((modelMatrix * vertexPos).xyz, normal);
 }
 

@@ -29,7 +29,7 @@
 
 
 namespace spades {
-	namespace draw {
+    namespace draw {
         SWFlatMapRenderer::SWFlatMapRenderer(SWRenderer *r, client::GameMap *map)
             : r(r)
             , map(map)
@@ -37,97 +37,97 @@ namespace spades {
             , h(map->Height())
             , needsUpdate(true)
         {
-			SPADES_MARK_FUNCTION();
-			
+            SPADES_MARK_FUNCTION();
+            
             if(w & 31)
-				SPRaise("Map width must be a multiple of 32.");
-			
-			img.Set(new SWImage(map->Width(), map->Height()), false);
-			updateMap.resize(w * h / 32);
-			std::fill(updateMap.begin(), updateMap.end(), 0xffffffff);
-			updateMap2.resize(w * h / 32);
-			std::fill(updateMap2.begin(), updateMap2.end(), 0xffffffff);
-			
-			Update(true);
-		}
-		
+                SPRaise("Map width must be a multiple of 32.");
+            
+            img.Set(new SWImage(map->Width(), map->Height()), false);
+            updateMap.resize(w * h / 32);
+            std::fill(updateMap.begin(), updateMap.end(), 0xffffffff);
+            updateMap2.resize(w * h / 32);
+            std::fill(updateMap2.begin(), updateMap2.end(), 0xffffffff);
+            
+            Update(true);
+        }
+        
         SWFlatMapRenderer::~SWFlatMapRenderer()
         {
             SPADES_MARK_FUNCTION();
-		}
-		
+        }
+        
         void SWFlatMapRenderer::Update(bool firstTime)
         {
-			SPADES_MARK_FUNCTION();
-			{
-				std::lock_guard<std::mutex> lock(updateInfoLock);
-				
-				if(!needsUpdate)
-					return;
-				needsUpdate = false;
-				updateMap.swap(updateMap2);
-				std::fill(updateMap.begin(), updateMap.end(), 0);
-			}
-			auto *outPixels = img->GetRawBitmap();
-			
-			auto *mapRenderer = r->mapRenderer.get();
-			
-			int idx = 0;
+            SPADES_MARK_FUNCTION();
+            {
+                std::lock_guard<std::mutex> lock(updateInfoLock);
+                
+                if(!needsUpdate)
+                    return;
+                needsUpdate = false;
+                updateMap.swap(updateMap2);
+                std::fill(updateMap.begin(), updateMap.end(), 0);
+            }
+            auto *outPixels = img->GetRawBitmap();
+            
+            auto *mapRenderer = r->mapRenderer.get();
+            
+            int idx = 0;
             for(int y = 0; y < h; y++)
             {
                 for(int x = 0; x < w; x += 32)
                 {
-					uint32_t upd = updateMap2[idx];
+                    uint32_t upd = updateMap2[idx];
                     if(upd)
                     {
                         for(int i = 0; i < 32; i++)
                         {
                             if(upd & 1)
                             {
-								auto c = GeneratePixel(x + i, y);
-								outPixels[i] = c;
+                                auto c = GeneratePixel(x + i, y);
+                                outPixels[i] = c;
                                 if(!firstTime)
                                 {
-									mapRenderer->UpdateRle(x+i, y);
-									mapRenderer->UpdateRle((x+i+1)&(w-1), y);
-									mapRenderer->UpdateRle((x+i-1)&(w-1), y);
-									mapRenderer->UpdateRle(x+i, (y+1)&(h-1));
-									mapRenderer->UpdateRle(x+i, (y-1)&(h-1));
-								}
-							}
-							upd >>= 1;
-						}
-						//updateMap[idx] = 0;
-					}
-					outPixels += 32;
-					idx++;
-				}
-			}
-		}
-		
+                                    mapRenderer->UpdateRle(x+i, y);
+                                    mapRenderer->UpdateRle((x+i+1)&(w-1), y);
+                                    mapRenderer->UpdateRle((x+i-1)&(w-1), y);
+                                    mapRenderer->UpdateRle(x+i, (y+1)&(h-1));
+                                    mapRenderer->UpdateRle(x+i, (y-1)&(h-1));
+                                }
+                            }
+                            upd >>= 1;
+                        }
+                        //updateMap[idx] = 0;
+                    }
+                    outPixels += 32;
+                    idx++;
+                }
+            }
+        }
+        
         uint32_t SWFlatMapRenderer::GeneratePixel(int x, int y)
         {
-			const int depth = map->Depth();
+            const int depth = map->Depth();
             for(int z = 0; z < depth; z++)
             {
                 if(map->IsSolid(x, y, z))
                 {
-					uint32_t col = map->GetColor(x, y, z);
-					col = (col & 0xff00) |
-					((col & 0xff) << 16) |
-					((col & 0xff0000) >> 16);
-					col |= 0xff000000;
-					return col;
-				}
-			}
-			return 0; // shouldn't reach here for valid maps
-		}
-		
+                    uint32_t col = map->GetColor(x, y, z);
+                    col = (col & 0xff00) |
+                    ((col & 0xff) << 16) |
+                    ((col & 0xff0000) >> 16);
+                    col |= 0xff000000;
+                    return col;
+                }
+            }
+            return 0; // shouldn't reach here for valid maps
+        }
+        
         void SWFlatMapRenderer::SetNeedsUpdate(int x, int y)
         {
-			std::lock_guard<std::mutex> lock(updateInfoLock);
-			needsUpdate = true;
-			updateMap[(x + y * w) >> 5] |= 1 << (x & 31);
-		}
-	}
+            std::lock_guard<std::mutex> lock(updateInfoLock);
+            needsUpdate = true;
+            updateMap[(x + y * w) >> 5] |= 1 << (x & 31);
+        }
+    }
 }

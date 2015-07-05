@@ -27,36 +27,36 @@ uniform vec2 offset;
 
 vec4 doGamma(vec4 col) {
 #if !LINEAR_FRAMEBUFFER
-	col.xyz *= col.xyz;
+    col.xyz *= col.xyz;
 #endif
-	return col;
+    return col;
 }
 
 void main() {
-	
-	float coc = texture2D(cocTexture, texCoord).x;
-	vec4 v = vec4(0.);
-	
-	vec4 offsets = vec4(0., 0.25, 0.5, 0.75) * coc;
-	vec4 offsets2 = offsets + coc * 0.125;
-	
-	v += doGamma(texture2D(texture, texCoord));
-	v += doGamma(texture2D(texture, texCoord + offset * offsets.y));
-	v += doGamma(texture2D(texture, texCoord + offset * offsets.z));
-	v += doGamma(texture2D(texture, texCoord + offset * offsets.w));
+    
+    float coc = texture2D(cocTexture, texCoord).x;
+    vec4 v = vec4(0.);
+    
+    vec4 offsets = vec4(0., 0.25, 0.5, 0.75) * coc;
+    vec4 offsets2 = offsets + coc * 0.125;
+    
+    v += doGamma(texture2D(texture, texCoord));
+    v += doGamma(texture2D(texture, texCoord + offset * offsets.y));
+    v += doGamma(texture2D(texture, texCoord + offset * offsets.z));
+    v += doGamma(texture2D(texture, texCoord + offset * offsets.w));
 #if 1
-	v += doGamma(texture2D(texture, texCoord + offset * offsets2.x));
-	v += doGamma(texture2D(texture, texCoord + offset * offsets2.y));
-	v += doGamma(texture2D(texture, texCoord + offset * offsets2.z));
-	v += doGamma(texture2D(texture, texCoord + offset * offsets2.w));
-	v *= 0.125;
+    v += doGamma(texture2D(texture, texCoord + offset * offsets2.x));
+    v += doGamma(texture2D(texture, texCoord + offset * offsets2.y));
+    v += doGamma(texture2D(texture, texCoord + offset * offsets2.z));
+    v += doGamma(texture2D(texture, texCoord + offset * offsets2.w));
+    v *= 0.125;
 #else
     v *= 0.25;
 #endif
 #if !LINEAR_FRAMEBUFFER
-	v.xyz = sqrt(v.xyz);
+    v.xyz = sqrt(v.xyz);
 #endif
-	
-	gl_FragColor = v;
+    
+    gl_FragColor = v;
 }
 

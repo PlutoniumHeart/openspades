@@ -24,27 +24,27 @@
 #include <map>
 
 namespace spades {
-	class Bitmap;
-	class BitmapAtlasGenerator{
-	public:
-		struct Item {
-			Bitmap *bitmap;
-			int x, y, w, h;
-		};
-		struct Result {
-			std::vector<Item> items;
-			Bitmap *bitmap;
-		};
-	private:
-		std::vector<Bitmap *> bmps;
-		int MinRectSize();
-		int MinWidth();
-		int MinHeight();
-	public:
-		BitmapAtlasGenerator();
-		~BitmapAtlasGenerator();
-		
-		void AddBitmap(Bitmap *);
-		Result Pack();
-	};
+    class Bitmap;
+    class BitmapAtlasGenerator{
+    public:
+        struct Item {
+            Bitmap *bitmap;
+            int x, y, w, h;
+        };
+        struct Result {
+            std::vector<Item> items;
+            Bitmap *bitmap;
+        };
+    private:
+        std::vector<Bitmap *> bmps;
+        int MinRectSize();
+        int MinWidth();
+        int MinHeight();
+    public:
+        BitmapAtlasGenerator();
+        ~BitmapAtlasGenerator();
+        
+        void AddBitmap(Bitmap *);
+        Result Pack();
+    };
 }

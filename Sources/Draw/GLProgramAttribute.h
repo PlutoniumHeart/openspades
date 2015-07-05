@@ -24,17 +24,17 @@
 #include <string>
 
 namespace spades {
-	namespace draw {
-		class GLProgramAttribute {
-			GLProgram *last;
-			int loc;
-			std::string name;
-		public:
-			GLProgramAttribute(const std::string&);
-			int operator()() {
-				return loc;
-			}
-			int operator()(GLProgram *);
-		};
-	}
+    namespace draw {
+        class GLProgramAttribute {
+            GLProgram *last;
+            int loc;
+            std::string name;
+        public:
+            GLProgramAttribute(const std::string&);
+            int operator()() {
+                return loc;
+            }
+            int operator()(GLProgram *);
+        };
+    }
 }

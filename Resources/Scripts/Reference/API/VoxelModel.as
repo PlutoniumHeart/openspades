@@ -19,47 +19,47 @@
  */
  
 namespace spades {
-	
-	/** Represents a small voxel model. */
-	class VoxelModel {
-		
-		/** Creates a new voxel model. 
-		 * @param width Width of the voxel model. 
-		 * @param height Height of the voxel model.
-		 * @param depth Depth of the voxel model, which must be <= 64.
-		 */
-		GameMap(int width, int height, int depth) {}
-		
-		/** Loads a voxel model from the specified file. */
-		GameMap(const string@ path) {}
-		
-		/** Gets the color of the specified voxel. */
-		uint GetColor(int x, int y, int z) {}
-		
-		/** Returns if the specified voxel is solid (or air). */
-		bool IsSolid(int x, int y, int z) {}
-		
-		/** Makes the specified voxel non-solid. */
-		void SetAir(int x, int y, int z) {}
-		
-		/** Makes the specified voxel solid, and sets its color. */
-		void SetSolid(int x, int y, int z, uint color) {}
-		
-		/** Retrieves the width of the voxel model. */
-		int Width {
-			get { }
-		}
-		
-		/** Retrieves the height of the voxel model. */
-		int Height {
-			get { }
-		}
-		
-		/** Retrieves the depth of the voxel model. */
-		int Depth {
-			get { }
-		}
-		
-	}
-	
+    
+    /** Represents a small voxel model. */
+    class VoxelModel {
+        
+        /** Creates a new voxel model. 
+         * @param width Width of the voxel model. 
+         * @param height Height of the voxel model.
+         * @param depth Depth of the voxel model, which must be <= 64.
+         */
+        GameMap(int width, int height, int depth) {}
+        
+        /** Loads a voxel model from the specified file. */
+        GameMap(const string@ path) {}
+        
+        /** Gets the color of the specified voxel. */
+        uint GetColor(int x, int y, int z) {}
+        
+        /** Returns if the specified voxel is solid (or air). */
+        bool IsSolid(int x, int y, int z) {}
+        
+        /** Makes the specified voxel non-solid. */
+        void SetAir(int x, int y, int z) {}
+        
+        /** Makes the specified voxel solid, and sets its color. */
+        void SetSolid(int x, int y, int z, uint color) {}
+        
+        /** Retrieves the width of the voxel model. */
+        int Width {
+            get { }
+        }
+        
+        /** Retrieves the height of the voxel model. */
+        int Height {
+            get { }
+        }
+        
+        /** Retrieves the depth of the voxel model. */
+        int Depth {
+            get { }
+        }
+        
+    }
+    
 }

@@ -26,10 +26,10 @@ attribute vec3 positionAttribute;
 
 
 void main() {
-	
-	vec4 vertexPos = vec4(positionAttribute.xyz, 1.);
-	
-	gl_Position = projectionViewMatrix * vertexPos;
-	
+    
+    vec4 vertexPos = vec4(positionAttribute.xyz, 1.);
+    
+    gl_Position = projectionViewMatrix * vertexPos;
+    
 }
 

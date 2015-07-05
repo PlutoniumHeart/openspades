@@ -23,21 +23,21 @@
 #include <Core/Stopwatch.h>
 
 namespace spades { namespace client {
-	
-	Client::FPSCounter::FPSCounter():
-	numFrames(0),
-	lastFps(0.0){
-		sw.Reset();
-	}
-	
-	void Client::FPSCounter::MarkFrame() {
-		numFrames++;
-		if(sw.GetTime() > 0.5) {
-			auto diff = sw.GetTime();
-			lastFps = static_cast<double>(numFrames) / diff;
-			numFrames = 0;
-			sw.Reset();
-		}
-	}
-	
+    
+    Client::FPSCounter::FPSCounter():
+    numFrames(0),
+    lastFps(0.0){
+        sw.Reset();
+    }
+    
+    void Client::FPSCounter::MarkFrame() {
+        numFrames++;
+        if(sw.GetTime() > 0.5) {
+            auto diff = sw.GetTime();
+            lastFps = static_cast<double>(numFrames) / diff;
+            numFrames = 0;
+            sw.Reset();
+        }
+    }
+    
 } }

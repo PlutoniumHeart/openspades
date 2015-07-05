@@ -24,16 +24,16 @@
 #include <Core/Math.h>
 
 namespace spades {
-	namespace client {
-		class ScriptIViewToolSkin {
-			asIScriptObject *obj;
-		public:
-			ScriptIViewToolSkin(asIScriptObject *obj);
-			void SetEyeMatrix(Matrix4 m);
-			void SetSwing(Vector3);
-			Vector3 GetLeftHandPosition();
-			Vector3 GetRightHandPosition();
-			void Draw2D();
-		};
-	}
+    namespace client {
+        class ScriptIViewToolSkin {
+            asIScriptObject *obj;
+        public:
+            ScriptIViewToolSkin(asIScriptObject *obj);
+            void SetEyeMatrix(Matrix4 m);
+            void SetSwing(Vector3);
+            Vector3 GetLeftHandPosition();
+            Vector3 GetRightHandPosition();
+            void Draw2D();
+        };
+    }
 }

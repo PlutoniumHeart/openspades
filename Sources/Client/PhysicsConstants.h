@@ -21,10 +21,10 @@
 
 #pragma once
 
-#define FALL_SLOW_DOWN	0.24f
-#define FALL_DAMAGE_VELOCITY	0.58f
-#define FALL_DAMAGE_SCALAR	4096
-#define MINERANGE	3
+#define FALL_SLOW_DOWN    0.24f
+#define FALL_DAMAGE_VELOCITY    0.58f
+#define FALL_DAMAGE_SCALAR    4096
+#define MINERANGE    3
 #define SCPITCH 128
 #define MAXSCANDIST 128
 #define MAXSCANSQ (MAXSCANDIST*MAXSCANDIST)
@@ -40,54 +40,54 @@
 #define MAX_DIG_DISTANCE 6
 
 enum WeaponType {
-	RIFLE_WEAPON,
-	SMG_WEAPON,
-	SHOTGUN_WEAPON
+    RIFLE_WEAPON,
+    SMG_WEAPON,
+    SHOTGUN_WEAPON
 };
 
 enum BlockActionType {
-	BlockActionCreate,
-	BlockActionTool, // gun and spade
-	BlockActionDig,
-	BlockActionGrenade
+    BlockActionCreate,
+    BlockActionTool, // gun and spade
+    BlockActionDig,
+    BlockActionGrenade
 };
 
 // "Hit Packet" and weapon damage query
 enum HitType {
-	HitTypeTorso,
-	HitTypeHead,
-	HitTypeArms,
-	HitTypeLegs,
-	HitTypeBlock, // used for block damage query
-	HitTypeMelee 
+    HitTypeTorso,
+    HitTypeHead,
+    HitTypeArms,
+    HitTypeLegs,
+    HitTypeBlock, // used for block damage query
+    HitTypeMelee 
 };
 
 enum HurtType {
-	HurtTypeFall = 0,
-	HurtTypeWeapon
+    HurtTypeFall = 0,
+    HurtTypeWeapon
 };
 
 enum KillType {
-	KillTypeWeapon = 0,
-	KillTypeHeadshot,
-	KillTypeMelee,
-	KillTypeGrenade,
-	KillTypeFall,
-	KillTypeTeamChange,
-	KillTypeClassChange
+    KillTypeWeapon = 0,
+    KillTypeHeadshot,
+    KillTypeMelee,
+    KillTypeGrenade,
+    KillTypeFall,
+    KillTypeTeamChange,
+    KillTypeClassChange
 };
 
 //Flags to be used in a raycast.
 enum hitTag_t {
-	hit_None = 0,
-	hit_Head = 1,
-	hit_Torso = 2,
-	hit_Legs = 4,
-	hit_Arms = 8
+    hit_None = 0,
+    hit_Head = 1,
+    hit_Torso = 2,
+    hit_Legs = 4,
+    hit_Arms = 8
 };
 
 static inline hitTag_t& operator |= ( hitTag_t& left, const hitTag_t& right )
 {
-	left = static_cast<hitTag_t>( static_cast<int>(left) | static_cast<int>(right) );
-	return left;
+    left = static_cast<hitTag_t>( static_cast<int>(left) | static_cast<int>(right) );
+    return left;
 }

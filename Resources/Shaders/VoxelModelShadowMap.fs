@@ -24,6 +24,6 @@
 void DoShadowMapRender();
 
 void main() {
-	DoShadowMapRender();
+    DoShadowMapRender();
 }
 

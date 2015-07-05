@@ -40,27 +40,27 @@ BEGIN_AS_NAMESPACE
 
 asCAtomic::asCAtomic()
 {
-	value = 0;
+    value = 0;
 }
 
 asDWORD asCAtomic::get() const
 {
-	return value;
+    return value;
 }
 
 void asCAtomic::set(asDWORD val)
 {
-	value = val;
+    value = val;
 }
 
 asDWORD asCAtomic::atomicInc()
 {
-	return asAtomicInc((int&)value);
+    return asAtomicInc((int&)value);
 }
 
 asDWORD asCAtomic::atomicDec()
 {
-	return asAtomicDec((int&)value);
+    return asAtomicDec((int&)value);
 }
 
 //
@@ -70,12 +70,12 @@ asDWORD asCAtomic::atomicDec()
 
 int asAtomicInc(int &value)
 {
-	return ++value;
+    return ++value;
 }
 
 int asAtomicDec(int &value)
 {
-	return --value;
+    return --value;
 }
 
 #elif defined(AS_XENON) /// XBox360
@@ -86,12 +86,12 @@ BEGIN_AS_NAMESPACE
 
 int asAtomicInc(int &value)
 {
-	return InterlockedIncrement((LONG*)&value);
+    return InterlockedIncrement((LONG*)&value);
 }
 
 int asAtomicDec(int &value)
 {
-	return InterlockedDecrement((LONG*)&value);
+    return InterlockedDecrement((LONG*)&value);
 }
 
 #elif defined(AS_WIN)
@@ -103,13 +103,13 @@ BEGIN_AS_NAMESPACE
 
 int asAtomicInc(int &value)
 {
-	return InterlockedIncrement((LONG*)&value);
+    return InterlockedIncrement((LONG*)&value);
 }
 
 int asAtomicDec(int &value)
 {
-	asASSERT(value > 0);
-	return InterlockedDecrement((LONG*)&value);
+    asASSERT(value > 0);
+    return InterlockedDecrement((LONG*)&value);
 }
 
 #elif defined(AS_LINUX) || defined(AS_BSD) || defined(AS_ILLUMOS)
@@ -127,12 +127,12 @@ int asAtomicDec(int &value)
 
 int asAtomicInc(int &value)
 {
-	return __sync_add_and_fetch(&value, 1);
+    return __sync_add_and_fetch(&value, 1);
 }
 
 int asAtomicDec(int &value)
 {
-	return __sync_sub_and_fetch(&value, 1);
+    return __sync_sub_and_fetch(&value, 1);
 }
 
 #elif defined(AS_MAC) || defined(AS_IPHONE)
@@ -143,12 +143,12 @@ BEGIN_AS_NAMESPACE
 
 int asAtomicInc(int &value)
 {
-	return OSAtomicIncrement32((int32_t*)&value);
+    return OSAtomicIncrement32((int32_t*)&value);
 }
 
 int asAtomicDec(int &value)
 {
-	return OSAtomicDecrement32((int32_t*)&value);
+    return OSAtomicDecrement32((int32_t*)&value);
 }
 
 #else

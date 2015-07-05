@@ -20,5 +20,5 @@
 
 
 float VisibilityOfSunLight_Model() {
-	return 1.;
+    return 1.;
 }

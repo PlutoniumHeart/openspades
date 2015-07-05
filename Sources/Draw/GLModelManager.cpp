@@ -28,57 +28,57 @@
 #include "../Core/Settings.h"
 
 namespace spades {
-	namespace draw {
-		GLModelManager::GLModelManager(GLRenderer *r) {
-			SPADES_MARK_FUNCTION();
-			
-			renderer = r;
-		}
-		GLModelManager::~GLModelManager() {
-			SPADES_MARK_FUNCTION();
-			
-			for(std::map<std::string, GLModel *>::iterator it = models.begin();
-				it != models.end(); it++){
-				it->second->Release();
-			}
-		}
-		
-		GLModel *GLModelManager::RegisterModel(const char *name){
-			SPADES_MARK_FUNCTION();
-			
-			std::map<std::string, GLModel *>::iterator it;
-			it = models.find(std::string(name));
-			if(it == models.end()){
-				GLModel *m = CreateModel(name);
-				models[name] = m;
-				m->AddRef();
-				return m;
-			}
-			it->second->AddRef(); // model manager owns this reference
-			return it->second;
-		}
-		
-		GLModel *GLModelManager::CreateModel(const char *name) {
-			SPADES_MARK_FUNCTION();
-			
-			VoxelModel *bmp;
-			IStream *stream = FileManager::OpenForReading(name);
-			try{
-				bmp = VoxelModel::LoadKV6(stream);
-				delete stream;
-			}catch(...){
-				delete stream;
-				throw;
-			}
-			try{
-				GLModel *model = static_cast<GLModel *>(renderer->CreateModelOptimized(bmp)); //new GLVoxelModel(bmp, renderer);
-				bmp->Release();
-				return model;
-			}catch(...){
-				bmp->Release();
-				throw;
-			}
-		}
-		
-	}
+    namespace draw {
+        GLModelManager::GLModelManager(GLRenderer *r) {
+            SPADES_MARK_FUNCTION();
+            
+            renderer = r;
+        }
+        GLModelManager::~GLModelManager() {
+            SPADES_MARK_FUNCTION();
+            
+            for(std::map<std::string, GLModel *>::iterator it = models.begin();
+                it != models.end(); it++){
+                it->second->Release();
+            }
+        }
+        
+        GLModel *GLModelManager::RegisterModel(const char *name){
+            SPADES_MARK_FUNCTION();
+            
+            std::map<std::string, GLModel *>::iterator it;
+            it = models.find(std::string(name));
+            if(it == models.end()){
+                GLModel *m = CreateModel(name);
+                models[name] = m;
+                m->AddRef();
+                return m;
+            }
+            it->second->AddRef(); // model manager owns this reference
+            return it->second;
+        }
+        
+        GLModel *GLModelManager::CreateModel(const char *name) {
+            SPADES_MARK_FUNCTION();
+            
+            VoxelModel *bmp;
+            IStream *stream = FileManager::OpenForReading(name);
+            try{
+                bmp = VoxelModel::LoadKV6(stream);
+                delete stream;
+            }catch(...){
+                delete stream;
+                throw;
+            }
+            try{
+                GLModel *model = static_cast<GLModel *>(renderer->CreateModelOptimized(bmp)); //new GLVoxelModel(bmp, renderer);
+                bmp->Release();
+                return model;
+            }catch(...){
+                bmp->Release();
+                throw;
+            }
+        }
+        
+    }
 }

@@ -41,22 +41,22 @@ void PrepareForShadow(vec3 worldOrigin, vec3 normal);
 vec4 FogDensity(float poweredLength);
 
 void main() {
-	
-	vec4 vertexPos = vec4(positionAttribute.xy, 0., 1.);
-	
-	worldPosition = (modelMatrix * vertexPos).xyz;
+    
+    vec4 vertexPos = vec4(positionAttribute.xy, 0., 1.);
+    
+    worldPosition = (modelMatrix * vertexPos).xyz;
 
-	gl_Position = projectionViewModelMatrix * vertexPos;
-	screenPosition = gl_Position.xyw;
-	screenPosition.xy = (screenPosition.xy + screenPosition.z) * .5;
-		
-	vec4 viewPos = viewModelMatrix * vertexPos;
-	float distance = dot(viewPos.xyz, viewPos.xyz);
-	fogDensity = FogDensity(distance).xyz;
-	
-	viewPosition = viewPos.xyz;
-	
-	
-	PrepareForShadow((modelMatrix * vertexPos).xyz, vec3(0., 0., -1.));
+    gl_Position = projectionViewModelMatrix * vertexPos;
+    screenPosition = gl_Position.xyw;
+    screenPosition.xy = (screenPosition.xy + screenPosition.z) * .5;
+        
+    vec4 viewPos = viewModelMatrix * vertexPos;
+    float distance = dot(viewPos.xyz, viewPos.xyz);
+    fogDensity = FogDensity(distance).xyz;
+    
+    viewPosition = viewPos.xyz;
+    
+    
+    PrepareForShadow((modelMatrix * vertexPos).xyz, vec3(0., 0., -1.));
 }
 

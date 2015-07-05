@@ -21,12 +21,12 @@
 #pragma once
 
 namespace spades {
-	void MaskConfigUpdateByScript(bool);
-	
-	class ScopedPrivilegeEscalation
-	{
-	public:
-		ScopedPrivilegeEscalation() { MaskConfigUpdateByScript(false); }
-		~ScopedPrivilegeEscalation() { MaskConfigUpdateByScript(true); }
-	};
+    void MaskConfigUpdateByScript(bool);
+    
+    class ScopedPrivilegeEscalation
+    {
+    public:
+        ScopedPrivilegeEscalation() { MaskConfigUpdateByScript(false); }
+        ~ScopedPrivilegeEscalation() { MaskConfigUpdateByScript(true); }
+    };
 }

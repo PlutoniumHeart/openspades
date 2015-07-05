@@ -26,87 +26,87 @@
 #define DEBUG_REFCOUNTED_OBJECT_LAST_RELEASE 0
 
 namespace spades {
-	
-	class RefCountedObject {
-		int refCount;
+    
+    class RefCountedObject {
+        int refCount;
 #if DEBUG_REFCOUNTED_OBJECT_LAST_RELEASE
-		reflection::BacktraceRecord lastRelease;
-		reflection::BacktraceRecord secondLastRelease;
-		Mutex releaseInfoMutex;
+        reflection::BacktraceRecord lastRelease;
+        reflection::BacktraceRecord secondLastRelease;
+        Mutex releaseInfoMutex;
 #endif
-	protected:
-		virtual ~RefCountedObject();
-	public:
-		RefCountedObject();
-		
-		void AddRef();
-		void Release();
-	};
-	
-	template <typename T>
-	class Handle {
-		T *ptr;
-	public:
-		Handle(T *ptr, bool add = true):ptr(ptr) {
-			if(ptr && add)
-				ptr->AddRef();
-		}
-		Handle(): ptr(0) {}
-		Handle(const Handle<T>& h): ptr(h.ptr) {
-			if(ptr)
-				ptr->AddRef();
-		}
-		~Handle() {
-			if(ptr)
-				ptr->Release();
-		}
-		T *operator ->() {
-			SPAssert(ptr != NULL);
-			return ptr;
-		}
-		const T *operator ->() const {
-			SPAssert(ptr != NULL);
-			return ptr;
-		}
-		T& operator *() {
-			SPAssert(ptr != NULL);
-			return *ptr;
-		}
-		const T& operator *() const {
-			SPAssert(ptr != NULL);
-			return *ptr;
-		}
-		void Set(T *p, bool add = true) {
-			if(p == ptr){
-				if((!add) && ptr != nullptr)
-					ptr->Release();
-				return;
-			}
-			T *old = ptr;
-			ptr = p;
-			if(add && ptr)
-				ptr->AddRef();
-			if(old)
-				old->Release();
-		}
-		void operator =(T *p){
-			Set(p);
-		}
-		void operator =(const Handle<T>& h){
-			Set(h.ptr, true);
-		}
-		operator T *() {
-			return ptr;
-		}
-		T *Unmanage() {
-			SPAssert(ptr != NULL);
-			T *p = ptr;
-			ptr = NULL;
-			return p;
-		}
-		operator bool() {
-			return ptr != NULL;
-		}
-	};
-	
+    protected:
+        virtual ~RefCountedObject();
+    public:
+        RefCountedObject();
+        
+        void AddRef();
+        void Release();
+    };
+    
+    template <typename T>
+    class Handle {
+        T *ptr;
+    public:
+        Handle(T *ptr, bool add = true):ptr(ptr) {
+            if(ptr && add)
+                ptr->AddRef();
+        }
+        Handle(): ptr(0) {}
+        Handle(const Handle<T>& h): ptr(h.ptr) {
+            if(ptr)
+                ptr->AddRef();
+        }
+        ~Handle() {
+            if(ptr)
+                ptr->Release();
+        }
+        T *operator ->() {
+            SPAssert(ptr != NULL);
+            return ptr;
+        }
+        const T *operator ->() const {
+            SPAssert(ptr != NULL);
+            return ptr;
+        }
+        T& operator *() {
+            SPAssert(ptr != NULL);
+            return *ptr;
+        }
+        const T& operator *() const {
+            SPAssert(ptr != NULL);
+            return *ptr;
+        }
+        void Set(T *p, bool add = true) {
+            if(p == ptr){
+                if((!add) && ptr != nullptr)
+                    ptr->Release();
+                return;
+            }
+            T *old = ptr;
+            ptr = p;
+            if(add && ptr)
+                ptr->AddRef();
+            if(old)
+                old->Release();
+        }
+        void operator =(T *p){
+            Set(p);
+        }
+        void operator =(const Handle<T>& h){
+            Set(h.ptr, true);
+        }
+        operator T *() {
+            return ptr;
+        }
+        T *Unmanage() {
+            SPAssert(ptr != NULL);
+            T *p = ptr;
+            ptr = NULL;
+            return p;
+        }
+        operator bool() {
+            return ptr != NULL;
+        }
+    };
+    
 }

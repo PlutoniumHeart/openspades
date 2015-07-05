@@ -27,23 +27,23 @@
 #include <stdint.h>
 
 namespace spades {
-	namespace draw {
-		class GLRenderer;
-		class GLProgram;
-		class GLImage;
-		class GLLensDustFilter {
-			GLProgram *thru;
-			GLProgram *dust;
-			GLImage *dustImg;
-			GLRenderer *renderer;
-			IGLDevice::UInteger noiseTex;
-			std::vector<uint32_t> noise;
-			GLColorBuffer DownSample(GLColorBuffer, bool linearize = false);
-			void UpdateNoise();
-		public:
-			GLLensDustFilter(GLRenderer *);
-			~GLLensDustFilter();
-			GLColorBuffer Filter(GLColorBuffer);
-		};
-	}
+    namespace draw {
+        class GLRenderer;
+        class GLProgram;
+        class GLImage;
+        class GLLensDustFilter {
+            GLProgram *thru;
+            GLProgram *dust;
+            GLImage *dustImg;
+            GLRenderer *renderer;
+            IGLDevice::UInteger noiseTex;
+            std::vector<uint32_t> noise;
+            GLColorBuffer DownSample(GLColorBuffer, bool linearize = false);
+            void UpdateNoise();
+        public:
+            GLLensDustFilter(GLRenderer *);
+            ~GLLensDustFilter();
+            GLColorBuffer Filter(GLColorBuffer);
+        };
+    }
 }

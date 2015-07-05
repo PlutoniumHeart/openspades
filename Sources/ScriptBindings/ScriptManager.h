@@ -35,82 +35,82 @@
 #include <list>
 
 namespace spades {
-	
-	class ScriptContextHandle;
-	
-	class ScriptManager {
-		friend class ScriptContextHandle;
-		struct Context {
-			asIScriptContext *obj;
-			int refCount;
-		};
-		Mutex contextMutex;
-		std::list<Context *> contextFreeList;
-		
-		asIScriptEngine *engine;
-		
-		ScriptManager();
-		~ScriptManager();
-	public:
-		static ScriptManager *GetInstance();
-		
-		static void CheckError(int);
-		
-		asIScriptEngine *GetEngine() const { return engine; }
-		
-		ScriptContextHandle GetContext();
-	};
-	
-	class ScriptContextUtils {
-		asIScriptContext *context;
+    
+    class ScriptContextHandle;
+    
+    class ScriptManager {
+        friend class ScriptContextHandle;
+        struct Context {
+            asIScriptContext *obj;
+            int refCount;
+        };
+        Mutex contextMutex;
+        std::list<Context *> contextFreeList;
+        
+        asIScriptEngine *engine;
+        
+        ScriptManager();
+        ~ScriptManager();
+    public:
+        static ScriptManager *GetInstance();
+        
+        static void CheckError(int);
+        
+        asIScriptEngine *GetEngine() const { return engine; }
+        
+        ScriptContextHandle GetContext();
+    };
+    
+    class ScriptContextUtils {
+        asIScriptContext *context;
 
-		void appendLocation( std::stringstream& ss, asIScriptFunction* func, const char *secName, int line, int column );
-	public:
-		ScriptContextUtils();
-		ScriptContextUtils(asIScriptContext *);
-		void ExecuteChecked();
-		void SetNativeException(const std::exception&);
-	};
-	
-	class ScriptContextHandle{
-		ScriptManager *manager;
-		ScriptManager::Context *obj;
-		
-		void Release();
-	public:
-		ScriptContextHandle();
-		ScriptContextHandle(ScriptManager::Context *,
-							ScriptManager *manager);
-		ScriptContextHandle(const ScriptContextHandle&);
-		~ScriptContextHandle();
-		void operator =(const ScriptContextHandle&);
-		asIScriptContext *GetContext() const;
-		asIScriptContext *operator ->() const;
-		
-		ScriptManager *GetManager() const { return manager; }
-		
-		void ExecuteChecked();
-	};
-	
-	class ScriptObjectRegistrar {
-	public:
-		enum Phase {
-			PhaseObjectType,
-			PhaseGlobalFunction,
-			PhaseObjectMember,
-			PhaseCount
-		};
-		ScriptObjectRegistrar(const std::string& name);
-		virtual void Register(ScriptManager *manager, Phase) = 0;
-		
-		static void RegisterOne(const std::string& name,
-								ScriptManager *manager,
-								Phase);
-		static void RegisterAll(ScriptManager *manager, Phase);
-		
-	private:
-		bool phaseDone[PhaseCount];
-		std::string name;
-	};
-	
+        void appendLocation( std::stringstream& ss, asIScriptFunction* func, const char *secName, int line, int column );
+    public:
+        ScriptContextUtils();
+        ScriptContextUtils(asIScriptContext *);
+        void ExecuteChecked();
+        void SetNativeException(const std::exception&);
+    };
+    
+    class ScriptContextHandle{
+        ScriptManager *manager;
+        ScriptManager::Context *obj;
+        
+        void Release();
+    public:
+        ScriptContextHandle();
+        ScriptContextHandle(ScriptManager::Context *,
+                            ScriptManager *manager);
+        ScriptContextHandle(const ScriptContextHandle&);
+        ~ScriptContextHandle();
+        void operator =(const ScriptContextHandle&);
+        asIScriptContext *GetContext() const;
+        asIScriptContext *operator ->() const;
+        
+        ScriptManager *GetManager() const { return manager; }
+        
+        void ExecuteChecked();
+    };
+    
+    class ScriptObjectRegistrar {
+    public:
+        enum Phase {
+            PhaseObjectType,
+            PhaseGlobalFunction,
+            PhaseObjectMember,
+            PhaseCount
+        };
+        ScriptObjectRegistrar(const std::string& name);
+        virtual void Register(ScriptManager *manager, Phase) = 0;
+        
+        static void RegisterOne(const std::string& name,
+                                ScriptManager *manager,
+                                Phase);
+        static void RegisterAll(ScriptManager *manager, Phase);
+        
+    private:
+        bool phaseDone[PhaseCount];
+        std::string name;
+    };
+    
 }

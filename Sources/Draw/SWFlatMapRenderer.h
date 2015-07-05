@@ -28,34 +28,34 @@ namespace spades
 {
     namespace client
     {
-		class GameMap;
-	}
+        class GameMap;
+    }
 
     namespace draw
     {
-		class SWRenderer;
-		class SWImage;
-		
+        class SWRenderer;
+        class SWImage;
+        
         class SWFlatMapRenderer
         {
-			SWRenderer *r;
-			Handle<SWImage> img;
-			Handle<client::GameMap> map;
-			int w, h;
-			std::mutex updateInfoLock;
-			std::vector<uint32_t> updateMap;
-			std::vector<uint32_t> updateMap2;
-			bool volatile needsUpdate;
-			
-			uint32_t GeneratePixel(int x, int y);
-		public:
-			SWFlatMapRenderer(SWRenderer *r, client::GameMap *);
-			~SWFlatMapRenderer();
-			
-			SWImage *GetImage() { Update(); return img; }
-			
-			void Update(bool firstTime = false);
-			void SetNeedsUpdate(int x, int y);
-		};
-	}
+            SWRenderer *r;
+            Handle<SWImage> img;
+            Handle<client::GameMap> map;
+            int w, h;
+            std::mutex updateInfoLock;
+            std::vector<uint32_t> updateMap;
+            std::vector<uint32_t> updateMap2;
+            bool volatile needsUpdate;
+            
+            uint32_t GeneratePixel(int x, int y);
+        public:
+            SWFlatMapRenderer(SWRenderer *r, client::GameMap *);
+            ~SWFlatMapRenderer();
+            
+            SWImage *GetImage() { Update(); return img; }
+            
+            void Update(bool firstTime = false);
+            void SetNeedsUpdate(int x, int y);
+        };
+    }
 }

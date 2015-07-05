@@ -26,13 +26,13 @@ varying vec2 texCoord;
 
 
 void main() {
-	
-	float coc = texture2D(cocTexture, texCoord).x;
-	float cocBlur = texture2D(cocBlurTexture, texCoord).x;
+    
+    float coc = texture2D(cocTexture, texCoord).x;
+    float cocBlur = texture2D(cocBlurTexture, texCoord).x;
 
-	float op = 2. * max(cocBlur, coc) - coc;
-	op = max(op, coc);
-	gl_FragColor = vec4(op);
-	
+    float op = 2. * max(cocBlur, coc) - coc;
+    op = max(op, coc);
+    gl_FragColor = vec4(op);
+    
 }
 

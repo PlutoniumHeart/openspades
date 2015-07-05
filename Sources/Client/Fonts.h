@@ -23,9 +23,9 @@
 #include "IFont.h"
 
 namespace spades {
-	namespace client {
-		IFont *CreateSquareDesignFont(IRenderer *);
-		IFont *CreateLargeFont(IRenderer *);
-		IFont *CreateGuiFont(IRenderer *);
-	}
+    namespace client {
+        IFont *CreateSquareDesignFont(IRenderer *);
+        IFont *CreateLargeFont(IRenderer *);
+        IFont *CreateGuiFont(IRenderer *);
+    }
 }

@@ -27,77 +27,77 @@
 
 namespace spades
 {
-	class ScriptFunction;
-	
+    class ScriptFunction;
+    
     namespace client
     {
-		class Client;
-		class IRenderer;
-		class IAudioDevice;
-		
-		class SandboxedRenderer;
-		
-		/** Representation of player which is used by
-		 * drawing/view layer of game client. */
+        class Client;
+        class IRenderer;
+        class IAudioDevice;
+        
+        class SandboxedRenderer;
+        
+        /** Representation of player which is used by
+         * drawing/view layer of game client. */
         class ClientPlayer: public RefCountedObject
         {
-			Client *client;
-			Player *player;
-			
-			float sprintState;
-			float aimDownState;
-			float toolRaiseState;
-			Player::ToolType currentTool;
-			float localFireVibrationTime;
-			float time;
-			
-			Vector3 viewWeaponOffset;
-			
-			asIScriptObject *spadeSkin;
-			asIScriptObject *blockSkin;
-			asIScriptObject *weaponSkin;
-			asIScriptObject *grenadeSkin;
-			
-			asIScriptObject *spadeViewSkin;
-			asIScriptObject *blockViewSkin;
-			asIScriptObject *weaponViewSkin;
-			asIScriptObject *grenadeViewSkin;
-			
-			Handle<SandboxedRenderer> sandboxedRenderer;
-			
-			Matrix4 GetEyeMatrix();
-			void AddToSceneThirdPersonView();
-			void AddToSceneFirstPersonView();
-			
-			void SetSkinParameterForTool(Player::ToolType,
-										 asIScriptObject *);
-			void SetCommonSkinParameter(asIScriptObject *);
-			
-			float GetLocalFireVibration();
-			
-			bool ShouldRenderInThirdPersonView();
+            Client *client;
+            Player *player;
+            
+            float sprintState;
+            float aimDownState;
+            float toolRaiseState;
+            Player::ToolType currentTool;
+            float localFireVibrationTime;
+            float time;
+            
+            Vector3 viewWeaponOffset;
+            
+            asIScriptObject *spadeSkin;
+            asIScriptObject *blockSkin;
+            asIScriptObject *weaponSkin;
+            asIScriptObject *grenadeSkin;
+            
+            asIScriptObject *spadeViewSkin;
+            asIScriptObject *blockViewSkin;
+            asIScriptObject *weaponViewSkin;
+            asIScriptObject *grenadeViewSkin;
+            
+            Handle<SandboxedRenderer> sandboxedRenderer;
+            
+            Matrix4 GetEyeMatrix();
+            void AddToSceneThirdPersonView();
+            void AddToSceneFirstPersonView();
+            
+            void SetSkinParameterForTool(Player::ToolType,
+                                         asIScriptObject *);
+            void SetCommonSkinParameter(asIScriptObject *);
+            
+            float GetLocalFireVibration();
+            
+            bool ShouldRenderInThirdPersonView();
 
-			asIScriptObject* initScriptFactory( ScriptFunction& creator, IRenderer* renderer, IAudioDevice* audio );
-		protected:
-			virtual ~ClientPlayer();
-		public:
+            asIScriptObject* initScriptFactory( ScriptFunction& creator, IRenderer* renderer, IAudioDevice* audio );
+        protected:
+            virtual ~ClientPlayer();
+        public:
             ClientPlayer(Player *p, Client *c);
-			Player *GetPlayer() const { return player; }
-			
-			void Invalidate();
-			
-			void Update(float dt);
-			void AddToScene();
-			void Draw2D();
-			
-			bool IsChangingTool();
-			void FiredWeapon();
-			void ReloadingWeapon();
-			void ReloadedWeapon();
-			
-			float GetAimDownState() { return aimDownState; }
-			float GetSprintState() { return sprintState; }
-		};
-		
-	}
+            Player *GetPlayer() const { return player; }
+            
+            void Invalidate();
+            
+            void Update(float dt);
+            void AddToScene();
+            void Draw2D();
+            
+            bool IsChangingTool();
+            void FiredWeapon();
+            void ReloadingWeapon();
+            void ReloadedWeapon();
+            
+            float GetAimDownState() { return aimDownState; }
+            float GetSprintState() { return sprintState; }
+        };
+        
+    }
 }

@@ -23,7 +23,7 @@
 #include <Core/IStream.h>
 
 namespace spades {
-	namespace draw {
+    namespace draw {
         SWImage::SWImage(Bitmap *m)
             : ew(m->GetWidth())
             , eh(m->GetHeight())
@@ -32,38 +32,38 @@ namespace spades {
             , h(static_cast<float>(m->GetHeight()))
             , iw(1.f / w)
             , ih(1.f / h)
-		{
-			bmp.resize(ew * eh);
-			
-			// premultiplied alpha
-			{
-				uint32_t *inpix = m->GetPixels();
-				uint32_t *outpix = bmp.data();
-				bool foundNonWhite = false;
+        {
+            bmp.resize(ew * eh);
+            
+            // premultiplied alpha
+            {
+                uint32_t *inpix = m->GetPixels();
+                uint32_t *outpix = bmp.data();
+                bool foundNonWhite = false;
                 for(std::size_t i = ew * eh; i; i--)
                 {
-					uint32_t col = *(inpix++);
-					unsigned int alpha = static_cast<unsigned int>(col >> 24);
-					alpha += (alpha >> 7); // [0,255] to [0,256]
-					
-					unsigned int r = static_cast<unsigned int>((col >> 0) & 0xff);
-					unsigned int g = static_cast<unsigned int>((col >> 8) & 0xff);
-					unsigned int b = static_cast<unsigned int>((col >>16) & 0xff);
-					r = (r * alpha) >> 8;
-					g = (g * alpha) >> 8;
-					b = (b * alpha) >> 8;
-					
-					col &= 0xff000000;
-					col |= b | (g << 8) | (r << 16); // swap RGB/BGR
-					*(outpix++) = col;
-					
-					if(col != 0xffffffff)
-						foundNonWhite = true;
-				}
-				isWhite = !foundNonWhite;
-			}
-		}
-		
+                    uint32_t col = *(inpix++);
+                    unsigned int alpha = static_cast<unsigned int>(col >> 24);
+                    alpha += (alpha >> 7); // [0,255] to [0,256]
+                    
+                    unsigned int r = static_cast<unsigned int>((col >> 0) & 0xff);
+                    unsigned int g = static_cast<unsigned int>((col >> 8) & 0xff);
+                    unsigned int b = static_cast<unsigned int>((col >>16) & 0xff);
+                    r = (r * alpha) >> 8;
+                    g = (g * alpha) >> 8;
+                    b = (b * alpha) >> 8;
+                    
+                    col &= 0xff000000;
+                    col |= b | (g << 8) | (r << 16); // swap RGB/BGR
+                    *(outpix++) = col;
+                    
+                    if(col != 0xffffffff)
+                        foundNonWhite = true;
+                }
+                isWhite = !foundNonWhite;
+            }
+        }
+        
         SWImage::SWImage(int w, int h)
             : ew(w)
             , eh(h)
@@ -73,42 +73,42 @@ namespace spades {
             , iw(1.f / w)
             , ih(1.f / h)
         {
-			bmp.reserve(ew * eh);
-		}
-		
+            bmp.reserve(ew * eh);
+        }
+        
         SWImage::~SWImage()
         {
-		}
-		
+        }
+        
         SWImageManager::~SWImageManager()
         {
-			for(auto it = images.begin(); it != images.end(); it++)
-				it->second->Release();
-		}
-		
+            for(auto it = images.begin(); it != images.end(); it++)
+                it->second->Release();
+        }
+        
         SWImage *SWImageManager::RegisterImage(const std::string &name)
         {
-			auto it = images.find(name);
+            auto it = images.find(name);
             if(it == images.end())
             {
-				Handle<Bitmap> vm;
-				vm.Set(Bitmap::Load(name), false);
-				auto *m = CreateImage(vm);
-				images.insert(std::make_pair(name, m));
-				m->AddRef();
-				return m;
+                Handle<Bitmap> vm;
+                vm.Set(Bitmap::Load(name), false);
+                auto *m = CreateImage(vm);
+                images.insert(std::make_pair(name, m));
+                m->AddRef();
+                return m;
             }
             else
             {
-				auto *image = it->second;
-				image->AddRef();
-				return image;
-			}
-		}
-		
+                auto *image = it->second;
+                image->AddRef();
+                return image;
+            }
+        }
+        
         SWImage *SWImageManager::CreateImage(Bitmap *vm)
         {
-			return new SWImage(vm);
-		}
-	}
+            return new SWImage(vm);
+        }
+    }
 }

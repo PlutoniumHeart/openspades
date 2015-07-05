@@ -24,27 +24,27 @@ uniform sampler2D texture;
 varying vec2 texCoord;
 
 void main() {
-	// linear RGB
-	vec3 color = texture2D(texture, texCoord).xyz;
+    // linear RGB
+    vec3 color = texture2D(texture, texCoord).xyz;
 
-	// desaturate
-	float brightness = max(max(color.x, color.y), color.z);
+    // desaturate
+    float brightness = max(max(color.x, color.y), color.z);
 
-	// remove NaN and Infinity
-	if (!(brightness >= 0. && brightness <= 16.)) {
-		brightness = 0.05;
-	}
+    // remove NaN and Infinity
+    if (!(brightness >= 0. && brightness <= 16.)) {
+        brightness = 0.05;
+    }
 
-	// lower bound
-	brightness = max(0.05, brightness);
+    // lower bound
+    brightness = max(0.05, brightness);
 
-	// uppr bound
-	brightness = min(1.3, brightness);
+    // uppr bound
+    brightness = min(1.3, brightness);
 
-	// raise to the n-th power to reduce overbright
-	brightness *= brightness;
-	brightness *= brightness;
+    // raise to the n-th power to reduce overbright
+    brightness *= brightness;
+    brightness *= brightness;
 
-	gl_FragColor = vec4(brightness, brightness, brightness, 1.);
+    gl_FragColor = vec4(brightness, brightness, brightness, 1.);
 }
 

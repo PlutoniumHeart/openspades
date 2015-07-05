@@ -23,67 +23,67 @@
 #include <Core/Debug.h>
 
 namespace spades{
-	namespace client {
-		ScriptIBlockSkin::ScriptIBlockSkin(asIScriptObject *obj):
-		obj(obj){}
-		
-		void ScriptIBlockSkin::SetReadyState(float v) {
-			SPADES_MARK_FUNCTION_DEBUG();
-			static ScriptFunction func("IBlockSkin",
-									   "void set_ReadyState(float)");
-			ScriptContextHandle ctx = func.Prepare();
-			int r;
-			r = ctx->SetObject((void *)obj);
-			ScriptManager::CheckError(r);
-			r = ctx->SetArgFloat(0, v);
-			ScriptManager::CheckError(r);
-			ctx.ExecuteChecked();
-		}
-		
-		void ScriptIBlockSkin::SetBlockColor(Vector3 v) {
-			SPADES_MARK_FUNCTION_DEBUG();
-			static ScriptFunction func("IBlockSkin",
-									   "void set_BlockColor(Vector3)");
-			ScriptContextHandle ctx = func.Prepare();
-			int r;
-			r = ctx->SetObject((void *)obj);
-			ScriptManager::CheckError(r);
-			r = ctx->SetArgObject(0, &v);
-			ScriptManager::CheckError(r);
-			ctx.ExecuteChecked();
-		}
-		
-		class IBlockSkinRegistrar: public ScriptObjectRegistrar {
-		public:
-			IBlockSkinRegistrar():
-			ScriptObjectRegistrar("IBlockSkin"){
-				
-			}
-			virtual void Register(ScriptManager *manager, Phase phase) {
-				asIScriptEngine *eng = manager->GetEngine();
-				int r;
-				eng->SetDefaultNamespace("spades");
-				switch(phase){
-					case PhaseObjectType:
-						r = eng->RegisterInterface("IBlockSkin");
-						manager->CheckError(r);
-						break;
-					case PhaseObjectMember:
-						r = eng->RegisterInterfaceMethod("IBlockSkin",
-														 "void set_ReadyState(float)");
-						manager->CheckError(r);
-						r = eng->RegisterInterfaceMethod("IBlockSkin",
-														 "void set_BlockColor(Vector3)");
-						manager->CheckError(r);
-						break;
-					default:
-						
-						break;
-				}
-			}
-		};
-		
-		static IBlockSkinRegistrar registrar;
-	}
+    namespace client {
+        ScriptIBlockSkin::ScriptIBlockSkin(asIScriptObject *obj):
+        obj(obj){}
+        
+        void ScriptIBlockSkin::SetReadyState(float v) {
+            SPADES_MARK_FUNCTION_DEBUG();
+            static ScriptFunction func("IBlockSkin",
+                                       "void set_ReadyState(float)");
+            ScriptContextHandle ctx = func.Prepare();
+            int r;
+            r = ctx->SetObject((void *)obj);
+            ScriptManager::CheckError(r);
+            r = ctx->SetArgFloat(0, v);
+            ScriptManager::CheckError(r);
+            ctx.ExecuteChecked();
+        }
+        
+        void ScriptIBlockSkin::SetBlockColor(Vector3 v) {
+            SPADES_MARK_FUNCTION_DEBUG();
+            static ScriptFunction func("IBlockSkin",
+                                       "void set_BlockColor(Vector3)");
+            ScriptContextHandle ctx = func.Prepare();
+            int r;
+            r = ctx->SetObject((void *)obj);
+            ScriptManager::CheckError(r);
+            r = ctx->SetArgObject(0, &v);
+            ScriptManager::CheckError(r);
+            ctx.ExecuteChecked();
+        }
+        
+        class IBlockSkinRegistrar: public ScriptObjectRegistrar {
+        public:
+            IBlockSkinRegistrar():
+            ScriptObjectRegistrar("IBlockSkin"){
+                
+            }
+            virtual void Register(ScriptManager *manager, Phase phase) {
+                asIScriptEngine *eng = manager->GetEngine();
+                int r;
+                eng->SetDefaultNamespace("spades");
+                switch(phase){
+                    case PhaseObjectType:
+                        r = eng->RegisterInterface("IBlockSkin");
+                        manager->CheckError(r);
+                        break;
+                    case PhaseObjectMember:
+                        r = eng->RegisterInterfaceMethod("IBlockSkin",
+                                                         "void set_ReadyState(float)");
+                        manager->CheckError(r);
+                        r = eng->RegisterInterfaceMethod("IBlockSkin",
+                                                         "void set_BlockColor(Vector3)");
+                        manager->CheckError(r);
+                        break;
+                    default:
+                        
+                        break;
+                }
+            }
+        };
+        
+        static IBlockSkinRegistrar registrar;
+    }
 }
 

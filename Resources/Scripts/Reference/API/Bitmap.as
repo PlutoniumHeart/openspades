@@ -19,31 +19,31 @@
  */
  
 namespace spades {
-	
-	/** Represents a 32-bit RGBA bitmap. */
-	class Bitmap {
-		
-		/** Creates a new bitmap. */
-		GameMap(int width, int height) {}
-		
-		/** Loads a bitmap from the specified file. */
-		GameMap(const string@ path) {}
-		
-		/** Gets the color of the specified pixel. */
-		uint GetPixel(int x, int y) {}
-		
-		/** Sets the color of the specified pixel. */
-		void SetPixel(int x, int y, uint color) {}
-		
-		/** Retrieves the width of the bitmap. */
-		int Width {
-			get { }
-		}
-		
-		/** Retrieves the height of the bitmap. */
-		int Height {
-			get { }
-		}
-			
-	}
+    
+    /** Represents a 32-bit RGBA bitmap. */
+    class Bitmap {
+        
+        /** Creates a new bitmap. */
+        GameMap(int width, int height) {}
+        
+        /** Loads a bitmap from the specified file. */
+        GameMap(const string@ path) {}
+        
+        /** Gets the color of the specified pixel. */
+        uint GetPixel(int x, int y) {}
+        
+        /** Sets the color of the specified pixel. */
+        void SetPixel(int x, int y, uint color) {}
+        
+        /** Retrieves the width of the bitmap. */
+        int Width {
+            get { }
+        }
+        
+        /** Retrieves the height of the bitmap. */
+        int Height {
+            get { }
+        }
+            
+    }
 }

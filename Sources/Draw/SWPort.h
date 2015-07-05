@@ -24,13 +24,13 @@
 #include <Core/RefCountedObject.h>
 
 namespace spades {
-	namespace draw {
-		class SWPort: public RefCountedObject {
-		protected:
-			virtual ~SWPort() {}
-		public:
-			virtual Bitmap *GetFramebuffer() = 0;
-			virtual void Swap() = 0;
-		};
-	}
+    namespace draw {
+        class SWPort: public RefCountedObject {
+        protected:
+            virtual ~SWPort() {}
+        public:
+            virtual Bitmap *GetFramebuffer() = 0;
+            virtual void Swap() = 0;
+        };
+    }
 }

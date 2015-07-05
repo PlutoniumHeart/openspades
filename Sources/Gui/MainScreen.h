@@ -27,52 +27,52 @@
 #include <ScriptBindings/ScriptManager.h>
 
 namespace spades {
-	namespace client {
-		class IFont;
-	}
-	namespace gui {
-		class MainScreenHelper;
-		class MainScreen: public View {
-			friend class MainScreenHelper;
-			Handle<client::IRenderer> renderer;
-			Handle<client::IAudioDevice> audioDevice;
-			Handle<View> subview;
-			Handle<client::IFont> font;
-			float timeToStartInitialization;
-			
-			Handle<MainScreenHelper> helper;
-			Handle<asIScriptObject> ui;
-			
-			void DrawStartupScreen();
-			void DoInit();
-			
-			void RestoreRenderer();
-			
-			std::string Connect();
-		protected:
-			virtual ~MainScreen();
-		public:
-			MainScreen(client::IRenderer *, client::IAudioDevice *);
-			
-			client::IRenderer *GetRenderer() { return &*renderer; }
-			client::IAudioDevice *GetAudioDevice() { return &*audioDevice; }
-			
-			virtual void MouseEvent(float x, float y);
-			virtual void KeyEvent(const std::string&,
-								  bool down);
-			virtual void TextInputEvent(const std::string&);
-			virtual void TextEditingEvent(const std::string&,
-										  int start, int len);
-			virtual bool AcceptsTextInput();
-			virtual AABB2 GetTextInputRect();
-			virtual void WheelEvent(float x, float y);
-			virtual bool NeedsAbsoluteMouseCoordinate();
-			
-			virtual void RunFrame(float dt);
-			
-			virtual void Closing();
-			
-			virtual bool WantsToBeClosed();
-		};;
-	}
+    namespace client {
+        class IFont;
+    }
+    namespace gui {
+        class MainScreenHelper;
+        class MainScreen: public View {
+            friend class MainScreenHelper;
+            Handle<client::IRenderer> renderer;
+            Handle<client::IAudioDevice> audioDevice;
+            Handle<View> subview;
+            Handle<client::IFont> font;
+            float timeToStartInitialization;
+            
+            Handle<MainScreenHelper> helper;
+            Handle<asIScriptObject> ui;
+            
+            void DrawStartupScreen();
+            void DoInit();
+            
+            void RestoreRenderer();
+            
+            std::string Connect();
+        protected:
+            virtual ~MainScreen();
+        public:
+            MainScreen(client::IRenderer *, client::IAudioDevice *);
+            
+            client::IRenderer *GetRenderer() { return &*renderer; }
+            client::IAudioDevice *GetAudioDevice() { return &*audioDevice; }
+            
+            virtual void MouseEvent(float x, float y);
+            virtual void KeyEvent(const std::string&,
+                                  bool down);
+            virtual void TextInputEvent(const std::string&);
+            virtual void TextEditingEvent(const std::string&,
+                                          int start, int len);
+            virtual bool AcceptsTextInput();
+            virtual AABB2 GetTextInputRect();
+            virtual void WheelEvent(float x, float y);
+            virtual bool NeedsAbsoluteMouseCoordinate();
+            
+            virtual void RunFrame(float dt);
+            
+            virtual void Closing();
+            
+            virtual bool WantsToBeClosed();
+        };;
+    }
 }

@@ -29,27 +29,27 @@ varying vec2 texCoord;
 
 vec4 doGamma(vec4 col) {
 #if !LINEAR_FRAMEBUFFER
-	col.xyz *= col.xyz;
+    col.xyz *= col.xyz;
 #endif
-	return col;
+    return col;
 }
 
 void main() {
-	
-	float coc = texture2D(cocTexture, texCoord).x;
-	
-	vec4 a = doGamma(texture2D(texture, texCoord));
-	vec4 b = doGamma(texture2D(blurTexture1, texCoord));
-	b += doGamma(texture2D(blurTexture2, texCoord)) * 2.;
-	b *= (1. / 3.);
+    
+    float coc = texture2D(cocTexture, texCoord).x;
+    
+    vec4 a = doGamma(texture2D(texture, texCoord));
+    vec4 b = doGamma(texture2D(blurTexture1, texCoord));
+    b += doGamma(texture2D(blurTexture2, texCoord)) * 2.;
+    b *= (1. / 3.);
 
-	float per = min(1., coc * 5.);
-	vec4 v = blurredOnly ? b : mix(a, b, per);
-	
+    float per = min(1., coc * 5.);
+    vec4 v = blurredOnly ? b : mix(a, b, per);
+    
 #if !LINEAR_FRAMEBUFFER
-	v.xyz = sqrt(v.xyz);
+    v.xyz = sqrt(v.xyz);
 #endif
-	
-	gl_FragColor = v;
+    
+    gl_FragColor = v;
 }
 

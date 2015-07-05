@@ -19,18 +19,18 @@
  */
  
 namespace spades {
-	
-	/** Replaces any occurrence of the pattern string with another string. */
-	string Replace(const string@ str, 
-	               const string@ pattern,
-	               const string@ after) {}
-	
-	
-	/** Removes preceding/following white-spaces. */
-	string TrimSpaces(const string@ input) {}
-	
-	string ToString(int) {}
-	
-	string ToString(double) {}
-	
+    
+    /** Replaces any occurrence of the pattern string with another string. */
+    string Replace(const string@ str, 
+                   const string@ pattern,
+                   const string@ after) {}
+    
+    
+    /** Removes preceding/following white-spaces. */
+    string TrimSpaces(const string@ input) {}
+    
+    string ToString(int) {}
+    
+    string ToString(double) {}
+    
 }

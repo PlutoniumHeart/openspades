@@ -27,10 +27,10 @@ attribute vec4 colorAttribute;
 varying vec4 color;
 
 void main() {
-	
-	gl_Position = projectionViewMatrix * positionAttribute;
-	
-	color = colorAttribute;
-	
+    
+    gl_Position = projectionViewMatrix * positionAttribute;
+    
+    color = colorAttribute;
+    
 }
 

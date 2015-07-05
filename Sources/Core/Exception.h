@@ -25,18 +25,18 @@
 #include "Debug.h"
 
 namespace spades {
-	class Exception: public std::exception {
-		std::string shortMessage;
-		std::string message;
-	public:
-		Exception(const char *format, ...);
-		Exception(const char *file, int line, const char *format, ...);
-		virtual ~Exception() throw();
-		virtual const char *what() const throw();
-		const std::string& GetShortMessage() const throw() {
-			return shortMessage;
-		}
-	};
+    class Exception: public std::exception {
+        std::string shortMessage;
+        std::string message;
+    public:
+        Exception(const char *format, ...);
+        Exception(const char *file, int line, const char *format, ...);
+        virtual ~Exception() throw();
+        virtual const char *what() const throw();
+        const std::string& GetShortMessage() const throw() {
+            return shortMessage;
+        }
+    };
 }
 
 #ifdef _MSC_VER

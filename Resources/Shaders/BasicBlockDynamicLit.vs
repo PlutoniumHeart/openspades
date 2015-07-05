@@ -43,23 +43,23 @@ void PrepareForDynamicLightNoBump(vec3 vertexCoord, vec3 normal);
 vec4 FogDensity(float poweredLength);
 
 void main() {
-	
-	vec4 vertexPos = vec4(chunkPosition, 1.);
-	
-	vertexPos.xyz += positionAttribute.xyz;
-	
-	gl_Position = projectionViewMatrix * vertexPos;
-	
-	color = colorAttribute;
-	color.xyz *= color.xyz; // linearize
-	
-	vec4 viewPos = viewMatrix * vertexPos;
-	float distance = dot(viewPos.xyz, viewPos.xyz);
-	fogDensity = FogDensity(distance).xyz;
-	
-	vec3 normal = normalAttribute;
-	vec3 shadowVertexPos = vertexPos.xyz;
-	
-	PrepareForDynamicLightNoBump(shadowVertexPos, normal);
+    
+    vec4 vertexPos = vec4(chunkPosition, 1.);
+    
+    vertexPos.xyz += positionAttribute.xyz;
+    
+    gl_Position = projectionViewMatrix * vertexPos;
+    
+    color = colorAttribute;
+    color.xyz *= color.xyz; // linearize
+    
+    vec4 viewPos = viewMatrix * vertexPos;
+    float distance = dot(viewPos.xyz, viewPos.xyz);
+    fogDensity = FogDensity(distance).xyz;
+    
+    vec3 normal = normalAttribute;
+    vec3 shadowVertexPos = vertexPos.xyz;
+    
+    PrepareForDynamicLightNoBump(shadowVertexPos, normal);
 }
 

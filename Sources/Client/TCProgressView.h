@@ -21,20 +21,20 @@
 #pragma once
 
 namespace spades {
-	namespace client {
-		class Client;
-		class IRenderer;
-		class TCProgressView {
-			Client *client;
-			IRenderer *renderer;
-			
-			int lastTerritoryId;
-			float lastTerritoryTime;
-		public:
-			TCProgressView(Client *);
-			~TCProgressView();
-			
-			void Draw();
-		};
-	}
+    namespace client {
+        class Client;
+        class IRenderer;
+        class TCProgressView {
+            Client *client;
+            IRenderer *renderer;
+            
+            int lastTerritoryId;
+            float lastTerritoryTime;
+        public:
+            TCProgressView(Client *);
+            ~TCProgressView();
+            
+            void Draw();
+        };
+    }
 }

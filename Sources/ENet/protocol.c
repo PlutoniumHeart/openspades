@@ -864,7 +864,7 @@ enet_protocol_handle_acknowledge (ENetHost * host, ENetEvent * event, ENetPeer *
            enet_list_empty (& peer -> sentReliableCommands))
          enet_peer_disconnect (peer, peer -> eventData);
        break;
-	default: break;
+    default: break;
     }
    
     return 0;

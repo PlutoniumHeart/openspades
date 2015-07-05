@@ -47,184 +47,184 @@ vec3 EvaluateSunLight();
 vec3 EvaluateAmbientLight(float detailAmbientOcclusion);
 
 float decodeDepth(float w, float near, float far){
-	return far * near / mix(far, near, w);
+    return far * near / mix(far, near, w);
 }
 
 float depthAt(vec2 pt){
-	float w = texture2D(depthTexture, pt).x;
-	return decodeDepth(w, zNearFar.x, zNearFar.y);
+    float w = texture2D(depthTexture, pt).x;
+    return decodeDepth(w, zNearFar.x, zNearFar.y);
 }
 
 void main() {
-	vec3 worldPositionFromOrigin = worldPosition - viewOrigin;
-	vec4 waveCoord = worldPosition.xyxy * vec4(vec2(0.08),
-											   vec2(0.15704))
-	+ vec4(0., 0., 0.754, 0.1315);
-	vec2 waveCoord2 = worldPosition.xy * 0.02344 + vec2(.154, .7315);
-	
-	// evaluate waveform
-	vec3 wave = texture2D(waveTexture1, waveCoord.xy).xyz;
-	wave = mix(vec3(-0.0025), vec3(0.0025), wave);
-	wave.xy *= 0.08 * 1.;
-	
-	// detail (Far Cry seems to use this technique)
-	vec2 wave2 = texture2D(waveTexture2, waveCoord.zw).xy;
-	wave2 = mix(vec2(-0.0025), vec2(0.0025), wave2);
-	wave2.xy *= 0.15704 * 0.5;
-	wave.xy += wave2;
-	
-	// rough
-	wave2 = texture2D(waveTexture3, waveCoord2.xy).xy;
-	wave2 = mix(vec2(-0.0025), vec2(0.0025), wave2);
-	wave2.xy *= 0.02344 * 2.5;
-	wave.xy += wave2;
-	
-	wave.z = (1. / 128.) / (4.);
-	wave.xyz = normalize(wave.xyz);
-	
-	vec2 origScrPos = screenPosition.xy / screenPosition.z;
-	vec2 scrPos = origScrPos;
-	
-	float scale = 1. / viewPosition.z;
-	vec2 disp = wave.xy * 0.1;
-	scrPos += disp * scale * displaceScale  * 4.;
-	
-	// check envelope length.
-	// if the displaced location points the out of the water,
-	// reset to the original pos.
-	float depth = depthAt(scrPos);
-	
-	// convert to view coord
-	vec3 sampledViewCoord = vec3(mix(fovTan.zw, fovTan.xy, scrPos), 1.) * -depth;
-	float planeDistance = dot(vec4(sampledViewCoord, 1.), waterPlane);
- 	if(planeDistance < 0.){
-		// reset!
-		// original pos must be in the water.
-		scrPos = origScrPos;
-		depth = depthAt(scrPos);
-		if(depth + viewPosition.z < 0.){
-			// if the pixel is obscured by a object,
-			// this fragment of water is not visible
-			//discard; done by early-Z test
-		}
-	}else{
-		depth = planeDistance / abs(waterPlane.z /* == dot(waterPlane, vec4(0.,0.,1.,0.)) */);
-		depth -= viewPosition.z;
-	}
-	
-	float envelope = clamp((depth + viewPosition.z), 0., 1.);
-	envelope = 1. - (1. - envelope) * (1. - envelope);
-	
-	// water color
-	// TODO: correct integral
-	vec2 waterCoord = worldPosition.xy;
-	vec2 integralCoord = floor(waterCoord) + .5;
-	vec2 blurDir = (worldPositionFromOrigin.xy);
-	blurDir /= max(length(blurDir), 1.);
-	vec2 blurDirSign = mix(vec2(-1.), vec2(1.), step(0., blurDir));
-	vec2 startPos = (waterCoord - integralCoord) * blurDirSign;
-	vec2 diffPos = blurDir * envelope * blurDirSign * .5 /*limit blur*/;
-	vec2 subCoord = 1. - clamp((vec2(0.5) - startPos) / diffPos,
-						  0., 1.);
-	vec2 sampCoord = integralCoord + subCoord * blurDirSign;
-	vec3 waterColor = texture2D(texture, sampCoord / 512.).xyz;
-	waterColor *= EvaluateSunLight() + EvaluateAmbientLight(1.);
-	
-	// underwater object color
-	gl_FragColor = texture2D(screenTexture, scrPos);
+    vec3 worldPositionFromOrigin = worldPosition - viewOrigin;
+    vec4 waveCoord = worldPosition.xyxy * vec4(vec2(0.08),
+                                               vec2(0.15704))
+    + vec4(0., 0., 0.754, 0.1315);
+    vec2 waveCoord2 = worldPosition.xy * 0.02344 + vec2(.154, .7315);
+    
+    // evaluate waveform
+    vec3 wave = texture2D(waveTexture1, waveCoord.xy).xyz;
+    wave = mix(vec3(-0.0025), vec3(0.0025), wave);
+    wave.xy *= 0.08 * 1.;
+    
+    // detail (Far Cry seems to use this technique)
+    vec2 wave2 = texture2D(waveTexture2, waveCoord.zw).xy;
+    wave2 = mix(vec2(-0.0025), vec2(0.0025), wave2);
+    wave2.xy *= 0.15704 * 0.5;
+    wave.xy += wave2;
+    
+    // rough
+    wave2 = texture2D(waveTexture3, waveCoord2.xy).xy;
+    wave2 = mix(vec2(-0.0025), vec2(0.0025), wave2);
+    wave2.xy *= 0.02344 * 2.5;
+    wave.xy += wave2;
+    
+    wave.z = (1. / 128.) / (4.);
+    wave.xyz = normalize(wave.xyz);
+    
+    vec2 origScrPos = screenPosition.xy / screenPosition.z;
+    vec2 scrPos = origScrPos;
+    
+    float scale = 1. / viewPosition.z;
+    vec2 disp = wave.xy * 0.1;
+    scrPos += disp * scale * displaceScale  * 4.;
+    
+    // check envelope length.
+    // if the displaced location points the out of the water,
+    // reset to the original pos.
+    float depth = depthAt(scrPos);
+    
+    // convert to view coord
+    vec3 sampledViewCoord = vec3(mix(fovTan.zw, fovTan.xy, scrPos), 1.) * -depth;
+    float planeDistance = dot(vec4(sampledViewCoord, 1.), waterPlane);
+     if(planeDistance < 0.){
+        // reset!
+        // original pos must be in the water.
+        scrPos = origScrPos;
+        depth = depthAt(scrPos);
+        if(depth + viewPosition.z < 0.){
+            // if the pixel is obscured by a object,
+            // this fragment of water is not visible
+            //discard; done by early-Z test
+        }
+    }else{
+        depth = planeDistance / abs(waterPlane.z /* == dot(waterPlane, vec4(0.,0.,1.,0.)) */);
+        depth -= viewPosition.z;
+    }
+    
+    float envelope = clamp((depth + viewPosition.z), 0., 1.);
+    envelope = 1. - (1. - envelope) * (1. - envelope);
+    
+    // water color
+    // TODO: correct integral
+    vec2 waterCoord = worldPosition.xy;
+    vec2 integralCoord = floor(waterCoord) + .5;
+    vec2 blurDir = (worldPositionFromOrigin.xy);
+    blurDir /= max(length(blurDir), 1.);
+    vec2 blurDirSign = mix(vec2(-1.), vec2(1.), step(0., blurDir));
+    vec2 startPos = (waterCoord - integralCoord) * blurDirSign;
+    vec2 diffPos = blurDir * envelope * blurDirSign * .5 /*limit blur*/;
+    vec2 subCoord = 1. - clamp((vec2(0.5) - startPos) / diffPos,
+                          0., 1.);
+    vec2 sampCoord = integralCoord + subCoord * blurDirSign;
+    vec3 waterColor = texture2D(texture, sampCoord / 512.).xyz;
+    waterColor *= EvaluateSunLight() + EvaluateAmbientLight(1.);
+    
+    // underwater object color
+    gl_FragColor = texture2D(screenTexture, scrPos);
 #if !LINEAR_FRAMEBUFFER
-	gl_FragColor.xyz *= gl_FragColor.xyz; // screen color to linear
+    gl_FragColor.xyz *= gl_FragColor.xyz; // screen color to linear
 #endif
-	
-	// apply fog color to water color now.
-	// note that fog is already applied to underwater object.
-	waterColor = mix(waterColor, fogColor, fogDensity);
-	
-	// blend water color with the underwater object's color.
-	gl_FragColor.xyz = mix(gl_FragColor.xyz, waterColor, envelope);
-	
-	// attenuation factor for addition blendings below
-	vec3 att = 1. - fogDensity;
-	
-	/* ------- Reflection -------- */
-	
-	vec3 ongoing = normalize(worldPositionFromOrigin);
-	
+    
+    // apply fog color to water color now.
+    // note that fog is already applied to underwater object.
+    waterColor = mix(waterColor, fogColor, fogDensity);
+    
+    // blend water color with the underwater object's color.
+    gl_FragColor.xyz = mix(gl_FragColor.xyz, waterColor, envelope);
+    
+    // attenuation factor for addition blendings below
+    vec3 att = 1. - fogDensity;
+    
+    /* ------- Reflection -------- */
+    
+    vec3 ongoing = normalize(worldPositionFromOrigin);
+    
     // bluring for far surface
-	float lodBias = 1.0 / ongoing.z;
-	float dispScaleByLod = min(1., ongoing.z * 0.5);
+    float lodBias = 1.0 / ongoing.z;
+    float dispScaleByLod = min(1., ongoing.z * 0.5);
     lodBias = log2(lodBias);
     lodBias = clamp(lodBias, 0., 2.);
     
-	// compute reflection color
-	vec2 scrPos2 = origScrPos;
-	disp.y = -abs(disp.y * 3.);
-	scrPos2 -= disp * scale * displaceScale * 15.;
+    // compute reflection color
+    vec2 scrPos2 = origScrPos;
+    disp.y = -abs(disp.y * 3.);
+    scrPos2 -= disp * scale * displaceScale * 15.;
     
     
-	vec3 refl = texture2D(mirrorTexture, scrPos2, lodBias).xyz;
+    vec3 refl = texture2D(mirrorTexture, scrPos2, lodBias).xyz;
 #if !LINEAR_FRAMEBUFFER
-	refl *= refl; // linearize
+    refl *= refl; // linearize
 #endif
     
-	// reflectivity
-	vec3 sunlight = EvaluateSunLight();
-	float reflective = dot(ongoing, wave.xyz);
-	reflective = clamp(1. - reflective, 0., 1.);
+    // reflectivity
+    vec3 sunlight = EvaluateSunLight();
+    float reflective = dot(ongoing, wave.xyz);
+    reflective = clamp(1. - reflective, 0., 1.);
     
     float orig_reflective = reflective;
-	reflective *= reflective;
-	reflective *= reflective;
+    reflective *= reflective;
+    reflective *= reflective;
     reflective = mix(reflective, orig_reflective * .6,
         clamp(lodBias * .13 - .13, 0., 1.));
-	//reflective += .03;
-	
-	// reflection
+    //reflective += .03;
+    
+    // reflection
 #if USE_VOLUMETRIC_FOG
-	// it's actually impossible for water reflection to cope with volumetric fog.
-	// fade the water reflection so that we don't see sharp boundary of water
-	refl *= att;
+    // it's actually impossible for water reflection to cope with volumetric fog.
+    // fade the water reflection so that we don't see sharp boundary of water
+    refl *= att;
 #endif
-	gl_FragColor.xyz = mix(gl_FragColor.xyz,
-						   refl,
-						   reflective);
-	
-	
-	/* ------- Specular Reflection -------- */
-	
-	// specular reflection
-	if(dot(sunlight, vec3(1.)) > 0.0001){
-		vec3 refl = reflect(ongoing,
-							wave.xyz);
-		float spec = dot(refl, normalize(vec3(0., -1., -1.)));
-		spec = max(spec, 0.);
-		
-		/*
-		float sunVisRadius = cos(3.141592654 / 180. / 60. * 32.);
-		
-		spec = (spec - (1. - (1. - sunVisRadius) * 2.)) / ((1. - sunVisRadius) * 2.);
-		float fw = fwidth(spec);
-		spec = clamp(.5 + (spec - .5) / fw, 0., 1.);
-		*/
-		spec *= spec; // ^2
-		spec *= spec; // ^4
-		spec *= spec; // ^16
-		spec *= spec; // ^32
-		spec *= spec; // ^64
-		spec *= spec; // ^128
-		spec *= spec; // ^256
-		spec *= spec; // ^512
-		spec *= spec; // ^1024
-		spec *= reflective;
-		gl_FragColor.xyz += sunlight * spec * 10000. * att;
-		
-		
-	}
-	
+    gl_FragColor.xyz = mix(gl_FragColor.xyz,
+                           refl,
+                           reflective);
+    
+    
+    /* ------- Specular Reflection -------- */
+    
+    // specular reflection
+    if(dot(sunlight, vec3(1.)) > 0.0001){
+        vec3 refl = reflect(ongoing,
+                            wave.xyz);
+        float spec = dot(refl, normalize(vec3(0., -1., -1.)));
+        spec = max(spec, 0.);
+        
+        /*
+        float sunVisRadius = cos(3.141592654 / 180. / 60. * 32.);
+        
+        spec = (spec - (1. - (1. - sunVisRadius) * 2.)) / ((1. - sunVisRadius) * 2.);
+        float fw = fwidth(spec);
+        spec = clamp(.5 + (spec - .5) / fw, 0., 1.);
+        */
+        spec *= spec; // ^2
+        spec *= spec; // ^4
+        spec *= spec; // ^16
+        spec *= spec; // ^32
+        spec *= spec; // ^64
+        spec *= spec; // ^128
+        spec *= spec; // ^256
+        spec *= spec; // ^512
+        spec *= spec; // ^1024
+        spec *= reflective;
+        gl_FragColor.xyz += sunlight * spec * 10000. * att;
+        
+        
+    }
+    
 #if !LINEAR_FRAMEBUFFER
-	gl_FragColor.xyz = sqrt(gl_FragColor.xyz);
+    gl_FragColor.xyz = sqrt(gl_FragColor.xyz);
 #endif
-	
-	gl_FragColor.w = 1.;
+    
+    gl_FragColor.w = 1.;
 }
 
